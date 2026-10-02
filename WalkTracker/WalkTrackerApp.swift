@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct WalkTrackerApp: App {
@@ -13,5 +14,6 @@ struct WalkTrackerApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Walk.self)
     }
 }
