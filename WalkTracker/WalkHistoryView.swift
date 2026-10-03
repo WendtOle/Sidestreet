@@ -10,19 +10,34 @@ import SwiftUI
 
 struct WalkHistoryView: View {
     let walks: [Walk]
-    @Binding var selectedWalk: Walk?
+    let onSelect: (Walk) -> Void
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack{
-            ForEach(walks) {walk in
-                Text("\(walk.createdAt)")
-                Text("\(walk.totalDistance / 1000) km")
-                Button("open") {
-                    selectedWalk = walk
-                    dismiss()
+        NavigationStack {
+            List{
+                ForEach(walks) {walk in
+                    Button {
+                        onSelect(walk)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(walk.createdAt, style: .date)
+                                    .font(.headline)
+                                Text(walk.createdAt, style: .time)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Text("\(walk.totalDistance / 1000, specifier: "%.2f") km")
+                                .font(.headline)
+                        }
+                    }
                 }
-            }
+            }.navigationTitle("Historie")
         }
     }
 }

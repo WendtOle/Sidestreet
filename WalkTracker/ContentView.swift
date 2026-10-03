@@ -14,64 +14,175 @@ struct ContentView: View {
     @State private var locationManager = LocationManager()
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
-    //@State private var walks: [Walk] = []
     @State private var selectedWalk: Walk?
     @State var isHistoryPresented: Bool = false
+    @State private var showAllWalks = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
     
+    private func debugDumpWalks() {
+        do {
+            let descriptor = FetchDescriptor<Walk>(
+                sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
+            )
+
+            let storedWalks = try modelContext.fetch(descriptor)
+
+            print("===== STORED WALKS =====")
+            print("Count:", storedWalks.count)
+
+            for walk in storedWalks {
+                print("Walk:", walk.id)
+                print("Created:", walk.createdAt)
+                print("Distance:", walk.totalDistance)
+                print("Route points:", walk.routeCoordinates.count)
+                print("------------------------")
+            }
+        } catch {
+            print("FETCH ERROR:", error)
+        }
+    }
+    
+    private func frameRoute(for coordinates: [CLLocationCoordinate2D]) -> MapCameraPosition? {
+        guard let first = coordinates.first else {
+            return nil
+        }
+        
+        guard coordinates.count > 1 else {
+            return nil
+        }
+        
+        var rect = MKMapRect(
+            origin: MKMapPoint(first),
+            size: MKMapSize(width: 0, height: 0)
+        )
+        for coordinate in coordinates.dropFirst(){
+            let point = MKMapPoint(coordinate)
+            
+            let pointRect = MKMapRect(
+                origin: point,
+                size: MKMapSize(width: 0, height: 0)
+            )
+            rect = rect.union(pointRect)
+        }
+        let padding = 0.15
+        let paddedRect = rect.insetBy(dx: -rect.size.width * padding, dy: -rect.size.height * padding)
+        return .rect(paddedRect)
+    }
+    
+    private func selectedWalk(_ walk: Walk) {
+        selectedWalk = walk
+            if let position = frameRoute(for: walk.coordinates) {
+                cameraPosition = position
+            }
+    }
+    
     var body: some View {
         ZStack{
-            Map(initialPosition: cameraPosition){
+            Map(position: $cameraPosition){
                 UserAnnotation()
+                if locationManager.isRecording,
+                   let currentWalk = locationManager.currentWalk{
+                    MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
+                }
+                
+                if showAllWalks {
+                    ForEach(walks) {walk in
+                        MapPolyline(coordinates: walk.coordinates)
+                        .stroke(.gray, lineWidth: 3)
+                    }
+                }
+                
                 if let selectedWalk {
                     MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
-                } else if let currentWalk = locationManager.currentWalk {
-                    MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
                 }
             }
             VStack{
                 Spacer()
-                if let location = locationManager.lastLocation {
-                    Text("Latitude: \(location.coordinate.latitude)")
-                    Text("Longitude: \(location.coordinate.longitude)")
-                }
-                Text("Distanz: \(Int(locationManager.currentWalk?.totalDistance ?? 0))m")
-                if locationManager.isRecording {
-                    Text("Runde läuft!")
-                    Button("Runde stoppen"){
-                        locationManager.stopRecording()
-                        if let walk = locationManager.currentWalk {
+                VStack(spacing: 12) {
+                    if locationManager.isRecording {
+                        Text("Distanz: \(Int(locationManager.currentWalk?.totalDistance ?? 0))m")
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
+                    }
+                    Button {
+                        if locationManager.isRecording {
+                            locationManager.stopRecording()
+                            guard let walk = locationManager.currentWalk else {
+                                return
+                            }
+                            guard walk.coordinates.count > 1 else {
+                                return
+                            }
                             modelContext.insert(walk)
                             do {
                                 try modelContext.save()
                             } catch {
                                 print(error)
                             }
+                        } else {
+                            locationManager.startRecording()
+                            selectedWalk = nil
+                        }
+                    } label: {
+                        Image(systemName: locationManager.isRecording ? "stop.fill" : "play.fill")
+                            .font(.system(size: 28, weight: .bold))
+                            .frame(width: 72, height: 72)
+                        
+                    }
+                    .buttonStyle(.glassProminent)
+                }
+                HStack {
+                    if walks.count > 0 {
+                        Button {
+                            isHistoryPresented = true
+                        } label: {
+                            Image(systemName: "list.bullet")
+                                .font(.title3)
+                        }
+                        .buttonStyle(.glass)
+
+                        Button {
+                            showAllWalks.toggle()
+                            
+                            if showAllWalks {
+                                selectedWalk = nil
+                            }
+                        } label: {
+                            Label(
+                                "Alle",
+                                systemImage: showAllWalks
+                                ? "eye.fill"
+                                : "eye.slash"
+                            )
                         }
                     }
-                } else {
-                    Text("Keine Runde aktiv")
-                    Button("Runde starten"){
-                        locationManager.startRecording()
-                        selectedWalk = nil
-                    }
                 }
-                if walks.count > 0 {
-                    Button("Historie") {
-                        isHistoryPresented = true
-                    }
+                Button("DEBUG: Load Walks") {
+                    debugDumpWalks()
                 }
+                .font(.caption)
+                .buttonStyle(.borderless)
             }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
         .onAppear {
             locationManager.requestPermission()
         }
         .sheet(isPresented: $isHistoryPresented) {
-            WalkHistoryView(walks: walks, selectedWalk: $selectedWalk)
+            WalkHistoryView(walks: walks, onSelect: selectedWalk)
+                .presentationDetents([.medium, .large])
         }
+        .onChange(of: selectedWalk?.id) {
+            guard let selectedWalk else {
+                return
+            }
+            cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
+        }
+        
+       
     }
 }
 

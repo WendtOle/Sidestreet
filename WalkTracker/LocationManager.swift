@@ -20,6 +20,12 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     override init() {
         super.init()
         manager.delegate = self
+        
+        manager.activityType = .fitness
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 5
+        manager.pausesLocationUpdatesAutomatically = false
+        manager.showsBackgroundLocationIndicator = true
     }
     
     func requestPermission() {
@@ -27,32 +33,45 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.last
-        if isRecording == false {
+        guard let next = locations.last else {
             return
         }
-        if let next = lastLocation {
-            if let lastRecordedLocation = nullableLastRecordedLocation {
-                currentWalk?.totalDistance += lastRecordedLocation.distance(from: next)
-            }
-            nullableLastRecordedLocation = next
-            currentWalk?.routeCoordinates.append(RoutePoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
+        lastLocation = next
+
+        guard isRecording else {
+            return
         }
+        
+        guard next.horizontalAccuracy >= 0, next.horizontalAccuracy <= 30 else {
+            return
+        }
+        
+        if let lastRecordedLocation = nullableLastRecordedLocation {
+            currentWalk?.totalDistance += lastRecordedLocation.distance(from: next)
+        }
+        nullableLastRecordedLocation = next
+        currentWalk?.routeCoordinates.append(RoutePoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
+        
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if manager.authorizationStatus == .authorizedWhenInUse {
-            manager.startUpdatingLocation()
-        }
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: Error
+    ) {
+        print("Location error:", error)
     }
     
     func startRecording() {
         currentWalk = Walk()
         nullableLastRecordedLocation = nil
         isRecording = true
+        manager.allowsBackgroundLocationUpdates = true
+        manager.startUpdatingLocation()
     }
     
     func stopRecording() {
+        manager.stopUpdatingLocation()
+        manager.allowsBackgroundLocationUpdates = false
         isRecording = false
     }
 }
