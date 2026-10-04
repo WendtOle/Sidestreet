@@ -16,6 +16,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var nullableLastRecordedLocation: CLLocation?
     var isRecording = false
     var currentWalk: Walk?
+    private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     
     override init() {
         super.init()
@@ -32,11 +33,24 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.requestWhenInUseAuthorization()
     }
     
+    func requestCurrentLocation() async throws -> CLLocation {
+        try await withCheckedThrowingContinuation { continuation in
+                locationContinuation = continuation
+
+                manager.requestLocation()
+            }
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let next = locations.last else {
             return
         }
         lastLocation = next
+        
+        if let continuation = locationContinuation {
+            locationContinuation = nil
+            continuation.resume(returning: next)
+        }
 
         guard isRecording else {
             return
@@ -46,8 +60,15 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         
+        
+        
         if let lastRecordedLocation = nullableLastRecordedLocation {
             currentWalk?.totalDistance += lastRecordedLocation.distance(from: next)
+        }
+        if let quest = currentWalk?.quest {
+            if isQuestReached(quest: quest, location: next) {
+                currentWalk?.questReached = true
+            }
         }
         nullableLastRecordedLocation = next
         currentWalk?.routeCoordinates.append(RoutePoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
@@ -58,11 +79,23 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         _ manager: CLLocationManager,
         didFailWithError error: Error
     ) {
+        if let continuation = locationContinuation {
+            locationContinuation = nil
+            continuation.resume(throwing: error)
+        }
+        
         print("Location error:", error)
     }
     
-    func startRecording() {
-        currentWalk = Walk()
+    func startRecording() async {
+        var quest: Quest?
+        do {
+            let location = try await requestCurrentLocation()
+            quest = getQuest(startingPoint: location)
+        } catch {
+            print("Location konnte nicht ermittelt werden:", error)
+        }
+        currentWalk = Walk(inputQuest: quest)
         nullableLastRecordedLocation = nil
         isRecording = true
         manager.allowsBackgroundLocationUpdates = true

@@ -32,8 +32,12 @@ struct WalkHistoryView: View {
                             
                             Spacer()
                             
-                            Text("\(walk.totalDistance / 1000, specifier: "%.2f") km")
-                                .font(.headline)
+                            HStack {
+                                Text("\(walk.totalDistance / 1000, specifier: "%.2f") km")
+                                    .font(.headline)
+                                Text(walk.questReached ? "Done" : "Failed")
+                                    .font(.headline)
+                            }
                         }
                     }
                 }

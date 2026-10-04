@@ -14,10 +14,14 @@ final class Walk {
     var createdAt: Date
     var routeCoordinates: [RoutePoint] = []
     var totalDistance: CLLocationDistance = 0
+    
+    var quest: Quest?
+    var questReached: Bool = false
 
-    init() {
+    init(inputQuest: Quest?) {
         id = UUID()
         createdAt = Date()
+        quest = inputQuest
     }
         
     var coordinates: [CLLocationCoordinate2D] {

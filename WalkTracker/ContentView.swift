@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var locationManager = LocationManager()
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
+    @State private var cameraDistance: Double = 10_000
     @State private var selectedWalk: Walk?
     @State var isHistoryPresented: Bool = false
     @State private var showAllWalks = false
@@ -38,6 +39,7 @@ struct ContentView: View {
                 print("Created:", walk.createdAt)
                 print("Distance:", walk.totalDistance)
                 print("Route points:", walk.routeCoordinates.count)
+                print("Quest:", walk.quest)
                 print("------------------------")
             }
         } catch {
@@ -86,6 +88,18 @@ struct ContentView: View {
                 if locationManager.isRecording,
                    let currentWalk = locationManager.currentWalk{
                     MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
+                    if let quest = currentWalk.quest {
+                        let center = CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)
+                       
+                        if cameraDistance < 2_000.0, currentWalk.questReached == false {
+                            MapCircle(center: center, radius: quest.questTargetRadius)
+                                .foregroundStyle(.green.opacity(0.15))
+                                .stroke(.green, lineWidth: 2)
+                        } else {
+                            Marker("", systemImage: currentWalk.questReached ? "checkmark.circle" : "flag.fill", coordinate: center)
+                                .tint(.green)
+                        }
+                    }
                 }
                 
                 if showAllWalks {
@@ -98,6 +112,9 @@ struct ContentView: View {
                 if let selectedWalk {
                     MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
                 }
+            }
+            .onMapCameraChange { context in
+                cameraDistance = context.camera.distance
             }
             VStack{
                 Spacer()
@@ -122,7 +139,14 @@ struct ContentView: View {
                                 print(error)
                             }
                         } else {
-                            locationManager.startRecording()
+                            Task {
+                                await locationManager.startRecording()
+                                if let walk = locationManager.currentWalk, let quest = walk.quest, let start = locationManager.lastLocation?.coordinate {
+                                    let target: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)
+                                    let list: [CLLocationCoordinate2D] = [start, target]
+                                    cameraPosition = frameRoute(for: list) ?? cameraPosition
+                                }
+                            }
                             selectedWalk = nil
                         }
                     } label: {
@@ -159,8 +183,15 @@ struct ContentView: View {
                         }
                     }
                 }
-                Button("DEBUG: Load Walks") {
+                Button("DEBUG: Print Walks") {
                     debugDumpWalks()
+                }
+                .font(.caption)
+                .buttonStyle(.borderless)
+                Button("DEBUG: Do Quest") {
+                    if let walk = locationManager.currentWalk {
+                        walk.questReached = true
+                    }
                 }
                 .font(.caption)
                 .buttonStyle(.borderless)
