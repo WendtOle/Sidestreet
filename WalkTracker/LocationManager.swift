@@ -72,6 +72,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
                 return
             }
             currentWalk?.totalDistance += distance
+            currentWalk?.duration += time
         }
         if let quest = currentWalk?.quest {
             if isQuestReached(quest: quest, location: next) {

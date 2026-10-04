@@ -14,6 +14,7 @@ final class Walk {
     var createdAt: Date
     var routeCoordinates: [RoutePoint] = []
     var totalDistance: CLLocationDistance = 0
+    var duration: Double = 0
     
     var quest: Quest?
     var questReached: Bool = false

@@ -183,10 +183,25 @@ struct ContentView: View {
                             selectedWalk = nil
                         }
                     } label: {
-                        Image(systemName: locationManager.isRecording ? "stop.fill" : "play.fill")
-                            .font(.system(size: 28, weight: .bold))
-                            .frame(width: 72, height: 72)
-                        
+                        if locationManager.isRecording {
+                            HStack(spacing: 20) {
+                                VStack {
+                                    if let walk = locationManager.currentWalk {
+                                        let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
+                                        Text(formattedDistance)
+                                        Text(formatDuration(walk.duration))
+                                    }
+                                }
+                                Image(systemName: "stop.fill")
+                                    .font(.system(size: 28, weight: .bold))
+                                    .frame(width: 72, height: 72)
+                            }
+                            .padding(.leading, 12)
+                        } else {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 28, weight: .bold))
+                                .frame(width: 72, height: 72)
+                        }
                     }
                     .buttonStyle(.glassProminent)
                 }
