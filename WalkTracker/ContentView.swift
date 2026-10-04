@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var cameraDistance: Double = 10_000
     @State private var selectedWalk: Walk?
     @State var isHistoryPresented: Bool = false
-    @State private var showAllWalks = false
+    @State private var showAllWalks = true
     @State private var pendingWalk: Walk?
     
     @Environment(\.modelContext) private var modelContext
@@ -111,7 +111,14 @@ struct ContentView: View {
                 if showAllWalks {
                     ForEach(walks) {walk in
                         MapPolyline(coordinates: walk.coordinates)
-                        .stroke(.gray, lineWidth: 3)
+                        .stroke(
+                                .gray.opacity(0.5),
+                                style: StrokeStyle(
+                                    lineWidth: 16,
+                                    lineCap: .round,
+                                    lineJoin: .round
+                                )
+                            )
                     }
                 }
                 
@@ -123,19 +130,27 @@ struct ContentView: View {
                 cameraDistance = context.camera.distance
             }
             VStack{
+                HStack {
+                    Spacer()
+                    if walks.count > 0 {
+                        Button {
+                            isHistoryPresented = true
+                        } label: {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .font(.title3)
+                        }
+                        .buttonStyle(.glass)
+                    }
+                }
                 Spacer()
                 VStack(spacing: 12) {
-                    if locationManager.isRecording {
-                        Text("Distanz: \(Int(locationManager.currentWalk?.totalDistance ?? 0))m")
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                    }
                     Button {
                         if locationManager.isRecording {
                             locationManager.stopRecording()
                             guard let walk = locationManager.currentWalk else {
                                 return
                             }
-                            pendingWalk = locationManager.currentWalk
+                            pendingWalk = walk
                         } else {
                             Task {
                                 await locationManager.startRecording()
@@ -155,44 +170,6 @@ struct ContentView: View {
                     }
                     .buttonStyle(.glassProminent)
                 }
-                HStack {
-                    if walks.count > 0 {
-                        Button {
-                            isHistoryPresented = true
-                        } label: {
-                            Image(systemName: "list.bullet")
-                                .font(.title3)
-                        }
-                        .buttonStyle(.glass)
-
-                        Button {
-                            showAllWalks.toggle()
-                            
-                            if showAllWalks {
-                                selectedWalk = nil
-                            }
-                        } label: {
-                            Label(
-                                "Alle",
-                                systemImage: showAllWalks
-                                ? "eye.fill"
-                                : "eye.slash"
-                            )
-                        }
-                    }
-                }
-                Button("DEBUG: Print Walks") {
-                    debugDumpWalks()
-                }
-                .font(.caption)
-                .buttonStyle(.borderless)
-                Button("DEBUG: Do Quest") {
-                    if let walk = locationManager.currentWalk {
-                        walk.questReached = true
-                    }
-                }
-                .font(.caption)
-                .buttonStyle(.borderless)
             }
             .padding(.horizontal)
             .padding(.bottom)
