@@ -19,6 +19,7 @@ struct ContentView: View {
     @State var isHistoryPresented: Bool = false
     @State private var showAllWalks = true
     @State private var pendingWalk: Walk?
+    @State private var showSaveConfirmation = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
@@ -78,7 +79,15 @@ struct ContentView: View {
     private func selectedWalk(_ walk: Walk) {
         selectedWalk = walk
             if let position = frameRoute(for: walk.coordinates) {
-                cameraPosition = position
+                withAnimation(
+                    .timingCurve(
+                        0.2, 0.8,
+                        0.2, 1.0,
+                        duration: 3
+                    )
+                ) {
+                    cameraPosition = position
+                }
             }
     }
     
@@ -151,13 +160,24 @@ struct ContentView: View {
                                 return
                             }
                             pendingWalk = walk
+                            showSaveConfirmation = true
                         } else {
                             Task {
                                 await locationManager.startRecording()
                                 if let walk = locationManager.currentWalk, let quest = walk.quest, let start = locationManager.lastLocation?.coordinate {
                                     let target: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)
                                     let list: [CLLocationCoordinate2D] = [start, target]
-                                    cameraPosition = frameRoute(for: list) ?? cameraPosition
+                                    if let newFrame = frameRoute(for: list) {
+                                        withAnimation(
+                                            .timingCurve(
+                                                0.2, 0.8,
+                                                0.2, 1.0,
+                                                duration: 3
+                                            )
+                                        ) {
+                                            cameraPosition = newFrame
+                                        }
+                                    }
                                 }
                             }
                             selectedWalk = nil
@@ -187,10 +207,10 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
-        .confirmationDialog("Save walk?", item: $pendingWalk, titleVisibility: .visible) { walk in
+        .confirmationDialog("Save walk?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
             Button("Save") {
+                guard let walk = pendingWalk else { return }
                 modelContext.insert(walk)
-                try? modelContext.save()
                 pendingWalk = nil
             }
             Button("Discard", role: .destructive) {
