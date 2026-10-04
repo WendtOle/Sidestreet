@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var selectedWalk: Walk?
     @State var isHistoryPresented: Bool = false
     @State private var showAllWalks = false
+    @State private var pendingWalk: Walk?
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
@@ -81,6 +82,11 @@ struct ContentView: View {
             }
     }
     
+    private func deleteWalk(_ walk: Walk) {
+        modelContext.delete(walk)
+        try? modelContext.save()
+    }
+    
     var body: some View {
         ZStack{
             Map(position: $cameraPosition){
@@ -129,15 +135,7 @@ struct ContentView: View {
                             guard let walk = locationManager.currentWalk else {
                                 return
                             }
-                            guard walk.coordinates.count > 1 else {
-                                return
-                            }
-                            modelContext.insert(walk)
-                            do {
-                                try modelContext.save()
-                            } catch {
-                                print(error)
-                            }
+                            pendingWalk = locationManager.currentWalk
                         } else {
                             Task {
                                 await locationManager.startRecording()
@@ -203,7 +201,7 @@ struct ContentView: View {
             locationManager.requestPermission()
         }
         .sheet(isPresented: $isHistoryPresented) {
-            WalkHistoryView(walks: walks, onSelect: selectedWalk)
+            WalkHistoryView(walks: walks, onSelect: selectedWalk, onDelete: deleteWalk)
                 .presentationDetents([.medium, .large])
         }
         .onChange(of: selectedWalk?.id) {
@@ -212,8 +210,16 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
-        
-       
+        .confirmationDialog("Save walk?", item: $pendingWalk, titleVisibility: .visible) { walk in
+            Button("Save") {
+                modelContext.insert(walk)
+                try? modelContext.save()
+                pendingWalk = nil
+            }
+            Button("Discard", role: .destructive) {
+                pendingWalk = nil
+            }
+        }
     }
 }
 

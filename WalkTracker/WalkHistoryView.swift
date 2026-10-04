@@ -11,6 +11,7 @@ import SwiftUI
 struct WalkHistoryView: View {
     let walks: [Walk]
     let onSelect: (Walk) -> Void
+    let onDelete: (Walk) -> Void
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -38,6 +39,13 @@ struct WalkHistoryView: View {
                                 Text(walk.questReached ? "Done" : "Failed")
                                     .font(.headline)
                             }
+                        }
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            onDelete(walk)
+                        } label: {
+                            Label("Löschen", systemImage: "trash")
                         }
                     }
                 }

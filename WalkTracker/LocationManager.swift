@@ -56,14 +56,22 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         
-        guard next.horizontalAccuracy >= 0, next.horizontalAccuracy <= 30 else {
+        guard next.horizontalAccuracy >= 0, next.horizontalAccuracy <= 20 else {
             return
         }
         
-        
-        
         if let lastRecordedLocation = nullableLastRecordedLocation {
-            currentWalk?.totalDistance += lastRecordedLocation.distance(from: next)
+            let distance = lastRecordedLocation.distance(from: next)
+            let time = next.timestamp.timeIntervalSince(lastRecordedLocation.timestamp)
+            guard time > 0 else {
+                return
+            }
+            let speed = distance / time
+            guard speed <= 4.0 else {
+                print("Ignoring GPS jump:", distance, "m in", time, "s")
+                return
+            }
+            currentWalk?.totalDistance += distance
         }
         if let quest = currentWalk?.quest {
             if isQuestReached(quest: quest, location: next) {
