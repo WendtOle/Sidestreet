@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var showAllWalks = true
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
+    @State private var fogModeActive = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
@@ -138,33 +139,70 @@ struct ContentView: View {
             .onMapCameraChange { context in
                 cameraDistance = context.camera.distance
             }
-            VStack{
-                HStack {
+                VStack{
                     Spacer()
-                    if walks.count > 0 {
-                        Button {
-                            isHistoryPresented = true
-                        } label: {
-                            Image(systemName: "clock.arrow.circlepath")
-                                .font(.title3)
-                        }
-                        .buttonStyle(.glass)
-                    }
-                }
-                Spacer()
-                VStack(spacing: 12) {
-                    Button {
-                        if locationManager.isRecording {
-                            locationManager.stopRecording()
-                            guard let walk = locationManager.currentWalk else {
-                                return
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Button {
+                                fogModeActive.toggle()
+                            } label: {
+                                Image(systemName: fogModeActive ? "moon" : "sun.max")
+                                    .font(.system(size: 18))
                             }
-                            pendingWalk = walk
-                            showSaveConfirmation = true
-                        } else {
-                            Task {
-                                await locationManager.startRecording()
-                                if let walk = locationManager.currentWalk, let quest = walk.quest, let start = locationManager.lastLocation?.coordinate {
+                            .buttonStyle(.glass)
+                            if walks.count > 0 {
+                                Button {
+                                    isHistoryPresented = true
+                                } label: {
+                                    Image(systemName: "clock.arrow.circlepath")
+                                        .font(.system(size: 18))
+                                }
+                                .buttonStyle(.glass)
+                            }
+                        }
+                    }
+                    HStack(spacing: 12) {
+                        Button {
+                            if locationManager.isRecording {
+                                locationManager.stopRecording()
+                                guard let walk = locationManager.currentWalk else {
+                                    return
+                                }
+                                pendingWalk = walk
+                                showSaveConfirmation = true
+                            } else {
+                                locationManager.startRecording()
+                                selectedWalk = nil
+                            }
+                        } label: {
+                            if locationManager.isRecording {
+                                HStack(spacing: 20) {
+                                    if let walk = locationManager.currentWalk {
+                                        let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
+                                        Text(formattedDistance)
+                                        Text(formatDuration(walk.duration))
+                                    }
+                                    Image(systemName: "stop.fill")
+                                        .font(.system(size: 28, weight: .bold))
+                                        .frame(width: 72, height: 50)
+                                }
+                                .padding(.leading, 12)
+                            } else {
+                                Image(systemName: "play.fill")
+                                    .font(.system(size: 28, weight: .bold))
+                                    .frame(width: 72, height: 50)
+                            }
+                        }
+                        .buttonStyle(.glassProminent)
+                        
+                        if locationManager.isRecording, locationManager.currentWalk?.quest == nil {
+                            Button {
+                                Task {
+                                    await locationManager.addQuest()
+                                    guard let walk = locationManager.currentWalk, let quest = walk.quest, let start = locationManager.lastLocation?.coordinate else {
+                                        return
+                                    }
                                     let target: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)
                                     let list: [CLLocationCoordinate2D] = [start, target]
                                     if let newFrame = frameRoute(for: list) {
@@ -179,60 +217,43 @@ struct ContentView: View {
                                         }
                                     }
                                 }
+                                
+                            } label: {
+                                Image(systemName: "plus.circle")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .frame(width: 50, height: 50)
                             }
-                            selectedWalk = nil
-                        }
-                    } label: {
-                        if locationManager.isRecording {
-                            HStack(spacing: 20) {
-                                VStack {
-                                    if let walk = locationManager.currentWalk {
-                                        let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
-                                        Text(formattedDistance)
-                                        Text(formatDuration(walk.duration))
-                                    }
-                                }
-                                Image(systemName: "stop.fill")
-                                    .font(.system(size: 28, weight: .bold))
-                                    .frame(width: 72, height: 72)
-                            }
-                            .padding(.leading, 12)
-                        } else {
-                            Image(systemName: "play.fill")
-                                .font(.system(size: 28, weight: .bold))
-                                .frame(width: 72, height: 72)
+                            .buttonStyle(.glass)
                         }
                     }
-                    .buttonStyle(.glassProminent)
+                }
+                .padding(.horizontal)
+                .padding(.bottom)
+            }
+            .onAppear {
+                locationManager.requestPermission()
+            }
+            .sheet(isPresented: $isHistoryPresented) {
+                WalkHistoryView(walks: walks, onSelect: selectedWalk, onDelete: deleteWalk)
+                    .presentationDetents([.medium, .large])
+            }
+            .onChange(of: selectedWalk?.id) {
+                guard let selectedWalk else {
+                    return
+                }
+                cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
+            }
+            .confirmationDialog("Save walk?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
+                Button("Save") {
+                    guard let walk = pendingWalk else { return }
+                    modelContext.insert(walk)
+                    pendingWalk = nil
+                }
+                Button("Discard", role: .destructive) {
+                    pendingWalk = nil
                 }
             }
-            .padding(.horizontal)
-            .padding(.bottom)
         }
-        .onAppear {
-            locationManager.requestPermission()
-        }
-        .sheet(isPresented: $isHistoryPresented) {
-            WalkHistoryView(walks: walks, onSelect: selectedWalk, onDelete: deleteWalk)
-                .presentationDetents([.medium, .large])
-        }
-        .onChange(of: selectedWalk?.id) {
-            guard let selectedWalk else {
-                return
-            }
-            cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
-        }
-        .confirmationDialog("Save walk?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
-            Button("Save") {
-                guard let walk = pendingWalk else { return }
-                modelContext.insert(walk)
-                pendingWalk = nil
-            }
-            Button("Discard", role: .destructive) {
-                pendingWalk = nil
-            }
-        }
-    }
 }
 
 #Preview {

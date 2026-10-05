@@ -23,6 +23,9 @@ struct WalkHistoryView: View {
                         dismiss()
                     } label: {
                         HStack {
+                            Image(systemName: walk.quest != nil ? (walk.questReached ? "flag.filled" : "point.bottomleft.forward.to.point.topright.scurvepath") : "figure.walk")
+                                .font(.headline)
+                            
                             VStack(alignment: .leading) {
                                 Text(walk.createdAt, style: .date)
                                     .font(.headline)
@@ -35,8 +38,6 @@ struct WalkHistoryView: View {
                             
                             HStack {
                                 Text("\(walk.totalDistance / 1000, specifier: "%.2f") km")
-                                    .font(.headline)
-                                Text(walk.questReached ? "Done" : "Failed")
                                     .font(.headline)
                             }
                         }

@@ -19,10 +19,9 @@ final class Walk {
     var quest: Quest?
     var questReached: Bool = false
 
-    init(inputQuest: Quest?) {
+    init() {
         id = UUID()
         createdAt = Date()
-        quest = inputQuest
     }
         
     var coordinates: [CLLocationCoordinate2D] {

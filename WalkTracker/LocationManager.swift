@@ -96,19 +96,26 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         print("Location error:", error)
     }
     
-    func startRecording() async {
-        var quest: Quest?
-        do {
-            let location = try await requestCurrentLocation()
-            quest = getQuest(startingPoint: location)
-        } catch {
-            print("Location konnte nicht ermittelt werden:", error)
-        }
-        currentWalk = Walk(inputQuest: quest)
+    func startRecording() {
+        currentWalk = Walk()
         nullableLastRecordedLocation = nil
         isRecording = true
         manager.allowsBackgroundLocationUpdates = true
         manager.startUpdatingLocation()
+    }
+    
+    func addQuest() async {
+        guard isRecording else {
+            return
+        }
+        var quest: Quest?
+        do {
+            let location = try await requestCurrentLocation()
+            quest = getQuest(startingPoint: location)
+            currentWalk?.quest = quest
+        } catch {
+            print("Location konnte nicht ermittelt werden:", error)
+        }
     }
     
     func stopRecording() {
