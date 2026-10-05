@@ -110,7 +110,7 @@ struct ContentView: View {
                         )
                     )
                     .foregroundStyle(.white.opacity(0.95))
-                    .mapOverlayLevel(level: .aboveLabels)
+                    .mapOverlayLevel(level: .aboveRoads)
                 }
                 UserAnnotation()
                 if locationManager.isRecording,
@@ -146,12 +146,33 @@ struct ContentView: View {
                 
                 if let selectedWalk {
                     MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
+                    if let quest = selectedWalk.quest, selectedWalk.questReached {
+                        Marker("", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)).tint(.orange)
+                    }
                 }
             }
             .onMapCameraChange { context in
                 cameraDistance = context.camera.distance
             }
+            .mapStyle(.standard(
+                pointsOfInterest: .excludingAll,
+                showsTraffic: false
+            ))
             VStack{
+                if let walk = selectedWalk {
+                    HStack(spacing: 20) {
+                        WalkInformation(walk: walk)
+                        Button {
+                            selectedWalk = nil
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                        .buttonStyle(.plain)
+                    }
+                        .padding()
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(.horizontal)
+                }
                 Spacer()
                 HStack {
                     Spacer()

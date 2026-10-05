@@ -22,25 +22,7 @@ struct WalkHistoryView: View {
                         onSelect(walk)
                         dismiss()
                     } label: {
-                        HStack {
-                            Image(systemName: walk.quest != nil ? (walk.questReached ? "flag.filled" : "point.bottomleft.forward.to.point.topright.scurvepath") : "figure.walk")
-                                .font(.headline)
-                            
-                            VStack(alignment: .leading) {
-                                Text(walk.createdAt, style: .date)
-                                    .font(.headline)
-                                Text(walk.createdAt, style: .time)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            HStack {
-                                Text("\(walk.totalDistance / 1000, specifier: "%.2f") km")
-                                    .font(.headline)
-                            }
-                        }
+                        WalkInformation(walk: walk)
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
