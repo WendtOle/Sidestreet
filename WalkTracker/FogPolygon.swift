@@ -22,6 +22,15 @@ enum FogPolygonBuilder {
                 radius: revealRadius
             )
         }
+        
+        let mergedLineArea = buildStrokeArea(
+            from: walks.map { $0.coordinates },
+            strokeWidthMeters: 20
+        )
+        /*
+        ForEach(mergedLineArea.indices, id: \.self) { index in
+                MapPolygon(mergedLineArea[index])
+            }*/
 
         let worldPoints = [
             MKMapRect.world.origin,
@@ -42,7 +51,7 @@ enum FogPolygonBuilder {
         return MKPolygon(
             points: worldPoints,
             count: worldPoints.count,
-            interiorPolygons: exploredPolygons
+            interiorPolygons: mergedLineArea
         )
     }
 

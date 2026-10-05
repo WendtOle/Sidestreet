@@ -9,6 +9,7 @@ import SwiftUI
 import MapKit
 import CoreLocation
 import SwiftData
+import GEOSwift
 
 struct ContentView: View {
     @State private var locationManager = LocationManager()
@@ -98,7 +99,6 @@ struct ContentView: View {
     }
     
     
-    
     var body: some View {
         ZStack{
             Map(position: $cameraPosition){
@@ -110,8 +110,9 @@ struct ContentView: View {
                         )
                     )
                     .foregroundStyle(.white.opacity(0.95))
-                    .mapOverlayLevel(level: .aboveRoads)
+                    .mapOverlayLevel(level: .aboveLabels)
                 }
+                
                 UserAnnotation()
                 if locationManager.isRecording,
                    let currentWalk = locationManager.currentWalk{

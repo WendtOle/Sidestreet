@@ -6,6 +6,10 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7F6359D73073B93C00B37931 /* GEOSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		7F42883F306FAB4B00658834 /* WalkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -35,6 +39,7 @@
 		7F42883C306FAB4B00658834 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -73,6 +78,9 @@
 				7F428841306FAB4B00658834 /* WalkTracker */,
 			);
 			name = WalkTracker;
+			packageProductDependencies = (
+				7F6359D73073B93C00B37931 /* GEOSwift */,
+			);
 			productName = WalkTracker;
 			productReference = 7F42883F306FAB4B00658834 /* WalkTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -101,6 +109,9 @@
 			);
 			mainGroup = 7F428836306FAB4B00658834;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7F428840306FAB4B00658834 /* Products */;
 			projectDirPath = "";
@@ -337,6 +348,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GEOSwift/GEOSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		7F6359D73073B93C00B37931 /* GEOSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */;
+			productName = GEOSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7F428837306FAB4B00658834 /* Project object */;
 	validationLevel = 1;
