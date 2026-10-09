@@ -17,7 +17,6 @@ struct ContentView: View {
     @State private var locationManager = LocationManager()
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
-    @State private var cameraDistance: Double = 10_000
     @State private var selectedWalk: Walk?
     @State var isHistoryPresented: Bool = false
     @State private var showAllWalks = true
@@ -102,64 +101,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            Map(position: $cameraPosition){
-                if fogModeActive {
-                    MapPolygon(
-                        FogPolygonBuilder.makeFogPolygon(
-                            walks: walks,
-                            revealRadius: 50
-                        )
-                    )
-                    .foregroundStyle(.white.opacity(0.95))
-                    .mapOverlayLevel(level: .aboveLabels)
-                }
-                
-                UserAnnotation()
-                if locationManager.isRecording,
-                   let currentWalk = locationManager.currentWalk{
-                    MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
-                    if let quest = currentWalk.quest, echoMode == false {
-                        let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
-                        
-                        if cameraDistance < 2_000.0, currentWalk.quest?.questReached == false {
-                            MapCircle(center: center, radius: quest.radius)
-                                .foregroundStyle(.green.opacity(0.15))
-                                .stroke(.green, lineWidth: 2)
-                        } else {
-                            Marker("", systemImage: currentWalk.quest?.questReached == true ? "checkmark.circle" : "flag.fill", coordinate: center)
-                                .tint(.green)
-                        }
-                    }
-                }
-                
-                if showAllWalks, fogModeActive == false {
-                    ForEach(walks) {walk in
-                        MapPolyline(coordinates: walk.coordinates)
-                            .stroke(
-                                .gray.opacity(0.5),
-                                style: StrokeStyle(
-                                    lineWidth: 16,
-                                    lineCap: .round,
-                                    lineJoin: .round
-                                )
-                            )
-                    }
-                }
-                
-                if let selectedWalk {
-                    MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
-                    if let quest = selectedWalk.quest, selectedWalk.quest?.questReached == true {
-                        Marker("", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)).tint(.orange)
-                    }
-                }
-            }
-            .onMapCameraChange { context in
-                cameraDistance = context.camera.distance
-            }
-            .mapStyle(.standard(
-                pointsOfInterest: .excludingAll,
-                showsTraffic: false
-            ))
+            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, showAllWalks: showAllWalks, echoMode: echoMode)
             VStack{
                 if let walk = selectedWalk {
                     HStack(spacing: 20) {
