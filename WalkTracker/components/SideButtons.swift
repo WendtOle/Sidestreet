@@ -13,6 +13,9 @@ struct SideButtons: View {
     @ObservedObject var soundController: SoundController
     @Binding var fogModeActive: Bool
     @Binding var isHistoryPresented: Bool
+    @Binding var isQuestLogPresent: Bool
+    @State var creatingQuest = false
+    var createQuest: () async -> Void
     
     var body: some View {
         HStack {
@@ -42,6 +45,19 @@ struct SideButtons: View {
                     fogModeActive.toggle()
                 } label: {
                     Image(systemName: fogModeActive ? "moon" : "sun.max")
+                        .font(.system(size: 18))
+                }
+                .buttonStyle(.glass)
+                
+                Button {
+                    isQuestLogPresent = true
+                    /*Task {
+                        creatingQuest = true
+                        await createQuest()
+                        creatingQuest = false
+                    }*/
+                } label: {
+                    Image(systemName: "flag.2.crossed")
                         .font(.system(size: 18))
                 }
                 .buttonStyle(.glass)

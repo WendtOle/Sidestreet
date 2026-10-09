@@ -29,7 +29,7 @@ func getQuestTarget (startingPoint: CLLocation) -> GeoPoint {
     let distance = Double.random(in: 200...500)
     
     let target = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
-    return GeoPoint(latitude: startingPoint.coordinate.latitude, longitude: startingPoint.coordinate.longitude)
+    return GeoPoint(latitude: target.latitude, longitude: target.longitude)
 }
 
 func destination(

@@ -18,7 +18,9 @@ struct ContentView: View {
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
     @State private var selectedWalk: Walk?
+    @State private var selectedQuest: Quest?
     @State var isHistoryPresented: Bool = false
+    @State var isQuestLogPresent: Bool = false
     @State private var showAllWalks = true
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
@@ -29,26 +31,36 @@ struct ContentView: View {
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
     
+    @Query(sort: \Quest.createdAt, order: .reverse)
+    private var quests: [Quest]
+    
+    func createQuest () async {
+        do {
+            let location = try await locationManager.requestCurrentLocation()
+            let quest = Quest(referencePoint: location)
+            modelContext.insert(quest)
+        }
+        catch {
+            
+        }
+    }
+    
     var body: some View {
         ZStack{
-            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, showAllWalks: showAllWalks, echoMode: echoMode)
+            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, echoMode: echoMode, quests: quests)
             VStack{
-                if let walk = selectedWalk {
-                    HStack(spacing: 20) {
-                        WalkInformation(walk: walk)
-                        Button {
-                            selectedWalk = nil
-                        } label: {
-                            Image(systemName: "xmark")
-                        }
-                        .buttonStyle(.plain)
+                if let quest = selectedQuest {
+                    InformationContainer(entity: .quest(quest)) {
+                        selectedQuest = nil
                     }
-                        .padding()
-                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
-                        .padding(.horizontal)
+                }
+                if let walk = selectedWalk {
+                    InformationContainer(entity: .walk(walk)) {
+                        selectedWalk = nil
+                    }
                 }
                 Spacer()
-                SideButtons(echoMode: $echoMode, soundController: soundController, fogModeActive: $fogModeActive, isHistoryPresented: $isHistoryPresented)
+                SideButtons(echoMode: $echoMode, soundController: soundController, fogModeActive: $fogModeActive, isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent, createQuest: createQuest)
                 RecordingButton(locationManager: $locationManager, pendingWalk: $pendingWalk, showSaveConfirmation: $showSaveConfirmation, selectedWalk: $selectedWalk)
             }
             .padding(.horizontal)
@@ -74,6 +86,16 @@ struct ContentView: View {
                 }
                 }, onDelete: { walk in
                     modelContext.delete(walk)
+                    try? modelContext.save()
+                }
+            )
+        .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $isQuestLogPresent) {
+            QuestLogView(quests: quests, onSelect: { quest in
+                selectedQuest = quest
+                }, onDelete: { quest in
+                    modelContext.delete(quest)
                     try? modelContext.save()
                 }
             )
