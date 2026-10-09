@@ -12,7 +12,7 @@ struct WalkInformation: View {
     
     var body: some View {
         HStack {
-            WalkImage(hasQuest: walk.quest != nil, reachedQuest: walk.quest?.questReached == true)
+            WalkImage(quest: walk.quest)
                 .font(.headline)
             
             VStack(alignment: .leading) {
@@ -36,10 +36,9 @@ struct WalkInformation: View {
 }
 
 struct WalkImage: View {
-    let hasQuest: Bool
-    let reachedQuest: Bool
+    let quest: Quest?
     
     var body: some View {
-        Image(systemName: hasQuest ? (reachedQuest ? "flag.fill" : "point.bottomleft.forward.to.point.topright.scurvepath") : "figure.walk")
+        Image(systemName: quest?.type.symbol ?? "figure.walk")
     }
 }

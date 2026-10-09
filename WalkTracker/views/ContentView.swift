@@ -49,13 +49,33 @@ struct ContentView: View {
             CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
             VStack{
                 if let quest = selectedQuest {
-                    InformationContainer(entity: .quest(quest)) {
+                    InformationContainer {
+                        QuestInformation(quest: quest)
+                        if quest.questReached {
+                            Text("Done")
+                                .font(.headline)
+                        } else if quest.type == .track {
+                            Button{
+                                Task {
+                                    do {
+                                        let location = try await locationManager.requestCurrentLocation()
+                                        quest.pinnedLocation = GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                                    } catch {}
+                                }
+                            } label: {
+                                Image(systemName: "pin")
+                                .tint(.gray)
+                            }
+                        }
+                    } onClose: {
                         selectedQuest = nil
                         soundController.stop()
                     }
                 }
                 if let walk = selectedWalk {
-                    InformationContainer(entity: .walk(walk)) {
+                    InformationContainer {
+                        WalkInformation(walk: walk)
+                    } onClose: {
                         selectedWalk = nil
                     }
                 }
@@ -94,6 +114,7 @@ struct ContentView: View {
                 let distanceToQuest = location.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
                 soundController.setBeepIntervalByDistance(distance: distanceToQuest)
                 if isQuestReached(quest: quest, location: location) {
+                    soundController.stop()
                     quest.questReached = true
                     walk.quest = quest
                     quest.walk = walk

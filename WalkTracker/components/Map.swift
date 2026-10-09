@@ -46,6 +46,10 @@ struct CustomMap: View {
                         Marker("", systemImage: quest.type.symbol, coordinate: center).tint(.green)
                     }
                 }
+                if let pinnedLocation = quest.pinnedLocation {
+                    let pinned = CLLocationCoordinate2D(latitude: pinnedLocation.latitude, longitude: pinnedLocation.longitude)
+                    Marker("", systemImage: "pin", coordinate: pinned).tint(.green)
+                }
                 
             }
             if locationManager.isRecording,

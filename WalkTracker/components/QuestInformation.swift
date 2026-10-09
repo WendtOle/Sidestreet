@@ -21,12 +21,6 @@ struct QuestInformation: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            VStack(alignment: .leading) {
-                if quest.questReached {
-                    Text("Done")
-                        .font(.headline)
-                }
-            }
         }
     }
 }

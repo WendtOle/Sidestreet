@@ -39,6 +39,19 @@ enum QuestType: String, Codable {
             return "magnifyingglass"
         }
     }
+    
+    var distance: (min: Double, max: Double) {
+        switch self {
+        case .navigate:
+            return (300,1200)
+        case .collect:
+            return (300,1200)
+        case .orbit:
+            return (300,1200)
+        case .track:
+            return (100,600)
+        }
+    }
 }
 
 @Model
@@ -51,19 +64,20 @@ final class Quest {
     var questReached: Bool = false
     var type: QuestType
     var walk: Walk?
+    var pinnedLocation: GeoPoint?
     
     init(referencePoint: CLLocation, questType: QuestType) {
         id = UUID()
         createdAt = Date()
-        target = getQuestTarget(startingPoint: referencePoint)
         type = questType
+
+        let distance = Double.random(in: questType.distance.min...questType.distance.max)
+        target = getQuestTarget(startingPoint: referencePoint, distance: distance)
     }
 }
 
-func getQuestTarget (startingPoint: CLLocation) -> GeoPoint {
+func getQuestTarget (startingPoint: CLLocation, distance: Double) -> GeoPoint {
     let bearing = Double.random(in: 0..<360)
-    let distance = Double.random(in: 200...500)
-    
     let target = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
     return GeoPoint(latitude: target.latitude, longitude: target.longitude)
 }

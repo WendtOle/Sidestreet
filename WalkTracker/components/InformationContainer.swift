@@ -7,30 +7,22 @@
 
 import SwiftUI
 
-enum InformationEntity {
-    case quest(Quest)
-    case walk(Walk)
-}
-
-struct InformationContainer: View {
-    let entity: InformationEntity
+struct InformationContainer<Content:View>: View {
+    private let content: Content
     let onClose: () -> Void
+    
+    init(@ViewBuilder content: () -> Content, onClose: @escaping () -> Void) {
+        self.content = content()
+        self.onClose = onClose
+    }
 
     var body: some View {
         HStack(spacing: 20) {
-            switch entity {
-            case .walk(let walk):
-                WalkInformation(walk: walk)
-
-            case .quest(let quest):
-                QuestInformation(quest: quest)
-            }
-
+            content
             Button(action: onClose) {
                 Image(systemName: "xmark")
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Close")
         }
         .padding()
         .background(
