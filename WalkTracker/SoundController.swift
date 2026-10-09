@@ -7,6 +7,7 @@
 
 import AVFAudio
 import Combine
+import CoreLocation
 
 class SoundController: ObservableObject {
     @Published var isRunning: Bool = false
@@ -35,6 +36,28 @@ class SoundController: ObservableObject {
             try audioSession.setCategory(.playback, mode: .default, options: .mixWithOthers)
         } catch {
             print("Failed to set the audio session configuration", error)
+        }
+    }
+    
+    func setBeepIntervalByDistance (distance: CLLocationDistance) {
+        switch distance {
+        case 500...:
+            self.beepInterval = 4 + max(0,(distance - 500) / 50)
+
+        case 200..<500:
+            self.beepInterval = 2 + max(0, (distance - 200) / 150)
+
+        case 100..<200:
+            self.beepInterval = 1 + max(0, (distance - 100) / 100)
+
+        case 50..<100:
+            self.beepInterval = 0.5 + (max(0,(distance - 50) / 100))
+
+        case 0..<50:
+            self.beepInterval = 0.25 + (max(0,distance / 200))
+            
+        default:
+            break // Ungültige Entfernung
         }
     }
     

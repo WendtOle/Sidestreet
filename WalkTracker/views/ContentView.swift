@@ -29,76 +29,6 @@ struct ContentView: View {
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
     
-    
-    private func onChange (distance: CLLocationDistance) {
-        switch distance {
-        case 500...:
-            soundController.beepInterval = 4 + max(0,(distance - 500) / 50)
-
-        case 200..<500:
-            soundController.beepInterval = 2 + max(0, (distance - 200) / 150)
-
-        case 100..<200:
-            soundController.beepInterval = 1 + max(0, (distance - 100) / 100)
-
-        case 50..<100:
-            soundController.beepInterval = 0.5 + (max(0,(distance - 50) / 100))
-
-        case 0..<50:
-            soundController.beepInterval = 0.25 + (max(0,distance / 200))
-            
-        default:
-            break // Ungültige Entfernung
-        }
-    }
-    
-    private func debugDumpWalks() {
-        do {
-            let descriptor = FetchDescriptor<Walk>(
-                sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
-            )
-            
-            let storedWalks = try modelContext.fetch(descriptor)
-            
-            print("===== STORED WALKS =====")
-            print("Count:", storedWalks.count)
-            
-            for walk in storedWalks {
-                print("Walk:", walk.id)
-                print("Created:", walk.createdAt)
-                print("Distance:", walk.totalDistance)
-                print("Route points:", walk.routeCoordinates.count)
-                print("Quest:", walk.quest)
-                print("------------------------")
-            }
-        } catch {
-            print("FETCH ERROR:", error)
-        }
-    }
-    
-    
-    
-    private func selectedWalk(_ walk: Walk) {
-        selectedWalk = walk
-        if let position = frameRoute(for: walk.coordinates) {
-            withAnimation(
-                .timingCurve(
-                    0.2, 0.8,
-                    0.2, 1.0,
-                    duration: 3
-                )
-            ) {
-                cameraPosition = position
-            }
-        }
-    }
-    
-    private func deleteWalk(_ walk: Walk) {
-        modelContext.delete(walk)
-        try? modelContext.save()
-    }
-    
-    
     var body: some View {
         ZStack{
             CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, showAllWalks: showAllWalks, echoMode: echoMode)
@@ -126,11 +56,28 @@ struct ContentView: View {
         }
         .onAppear {
             locationManager.requestPermission()
-            locationManager.setOnChange(onChange: onChange)
+            locationManager.setOnChange(onChange: soundController.setBeepIntervalByDistance)
         }
         .sheet(isPresented: $isHistoryPresented) {
-            WalkHistoryView(walks: walks, onSelect: selectedWalk, onDelete: deleteWalk)
-                .presentationDetents([.medium, .large])
+            WalkHistoryView(walks: walks, onSelect: { walk in
+                selectedWalk = walk
+                if let position = frameRoute(for: walk.coordinates) {
+                    withAnimation(
+                        .timingCurve(
+                            0.2, 0.8,
+                            0.2, 1.0,
+                            duration: 3
+                        )
+                    ) {
+                        cameraPosition = position
+                    }
+                }
+                }, onDelete: { walk in
+                    modelContext.delete(walk)
+                    try? modelContext.save()
+                }
+            )
+        .presentationDetents([.medium, .large])
         }
         .onChange(of: selectedWalk?.id) {
             guard let selectedWalk else {
