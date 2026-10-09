@@ -13,12 +13,11 @@ import SwiftData
 final class Walk {
     var id: UUID
     var createdAt: Date
-    var routeCoordinates: [RoutePoint] = []
+    var routeCoordinates: [GeoPoint] = []
     var totalDistance: CLLocationDistance = 0
     var duration: Double = 0
     
     var quest: Quest?
-    var questReached: Bool = false
 
     init() {
         id = UUID()
@@ -40,7 +39,7 @@ struct WalkInformation: View {
     
     var body: some View {
         HStack {
-            WalkImage(hasQuest: walk.quest != nil, reachedQuest: walk.questReached)
+            WalkImage(hasQuest: walk.quest != nil, reachedQuest: walk.quest?.questReached == true)
                 .font(.headline)
             
             VStack(alignment: .leading) {

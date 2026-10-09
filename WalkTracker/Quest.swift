@@ -6,20 +6,30 @@
 //
 
 import CoreLocation
+import SwiftData
 
-struct Quest: Codable {
-    var questTargetLatitude: Double
-    var questTargetLongitude: Double
-    var questTargetRadius: Double
+@Model
+final class Quest {
+    var id: UUID
+    var createdAt: Date
+    
+    var target: GeoPoint
+    var radius: Double = 30.0
+    var questReached: Bool = false
+    
+    init(referencePoint: CLLocation) {
+        id = UUID()
+        createdAt = Date()
+        target = getQuestTarget(startingPoint: referencePoint)
+    }
 }
 
-func getQuest (startingPoint: CLLocation) -> Quest {
+func getQuestTarget (startingPoint: CLLocation) -> GeoPoint {
     let bearing = Double.random(in: 0..<360)
     let distance = Double.random(in: 200...500)
     
-    let location = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
-    
-    return Quest(questTargetLatitude: location.latitude, questTargetLongitude: location.longitude, questTargetRadius: 30.0)
+    let target = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
+    return GeoPoint(latitude: startingPoint.coordinate.latitude, longitude: startingPoint.coordinate.longitude)
 }
 
 func destination(
@@ -54,7 +64,8 @@ func destination(
     )
 }
 
+
 func isQuestReached(quest: Quest, location: CLLocation) -> Bool {
-    let distance = location.distance(from: CLLocation(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude))
-    return distance <= quest.questTargetRadius
+    let distance = location.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
+    return distance <= quest.radius
 }

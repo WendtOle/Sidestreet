@@ -80,18 +80,18 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             currentWalk?.totalDistance += distance
             currentWalk?.duration += time
         }
-        if let quest = currentWalk?.quest, currentWalk?.questReached == false {
-            distanceToQuest = next.distance(from: CLLocation(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude))
+        if let quest = currentWalk?.quest, currentWalk?.quest?.questReached == false {
+            distanceToQuest = next.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
             if let distance = distanceToQuest, let onChange = onQuestDistanceChange {
                 onChange(distance)
             }
             if isQuestReached(quest: quest, location: next) {
-                currentWalk?.questReached = true
+                currentWalk?.quest?.questReached = true
                 distanceToQuest = nil
             }
         }
         nullableLastRecordedLocation = next
-        currentWalk?.routeCoordinates.append(RoutePoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
+        currentWalk?.routeCoordinates.append(GeoPoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
         
     }
     
@@ -113,20 +113,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         isRecording = true
         manager.allowsBackgroundLocationUpdates = true
         manager.startUpdatingLocation()
-    }
-    
-    func addQuest() async {
-        guard isRecording else {
-            return
-        }
-        var quest: Quest?
-        do {
-            let location = try await requestCurrentLocation()
-            quest = getQuest(startingPoint: location)
-            currentWalk?.quest = quest
-        } catch {
-            print("Location konnte nicht ermittelt werden:", error)
-        }
     }
     
     func stopRecording() {
