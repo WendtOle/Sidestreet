@@ -17,6 +17,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var isRecording = false
     var currentWalk: Walk?
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
+    var distanceToQuest: CLLocationDistance?
+    private var onQuestDistanceChange: ((CLLocationDistance) -> Void)?
     
     override init() {
         super.init()
@@ -27,6 +29,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.distanceFilter = 5
         manager.pausesLocationUpdatesAutomatically = false
         manager.showsBackgroundLocationIndicator = true
+    }
+    
+    func setOnChange (onChange: @escaping(CLLocationDistance) -> Void) {
+        self.onQuestDistanceChange = onChange
     }
     
     func requestPermission() {
@@ -74,9 +80,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             currentWalk?.totalDistance += distance
             currentWalk?.duration += time
         }
-        if let quest = currentWalk?.quest {
+        if let quest = currentWalk?.quest, currentWalk?.questReached == false {
+            distanceToQuest = next.distance(from: CLLocation(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude))
+            if let distance = distanceToQuest, let onChange = onQuestDistanceChange {
+                onChange(distance)
+            }
             if isQuestReached(quest: quest, location: next) {
                 currentWalk?.questReached = true
+                distanceToQuest = nil
             }
         }
         nullableLastRecordedLocation = next
@@ -122,5 +133,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.stopUpdatingLocation()
         manager.allowsBackgroundLocationUpdates = false
         isRecording = false
+        distanceToQuest = nil
     }
 }

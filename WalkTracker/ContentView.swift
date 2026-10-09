@@ -10,8 +10,10 @@ import MapKit
 import CoreLocation
 import SwiftData
 import GEOSwift
+import AVFAudio
 
 struct ContentView: View {
+    @StateObject private var soundController = SoundController()
     @State private var locationManager = LocationManager()
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
@@ -22,10 +24,34 @@ struct ContentView: View {
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
     @State private var fogModeActive = false
+    @State private var echoMode = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
+    
+    
+    private func onChange (distance: CLLocationDistance) {
+        switch distance {
+        case 500...:
+            soundController.beepInterval = 4 + max(0,(distance - 500) / 50)
+
+        case 200..<500:
+            soundController.beepInterval = 2 + max(0, (distance - 200) / 150)
+
+        case 100..<200:
+            soundController.beepInterval = 1 + max(0, (distance - 100) / 100)
+
+        case 50..<100:
+            soundController.beepInterval = 0.5 + (max(0,(distance - 50) / 100))
+
+        case 0..<50:
+            soundController.beepInterval = 0.25 + (max(0,distance / 200))
+            
+        default:
+            break // Ungültige Entfernung
+        }
+    }
     
     private func debugDumpWalks() {
         do {
@@ -117,7 +143,7 @@ struct ContentView: View {
                 if locationManager.isRecording,
                    let currentWalk = locationManager.currentWalk{
                     MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
-                    if let quest = currentWalk.quest {
+                    if let quest = currentWalk.quest, echoMode == false {
                         let center = CLLocationCoordinate2D(latitude: quest.questTargetLatitude, longitude: quest.questTargetLongitude)
                         
                         if cameraDistance < 2_000.0, currentWalk.questReached == false {
@@ -179,12 +205,33 @@ struct ContentView: View {
                     Spacer()
                     VStack {
                         Button {
+                            echoMode.toggle()
+                        } label: {
+                            Image(systemName: echoMode ? "ear" : "eye")
+                                .font(.system(size: 18))
+                        }
+                        .buttonStyle(.glass)
+                        
+                        Button {
+                            if soundController.isRunning {
+                                soundController.stop()
+                                return
+                            }
+                            soundController.start()
+                        } label: {
+                            Image(systemName: soundController.isRunning ? "speaker.wave.3" : "speaker.slash")
+                                .font(.system(size: 18))
+                        }
+                        .buttonStyle(.glass)
+                        
+                        Button {
                             fogModeActive.toggle()
                         } label: {
                             Image(systemName: fogModeActive ? "moon" : "sun.max")
                                 .font(.system(size: 18))
                         }
                         .buttonStyle(.glass)
+                        
                         if walks.count > 0 {
                             Button {
                                 isHistoryPresented = true
@@ -194,6 +241,7 @@ struct ContentView: View {
                             }
                             .buttonStyle(.glass)
                         }
+                        
                     }
                 }
                 HStack(spacing: 12) {
@@ -234,6 +282,9 @@ struct ContentView: View {
                         Button {
                             Task {
                                 await locationManager.addQuest()
+                                if echoMode == true {
+                                    return
+                                }
                                 guard let walk = locationManager.currentWalk, let quest = walk.quest, let start = locationManager.lastLocation?.coordinate else {
                                     return
                                 }
@@ -266,6 +317,7 @@ struct ContentView: View {
         }
         .onAppear {
             locationManager.requestPermission()
+            locationManager.setOnChange(onChange: onChange)
         }
         .sheet(isPresented: $isHistoryPresented) {
             WalkHistoryView(walks: walks, onSelect: selectedWalk, onDelete: deleteWalk)

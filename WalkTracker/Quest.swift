@@ -15,7 +15,7 @@ struct Quest: Codable {
 
 func getQuest (startingPoint: CLLocation) -> Quest {
     let bearing = Double.random(in: 0..<360)
-    let distance = Double.random(in: 200...1000)
+    let distance = Double.random(in: 200...500)
     
     let location = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
     
