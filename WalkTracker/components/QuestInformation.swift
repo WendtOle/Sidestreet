@@ -12,8 +12,9 @@ struct QuestInformation: View {
     
     var body: some View {
         HStack {
+            Image(systemName: quest.type.symbol)
             VStack(alignment: .leading) {
-                Text("Daily Quest")
+                Text(quest.type.name)
                     .font(.headline)
                 Text(quest.createdAt, style: .date)
                     .font(.subheadline)
@@ -21,8 +22,10 @@ struct QuestInformation: View {
             }
             Spacer()
             VStack(alignment: .leading) {
-                Text(quest.questReached ? "completed" : "not completed")
-                    .font(.headline)
+                if quest.questReached {
+                    Text("Done")
+                        .font(.headline)
+                }
             }
         }
     }

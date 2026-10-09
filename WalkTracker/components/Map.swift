@@ -17,7 +17,6 @@ struct CustomMap: View {
     var selectedWalk: Walk?
     var selectedQuest: Quest?
     var showAllWalks: Bool
-    var echoMode: Bool
     var quests: [Quest]
     
     var body: some View {
@@ -36,31 +35,22 @@ struct CustomMap: View {
             UserAnnotation()
             if let quest = selectedQuest {
                 let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
-                if cameraDistance < 2_000.0, quest.questReached == false {
-                    MapCircle(center: center, radius: quest.radius)
-                        .foregroundStyle(.green.opacity(0.15))
-                        .stroke(.green, lineWidth: 2)
-                } else {
-                    Marker("", systemImage: quest.questReached == true ? "checkmark.circle" : "flag.fill", coordinate: center)
-                        .tint(.green)
+                if quest.questReached {
+                    Marker("", systemImage: "checkmark.circle", coordinate: center).tint(.green)
+                } else if quest.type != QuestType.track {
+                    if cameraDistance < 2_000.0, quest.questReached == false {
+                        MapCircle(center: center, radius: quest.radius)
+                            .foregroundStyle(.green.opacity(0.15))
+                            .stroke(.green, lineWidth: 2)
+                    } else {
+                        Marker("", systemImage: quest.type.symbol, coordinate: center).tint(.green)
+                    }
                 }
                 
             }
             if locationManager.isRecording,
                let currentWalk = locationManager.currentWalk{
                 MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
-                if let quest = currentWalk.quest, echoMode == false {
-                    let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
-                    
-                    if cameraDistance < 2_000.0, currentWalk.quest?.questReached == false {
-                        MapCircle(center: center, radius: quest.radius)
-                            .foregroundStyle(.green.opacity(0.15))
-                            .stroke(.green, lineWidth: 2)
-                    } else {
-                        Marker("", systemImage: currentWalk.quest?.questReached == true ? "checkmark.circle" : "flag.fill", coordinate: center)
-                            .tint(.green)
-                    }
-                }
             }
             
             if showAllWalks, fogModeActive == false {

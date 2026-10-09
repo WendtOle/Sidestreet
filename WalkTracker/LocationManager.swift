@@ -18,7 +18,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var currentWalk: Walk?
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     var distanceToQuest: CLLocationDistance?
-    private var onQuestDistanceChange: ((CLLocationDistance) -> Void)?
+    private var nullabelOnLocationUpdate: ((CLLocation) -> Void)?
     
     override init() {
         super.init()
@@ -31,8 +31,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.showsBackgroundLocationIndicator = true
     }
     
-    func setOnChange (onChange: @escaping(CLLocationDistance) -> Void) {
-        self.onQuestDistanceChange = onChange
+    func setOnLocationChange (onLocationChange: @escaping(CLLocation) -> Void) {
+        self.nullabelOnLocationUpdate = onLocationChange
     }
     
     func requestPermission() {
@@ -80,6 +80,10 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             currentWalk?.totalDistance += distance
             currentWalk?.duration += time
         }
+        if let onLocationUpdate = nullabelOnLocationUpdate {
+            onLocationUpdate(next)
+        }
+        /*
         if let quest = currentWalk?.quest, currentWalk?.quest?.questReached == false {
             distanceToQuest = next.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
             if let distance = distanceToQuest, let onChange = onQuestDistanceChange {
@@ -90,6 +94,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
                 distanceToQuest = nil
             }
         }
+         */
         nullableLastRecordedLocation = next
         currentWalk?.routeCoordinates.append(GeoPoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
         

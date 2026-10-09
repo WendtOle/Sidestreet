@@ -13,7 +13,7 @@ class SoundController: ObservableObject {
     @Published var isRunning: Bool = false
     var soundEffect: AVAudioPlayer?
     var soundTimer: Timer?
-    var beepInterval: Double = 0.2
+    var beepInterval: Double?
     
     
     init() {
@@ -77,12 +77,14 @@ class SoundController: ObservableObject {
     func scheduleNextBeep () {
         soundTimer?.invalidate()
         
-        let nextTimer = Timer.scheduledTimer(withTimeInterval: beepInterval, repeats: false, block: { [weak self] _ in
+        let nextTimer = Timer.scheduledTimer(withTimeInterval: beepInterval ?? 15, repeats: false, block: { [weak self] _ in
             guard let self else { return }
 
-            self.soundEffect?.pause()
-            self.soundEffect?.currentTime = 0
-            self.soundEffect?.play()
+            if beepInterval != nil {
+                self.soundEffect?.pause()
+                self.soundEffect?.currentTime = 0
+                self.soundEffect?.play()
+            }
             self.scheduleNextBeep()
         })
         

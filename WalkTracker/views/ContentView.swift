@@ -25,7 +25,6 @@ struct ContentView: View {
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
     @State private var fogModeActive = false
-    @State private var echoMode = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
@@ -34,10 +33,10 @@ struct ContentView: View {
     @Query(sort: \Quest.createdAt, order: .reverse)
     private var quests: [Quest]
     
-    func createQuest () async {
+    func createQuest (questType: QuestType) async {
         do {
             let location = try await locationManager.requestCurrentLocation()
-            let quest = Quest(referencePoint: location)
+            let quest = Quest(referencePoint: location, questType: questType)
             modelContext.insert(quest)
         }
         catch {
@@ -47,11 +46,12 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, echoMode: echoMode, quests: quests)
+            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
             VStack{
                 if let quest = selectedQuest {
                     InformationContainer(entity: .quest(quest)) {
                         selectedQuest = nil
+                        soundController.stop()
                     }
                 }
                 if let walk = selectedWalk {
@@ -60,15 +60,45 @@ struct ContentView: View {
                     }
                 }
                 Spacer()
-                SideButtons(echoMode: $echoMode, soundController: soundController, fogModeActive: $fogModeActive, isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent, createQuest: createQuest)
-                RecordingButton(locationManager: $locationManager, pendingWalk: $pendingWalk, showSaveConfirmation: $showSaveConfirmation, selectedWalk: $selectedWalk)
+                SideButtons(fogModeActive: $fogModeActive, isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent)
+                HStack {
+                    RecordingButton(locationManager: $locationManager, pendingWalk: $pendingWalk, showSaveConfirmation: $showSaveConfirmation, selectedWalk: $selectedWalk)
+                    if locationManager.isRecording, selectedQuest?.type == .track {
+                        Button {
+                            if soundController.isRunning {
+                                soundController.stop()
+                                return
+                            }
+                            soundController.start()
+                        } label: {
+                            
+                            Image(systemName: soundController.isRunning ? "speaker.wave.3" : "speaker.slash")
+                                .font(.system(size: 28, weight: .bold))
+                                .frame(width: 50, height: 50)
+                        
+                        }
+                        .buttonStyle(.glassProminent)
+                        .tint(soundController.isRunning ? Color.accentColor : Color.gray)
+                    }
+                }
             }
             .padding(.horizontal)
             .padding(.bottom)
         }
         .onAppear {
             locationManager.requestPermission()
-            locationManager.setOnChange(onChange: soundController.setBeepIntervalByDistance)
+            locationManager.setOnLocationChange(onLocationChange: {location in
+                guard let quest = selectedQuest, let walk = locationManager.currentWalk else {
+                    return
+                }
+                let distanceToQuest = location.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
+                soundController.setBeepIntervalByDistance(distance: distanceToQuest)
+                if isQuestReached(quest: quest, location: location) {
+                    quest.questReached = true
+                    walk.quest = quest
+                    quest.walk = walk
+                }
+            })
         }
         .sheet(isPresented: $isHistoryPresented) {
             WalkHistoryView(walks: walks, onSelect: { walk in
@@ -93,11 +123,15 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isQuestLogPresent) {
             QuestLogView(quests: quests, onSelect: { quest in
-                selectedQuest = quest
+                if quest.questReached, let walk = quest.walk {
+                    selectedWalk = walk
+                } else {
+                    selectedQuest = quest
+                }
                 }, onDelete: { quest in
                     modelContext.delete(quest)
                     try? modelContext.save()
-                }
+                }, onCreate: createQuest
             )
         .presentationDetents([.medium, .large])
         }
@@ -112,9 +146,11 @@ struct ContentView: View {
                 guard let walk = pendingWalk else { return }
                 modelContext.insert(walk)
                 pendingWalk = nil
+                soundController.stop()
             }
             Button("Discard", role: .destructive) {
                 pendingWalk = nil
+                soundController.stop()
             }
         }
     }

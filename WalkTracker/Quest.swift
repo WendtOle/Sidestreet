@@ -8,6 +8,39 @@
 import CoreLocation
 import SwiftData
 
+enum QuestType: String, Codable {
+    case navigate
+    case track
+    case orbit
+    case collect
+    
+    var name: String {
+        switch self {
+        case .navigate:
+            return "Simple Quest"
+        case .collect:
+            return "Collection Quest"
+        case .orbit:
+            return "Circle Quest"
+        case .track:
+            return "Tracking Quest"
+        }
+    }
+    
+    var symbol: String {
+        switch self {
+        case .navigate:
+            return "flag.pattern.checkered"
+        case .collect:
+            return "point.bottomleft.forward.to.point.topright.scurvepath"
+        case .orbit:
+            return "circle"
+        case .track:
+            return "magnifyingglass"
+        }
+    }
+}
+
 @Model
 final class Quest {
     var id: UUID
@@ -16,11 +49,14 @@ final class Quest {
     var target: GeoPoint
     var radius: Double = 30.0
     var questReached: Bool = false
+    var type: QuestType
+    var walk: Walk?
     
-    init(referencePoint: CLLocation) {
+    init(referencePoint: CLLocation, questType: QuestType) {
         id = UUID()
         createdAt = Date()
         target = getQuestTarget(startingPoint: referencePoint)
+        type = questType
     }
 }
 
