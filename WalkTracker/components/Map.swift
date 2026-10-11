@@ -8,6 +8,7 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
+
 struct CustomMap: View {
     @Binding var locationManager: LocationManager
     var walks: [Walk]
@@ -58,18 +59,46 @@ struct CustomMap: View {
             }
             
             if showAllWalks, fogModeActive == false {
-                ForEach(walks) {walk in
-                    MapPolyline(coordinates: walk.coordinates)
-                        .stroke(
-                            .gray.opacity(0.5),
-                            style: StrokeStyle(
-                                lineWidth: 16,
-                                lineCap: .round,
-                                lineJoin: .round
-                            )
+                let walkPoints: [(points:[GeoPoint],modifier: Double)] = walks.map { walk in
+                    var seen = Set<[Double]>()
+
+                    return (points: walk.routeCoordinates.filter { point in
+                        seen.insert(getBinnedCoordinates(point)).inserted
+                    }
+                            , modifier: getDayModifier(walk.createdAt))
+                }
+                let counts = walkPoints.reduce(into: [[Double]: Double]()) { result, tuple in
+                    for point in tuple.points {
+                        result[getBinnedCoordinates(point), default: 0] += tuple.modifier
+                    }
+                }
+                let countedPoints = counts.map { entry in
+                    (
+                        point: GeoPoint(
+                            latitude: entry.key[0],
+                            longitude: entry.key[1]
+                        ),
+                        count: entry.value
+                    )
+                }
+                ForEach(0..<countedPoints.count, id: \.self) { index in
+                    let item = countedPoints[index]
+
+                    MapCircle(
+                        center: CLLocationCoordinate2D(
+                            latitude: item.point.latitude,
+                            longitude: item.point.longitude
+                        ),
+                        radius: min(25.0,2.0 + Double(item.count) * 8.0)
+                    )
+                    .foregroundStyle(
+                        Color.blue.opacity(
+                            0.4
                         )
+                    )
                 }
             }
+        
             
             if let selectedWalk {
                 MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
