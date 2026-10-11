@@ -156,7 +156,7 @@ final class SoundController: ObservableObject {
                 player.scheduleBuffer(
                     loop,
                     at: nil,
-                    options: .loops,
+                    options: [.interruptsAtLoop, .loops],
                     completionHandler: nil
                 )
                 player.play()
