@@ -25,7 +25,14 @@ struct QuestLogView: View {
                         onSelect(quest)
                         dismiss()
                     } label: {
-                      QuestInformation(quest: quest)
+                        HStack {
+                            QuestInformation(quest: quest)
+                            Spacer()
+                            if quest.questReached {
+                                Text("Done")
+                                    .font(.headline)
+                            }
+                        }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {

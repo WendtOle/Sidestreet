@@ -24,11 +24,11 @@ struct ContentView: View {
     @State private var showAllWalks = true
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
-    @State private var fogModeActive = false
     
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
+    @State private var countedPoints: [(point: GeoPoint, count: Double)] = []
     
     @Query(sort: \Quest.createdAt, order: .reverse)
     private var quests: [Quest]
@@ -46,7 +46,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            CustomMap(locationManager: $locationManager, walks: walks, fogModeActive: fogModeActive, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
+            CustomMap(locationManager: $locationManager, countedPoints: countedPoints, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
             VStack{
                 if let quest = selectedQuest {
                     InformationContainer {
@@ -80,7 +80,7 @@ struct ContentView: View {
                     }
                 }
                 Spacer()
-                SideButtons(fogModeActive: $fogModeActive, isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent)
+                SideButtons(isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent)
                 HStack {
                     RecordingButton(locationManager: $locationManager, pendingWalk: $pendingWalk, showSaveConfirmation: $showSaveConfirmation, selectedWalk: $selectedWalk)
                     if locationManager.isRecording, selectedQuest?.type == .track {
@@ -161,6 +161,9 @@ struct ContentView: View {
                 return
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
+        }
+        .onChange(of: Set(walks.map(\.id)), initial: true) {
+            countedPoints = calculateHeatmap(walks: walks)
         }
         .confirmationDialog("Save walk?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
             Button("Save") {

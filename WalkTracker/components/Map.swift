@@ -11,8 +11,7 @@ import CoreLocation
 
 struct CustomMap: View {
     @Binding var locationManager: LocationManager
-    var walks: [Walk]
-    var fogModeActive: Bool
+    var countedPoints: [(point: GeoPoint, count: Double)]
     @Binding var cameraPosition: MapCameraPosition
     @State private var cameraDistance: Double = 10_000
     var selectedWalk: Walk?
@@ -22,17 +21,6 @@ struct CustomMap: View {
     
     var body: some View {
         Map(position: $cameraPosition){
-            if fogModeActive {
-                MapPolygon(
-                    FogPolygonBuilder.makeFogPolygon(
-                        walks: walks,
-                        revealRadius: 50
-                    )
-                )
-                .foregroundStyle(.white.opacity(0.95))
-                .mapOverlayLevel(level: .aboveLabels)
-            }
-            
             UserAnnotation()
             if let quest = selectedQuest {
                 let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
@@ -58,29 +46,7 @@ struct CustomMap: View {
                 MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
             }
             
-            if showAllWalks, fogModeActive == false {
-                let walkPoints: [(points:[GeoPoint],modifier: Double)] = walks.map { walk in
-                    var seen = Set<[Double]>()
-
-                    return (points: walk.routeCoordinates.filter { point in
-                        seen.insert(getBinnedCoordinates(point)).inserted
-                    }
-                            , modifier: getDayModifier(walk.createdAt))
-                }
-                let counts = walkPoints.reduce(into: [[Double]: Double]()) { result, tuple in
-                    for point in tuple.points {
-                        result[getBinnedCoordinates(point), default: 0] += tuple.modifier
-                    }
-                }
-                let countedPoints = counts.map { entry in
-                    (
-                        point: GeoPoint(
-                            latitude: entry.key[0],
-                            longitude: entry.key[1]
-                        ),
-                        count: entry.value
-                    )
-                }
+            if showAllWalks {
                 ForEach(0..<countedPoints.count, id: \.self) { index in
                     let item = countedPoints[index]
 
