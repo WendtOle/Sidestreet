@@ -17,7 +17,7 @@ final class Walk {
     var totalDistance: CLLocationDistance = 0
     var duration: Double = 0
     
-    var quest: Quest?
+    var quests: [Quest] = []
 
     init() {
         id = UUID()

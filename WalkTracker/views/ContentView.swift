@@ -35,6 +35,13 @@ struct ContentView: View {
     @Query(sort: \Quest.createdAt, order: .reverse)
     private var quests: [Quest]
     
+    var openQuests: [Quest] {
+        quests.filter { quest in
+            let isQuestCompletionPending = pendingCompletions.contains { $0.quest === quest }
+            return quest.questReached == false && !isQuestCompletionPending
+        }
+    }
+    
     func createQuest (questType: QuestType) async {
         do {
             let location = try await locationManager.requestCurrentLocation()
@@ -58,7 +65,16 @@ struct ContentView: View {
     
     var body: some View {
         ZStack{
-            CustomMap(locationManager: $locationManager, countedPoints: countedPoints, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
+            CustomMap(
+                locationManager: $locationManager,
+                countedPoints: countedPoints,
+                cameraPosition: $cameraPosition,
+                selectedWalk: selectedWalk,
+                selectedQuest: selectedQuest,
+                showAllWalks: showAllWalks,
+                quests: quests,
+                completedQuests: pendingCompletions.map { $0.quest }
+            )
             VStack{
                 if let quest = selectedQuest {
                     InformationContainer {
@@ -152,7 +168,7 @@ struct ContentView: View {
         .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $isQuestLogPresent) {
-            QuestLogView(quests: quests, onSelect: { quest in
+            QuestLogView(quests: openQuests, onSelect: { quest in
                     if quest.questReached, let walk = quest.walk {
                         selectedWalk = walk
                     } else {
@@ -181,7 +197,7 @@ struct ContentView: View {
                 
                 pendingCompletions.map({completion in
                     if completion.walk === walk {
-                        walk.quest = completion.quest
+                        walk.quests.append(completion.quest)
                         completion.quest.walk = walk
                         completion.quest.questReached = true
                     }

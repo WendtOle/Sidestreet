@@ -18,15 +18,16 @@ struct CustomMap: View {
     var selectedQuest: Quest?
     var showAllWalks: Bool
     var quests: [Quest]
+    var completedQuests: [Quest]
+    
     
     var body: some View {
         Map(position: $cameraPosition){
             UserAnnotation()
-            if let quest = selectedQuest {
+            if let quest = selectedQuest, quest.questReached == false {
                 let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
-                if quest.questReached {
-                    Marker("", systemImage: "checkmark.circle", coordinate: center).tint(.green)
-                } else if quest.type != QuestType.track {
+                
+                if quest.type != QuestType.track {
                     if cameraDistance < 2_000.0, quest.questReached == false {
                         MapCircle(center: center, radius: quest.radius)
                             .foregroundStyle(.green.opacity(0.15))
@@ -35,12 +36,19 @@ struct CustomMap: View {
                         Marker("", systemImage: quest.type.symbol, coordinate: center).tint(.green)
                     }
                 }
+                
                 if let pinnedLocation = quest.pinnedLocation {
                     let pinned = CLLocationCoordinate2D(latitude: pinnedLocation.latitude, longitude: pinnedLocation.longitude)
                     Marker("", systemImage: "pin", coordinate: pinned).tint(.green)
                 }
                 
             }
+            
+            ForEach(completedQuests) {quest in
+                let center = CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)
+                Marker("", systemImage: "checkmark.circle", coordinate: center).tint(.orange)
+            }
+            
             if locationManager.isRecording,
                let currentWalk = locationManager.currentWalk{
                 MapPolyline(coordinates: currentWalk.coordinates).stroke(.blue, lineWidth: 5)
@@ -78,8 +86,10 @@ struct CustomMap: View {
             
             if let selectedWalk {
                 MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
-                if let quest = selectedWalk.quest, selectedWalk.quest?.questReached == true {
-                    Marker("", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)).tint(.orange)
+                ForEach(selectedWalk.quests) {quest in
+                    if quest.questReached == true {
+                        Marker("", systemImage: quest.type.symbol, coordinate: CLLocationCoordinate2D(latitude: quest.target.latitude, longitude: quest.target.longitude)).tint(.orange)
+                    }
                 }
             }
         }

@@ -12,9 +12,6 @@ struct WalkInformation: View {
     
     var body: some View {
         HStack {
-            WalkImage(quest: walk.quest)
-                .font(.headline)
-            
             VStack(alignment: .leading) {
                 Text(walk.createdAt, style: .date)
                     .font(.headline)
