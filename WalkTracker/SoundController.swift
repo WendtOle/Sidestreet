@@ -152,14 +152,12 @@ final class SoundController: ObservableObject {
                     interval: newInterval
                 )
 
-                player.stop()
                 player.scheduleBuffer(
                     loop,
                     at: nil,
                     options: [.interruptsAtLoop, .loops],
                     completionHandler: nil
                 )
-                player.play()
             } catch {
                 print("Failed to change beep interval:", error)
                 return
