@@ -8,7 +8,8 @@
 import CoreLocation
 import SwiftData
 
-enum QuestType: String, Codable {
+enum QuestType: String, Codable, CaseIterable {
+    case navigateClose
     case navigate
     case track
     case orbit
@@ -16,8 +17,10 @@ enum QuestType: String, Codable {
     
     var name: String {
         switch self {
+        case .navigateClose:
+            return "Mini Quest"
         case .navigate:
-            return "Simple Quest"
+            return "Navigation Quest"
         case .collect:
             return "Collection Quest"
         case .orbit:
@@ -29,8 +32,10 @@ enum QuestType: String, Codable {
     
     var symbol: String {
         switch self {
-        case .navigate:
+        case .navigateClose:
             return "flag.pattern.checkered"
+        case .navigate:
+            return "flag.pattern.checkered.2.crossed"
         case .collect:
             return "point.bottomleft.forward.to.point.topright.scurvepath"
         case .orbit:
@@ -42,13 +47,9 @@ enum QuestType: String, Codable {
     
     var distance: (min: Double, max: Double) {
         switch self {
-        case .navigate:
+        case .navigate, .collect, .orbit:
             return (300,1200)
-        case .collect:
-            return (300,1200)
-        case .orbit:
-            return (300,1200)
-        case .track:
+        case .track, .navigateClose:
             return (100,600)
         }
     }

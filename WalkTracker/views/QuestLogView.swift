@@ -55,33 +55,15 @@ struct QuestLogView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Button(QuestType.navigate.name, systemImage: QuestType.navigate.symbol) {
-                            Task {
-                                defer {isLoading = true}
-                                await onCreate(.navigate)
-                            }
+                        ForEach(QuestType.allCases, id: \.self) { type in
+                            Button(type.name, systemImage: type.symbol) {
+                                Task {
+                                    defer {isLoading = false}
+                                    await onCreate(type)
+                                }
+                            }.disabled(isLoading || type == QuestType.collect || type == QuestType.orbit)
                         }
-
-                        Button(QuestType.track.name, systemImage: QuestType.track.symbol) {
-                            Task {
-                                defer {isLoading = true}
-                                await onCreate(.track)
-                            }
-                        }
-
-                        Button(QuestType.collect.name, systemImage: QuestType.collect.symbol) {
-                            Task {
-                                defer {isLoading = true}
-                                await onCreate(.collect)
-                            }
-                        }.disabled(true)
-
-                        Button(QuestType.orbit.name, systemImage: QuestType.orbit.symbol) {
-                            Task {
-                                defer {isLoading = true}
-                                await onCreate(.orbit)
-                            }
-                        }.disabled(true)
+                        
                     } label: {
                         ZStack {
                             Label("Create Quest", systemImage: "plus")
