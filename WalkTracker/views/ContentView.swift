@@ -25,6 +25,8 @@ struct ContentView: View {
     @State private var pendingWalk: Walk?
     @State private var showSaveConfirmation = false
     
+    @State private var pendingCompletions: [(walk: Walk, quest: Quest)] = []
+    
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Walk.createdAt, order: .reverse)
     private var walks: [Walk]
@@ -44,6 +46,16 @@ struct ContentView: View {
         }
     }
     
+    func fulfillSelectedQuest() {
+        guard let quest = selectedQuest,
+              let walk = locationManager.currentWalk else {
+            return
+        }
+
+        pendingCompletions.append((walk: walk, quest: quest))
+        soundController.stop()
+    }
+    
     var body: some View {
         ZStack{
             CustomMap(locationManager: $locationManager, countedPoints: countedPoints, cameraPosition: $cameraPosition, selectedWalk: selectedWalk, selectedQuest: selectedQuest, showAllWalks: showAllWalks, quests: quests)
@@ -51,7 +63,7 @@ struct ContentView: View {
                 if let quest = selectedQuest {
                     InformationContainer {
                         QuestInformation(quest: quest)
-                        if quest.questReached {
+                        if quest.questReached || pendingCompletions.contains {$0.quest === quest} {
                             Text("Done")
                                 .font(.headline)
                         } else if quest.type == .track {
@@ -114,10 +126,7 @@ struct ContentView: View {
                 let distanceToQuest = location.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
                 soundController.setBeepIntervalByDistance(distance: distanceToQuest)
                 if isQuestReached(quest: quest, location: location) {
-                    soundController.stop()
-                    quest.questReached = true
-                    walk.quest = quest
-                    quest.walk = walk
+                    fulfillSelectedQuest()
                 }
             })
         }
@@ -144,11 +153,11 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isQuestLogPresent) {
             QuestLogView(quests: quests, onSelect: { quest in
-                if quest.questReached, let walk = quest.walk {
-                    selectedWalk = walk
-                } else {
-                    selectedQuest = quest
-                }
+                    if quest.questReached, let walk = quest.walk {
+                        selectedWalk = walk
+                    } else {
+                        selectedQuest = quest
+                    }
                 }, onDelete: { quest in
                     modelContext.delete(quest)
                     try? modelContext.save()
@@ -169,10 +178,21 @@ struct ContentView: View {
             Button("Save") {
                 guard let walk = pendingWalk else { return }
                 modelContext.insert(walk)
+                
+                pendingCompletions.map({completion in
+                    if completion.walk === walk {
+                        walk.quest = completion.quest
+                        completion.quest.walk = walk
+                        completion.quest.questReached = true
+                    }
+                })
+                
+                pendingCompletions = []
                 pendingWalk = nil
                 soundController.stop()
             }
             Button("Discard", role: .destructive) {
+                pendingCompletions = []
                 pendingWalk = nil
                 soundController.stop()
             }
