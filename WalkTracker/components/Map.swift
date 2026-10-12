@@ -49,19 +49,29 @@ struct CustomMap: View {
             if showAllWalks {
                 ForEach(0..<countedPoints.count, id: \.self) { index in
                     let item = countedPoints[index]
-
+                    let coordinate = CLLocationCoordinate2D(
+                        latitude: item.point.latitude,
+                        longitude: item.point.longitude
+                    )
+                    let maxRadius = 19.0
+                    let minRadius = 2.0
+                    let scaledUp = Double(item.count) * (maxRadius - minRadius)
+                    let radius = min(maxRadius,minRadius + scaledUp)
                     MapCircle(
-                        center: CLLocationCoordinate2D(
-                            latitude: item.point.latitude,
-                            longitude: item.point.longitude
-                        ),
-                        radius: min(25.0,2.0 + Double(item.count) * 8.0)
+                        center: coordinate,
+                        radius: radius
                     )
-                    .foregroundStyle(
-                        Color.blue.opacity(
-                            0.4
-                        )
-                    )
+                    .foregroundStyle(Color.gray.opacity(0.3))
+                    
+                    /*
+                    Annotation("", coordinate: coordinate, anchor: .center) {
+                        Text("\(Int(scaledUp))")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.blue)
+                            .fixedSize()
+                    }
+                    */
+                    
                 }
             }
         

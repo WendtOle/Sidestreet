@@ -22,8 +22,10 @@ func getDayModifier(_ createdAt: Date) -> Double {
         from: calendar.startOfDay(for: createdAt),
         to: calendar.startOfDay(for: Date())
     ).day ?? 0
-    let output = Double(4) / (Double(days + 1))
-    return output
+    let maxValue = 21
+    let daysOld = max(0, maxValue - days)
+    let output = Double(daysOld) / Double(maxValue)
+    return pow(output,4)
 }
 
 func calculateHeatmap (walks: [Walk]) -> [(point: GeoPoint, count: Double)] {
