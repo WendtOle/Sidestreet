@@ -13,11 +13,22 @@ struct WalkInformation: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(walk.createdAt, style: .date)
-                    .font(.headline)
-                Text(walk.createdAt, style: .time)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(
+                        walk.createdAt,
+                        format: .dateTime.day().month(.twoDigits).year()
+                    )
+                        .font(.headline)
+                    Text("-")
+                    Text(walk.createdAt, style: .time)
+                        .font(.headline)
+                }
+                if walk.quests.count > 0 {
+                    Text("\(walk.quests.count) Quest\(walk.quests.count > 1 ? "s" : "") completed")
+                        .font(.subheadline)
+                } else {
+                    Text("")
+                }
             }
             
             Spacer()
