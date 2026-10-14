@@ -47,6 +47,6 @@ struct WalkImage: View {
     let quest: Quest?
     
     var body: some View {
-        Image(systemName: quest?.type.symbol ?? "figure.walk")
+        Image(systemName: quest?.data.type.symbol ?? "figure.walk")
     }
 }

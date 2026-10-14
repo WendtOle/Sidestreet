@@ -52,9 +52,5 @@ func calculateHeatmap (walks: [Walk]) -> [(point: GeoPoint, count: Double)] {
             count: entry.value
         )
     }
-    let _ = print(
-        "Heatmap: \(countedPoints.count) circles, " +
-        "\(Date().timeIntervalSince(heatmapStarted) * 1_000) ms"
-    )
     return countedPoints
 }

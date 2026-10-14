@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct QuestInformation: View {
-    let quest: Quest
+    let quest: QuestData
     
     var body: some View {
         HStack {

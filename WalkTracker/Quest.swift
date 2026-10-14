@@ -7,6 +7,8 @@
 
 import CoreLocation
 import SwiftData
+import MapKit
+import SwiftUI
 
 enum QuestType: String, Codable, CaseIterable {
     case navigateClose
@@ -55,28 +57,6 @@ enum QuestType: String, Codable, CaseIterable {
     }
 }
 
-@Model
-final class Quest {
-    var id: UUID
-    var createdAt: Date
-    
-    var target: GeoPoint
-    var radius: Double = 30.0
-    var questReached: Bool = false
-    var type: QuestType
-    var walk: Walk?
-    var pinnedLocation: GeoPoint?
-    
-    init(referencePoint: CLLocation, questType: QuestType) {
-        id = UUID()
-        createdAt = Date()
-        type = questType
-
-        let distance = Double.random(in: questType.distance.min...questType.distance.max)
-        target = getQuestTarget(startingPoint: referencePoint, distance: distance)
-    }
-}
-
 func getQuestTarget (startingPoint: CLLocation, distance: Double) -> GeoPoint {
     let bearing = Double.random(in: 0..<360)
     let target = destination(from: startingPoint.coordinate, distance: distance, bearing: bearing)
@@ -113,10 +93,4 @@ func destination(
         latitude: latitude2 * 180 / .pi,
         longitude: longitude2 * 180 / .pi
     )
-}
-
-
-func isQuestReached(quest: Quest, location: CLLocation) -> Bool {
-    let distance = location.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
-    return distance <= quest.radius
 }

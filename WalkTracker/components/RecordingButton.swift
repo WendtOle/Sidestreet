@@ -9,33 +9,24 @@ import SwiftUI
 import Combine
 
 struct RecordingButton: View {
-    @Binding var locationManager: LocationManager
-    @Binding var pendingWalk: Walk?
-    @Binding var showSaveConfirmation: Bool
-    @Binding var selectedWalk: Walk?
-    
+    let activeWalk: Walk?
+    let startRecording: () -> Void
+    let stopRecording: () -> Void
+     
     var body: some View {
         HStack(spacing: 12) {
             Button {
-                if locationManager.isRecording {
-                    locationManager.stopRecording()
-                    guard let walk = locationManager.currentWalk else {
-                        return
-                    }
-                    pendingWalk = walk
-                    showSaveConfirmation = true
+                if activeWalk != nil {
+                    stopRecording()
                 } else {
-                    locationManager.startRecording()
-                    selectedWalk = nil
+                    startRecording()
                 }
             } label: {
-                if locationManager.isRecording {
+                if let walk = activeWalk {
                     HStack(spacing: 20) {
-                        if let walk = locationManager.currentWalk {
-                            let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
-                            Text(formattedDistance)
-                            Text(formatDuration(walk.duration))
-                        }
+                        let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
+                        Text(formattedDistance)
+                        Text(formatDuration(walk.duration))
                         Image(systemName: "stop.fill")
                             .font(.system(size: 28, weight: .bold))
                             .frame(width: 72, height: 50)

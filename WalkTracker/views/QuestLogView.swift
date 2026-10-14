@@ -9,9 +9,9 @@ import SwiftUI
 
 
 struct QuestLogView: View {
-    let quests: [Quest]
-    let onSelect: (Quest) -> Void
-    let onDelete: (Quest) -> Void
+    let quests: [QuestData]
+    let onSelect: (QuestData) -> Void
+    let onDelete: (QuestData) -> Void
     let onCreate: (QuestType) async -> Void
     @State var isLoading: Bool = false
     @State var showQuestTypeDialog: Bool = false
@@ -20,7 +20,7 @@ struct QuestLogView: View {
     var body: some View {
         NavigationStack {
             List{
-                ForEach(quests) {quest in
+                ForEach(quests, id: \.id) {quest in
                     Button {
                         onSelect(quest)
                         dismiss()

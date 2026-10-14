@@ -15,12 +15,11 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var lastLocation: CLLocation?
     var nullableLastRecordedLocation: CLLocation?
     var isRecording = false
-    var currentWalk: Walk?
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
-    var distanceToQuest: CLLocationDistance?
-    private var nullabelOnLocationUpdate: ((CLLocation) -> Void)?
+    private var onLocationUpdate: (_ location: CLLocation, _ distanceToPrev: CLLocationDistance?, _ timeSincePrev: Double?) -> Void
     
-    override init() {
+    init(onLocationUpdate: @escaping (CLLocation, CLLocationDistance?, Double?) -> Void) {
+        self.onLocationUpdate = onLocationUpdate
         super.init()
         manager.delegate = self
         
@@ -31,11 +30,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.showsBackgroundLocationIndicator = true
     }
     
-    func setOnLocationChange (onLocationChange: @escaping(CLLocation) -> Void) {
-        self.nullabelOnLocationUpdate = onLocationChange
-    }
-    
     func requestPermission() {
+        guard manager.authorizationStatus == .notDetermined else { return }
         manager.requestWhenInUseAuthorization()
     }
     
@@ -65,39 +61,26 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         guard next.horizontalAccuracy >= 0, next.horizontalAccuracy <= 20 else {
             return
         }
+
+        guard let lastRecordedLocation = nullableLastRecordedLocation else {
+            onLocationUpdate(next, nil, nil)
+            nullableLastRecordedLocation = next
+            return
+        }
         
-        if let lastRecordedLocation = nullableLastRecordedLocation {
-            let distance = lastRecordedLocation.distance(from: next)
-            let time = next.timestamp.timeIntervalSince(lastRecordedLocation.timestamp)
-            guard time > 0 else {
-                return
-            }
-            let speed = distance / time
-            guard speed <= 4.0 else {
-                print("Ignoring GPS jump:", distance, "m in", time, "s")
-                return
-            }
-            currentWalk?.totalDistance += distance
-            currentWalk?.duration += time
+        let distance = lastRecordedLocation.distance(from: next)
+        let time = next.timestamp.timeIntervalSince(lastRecordedLocation.timestamp)
+        guard time > 0 else {
+            return
         }
-        if let onLocationUpdate = nullabelOnLocationUpdate {
-            onLocationUpdate(next)
+        let speed = distance / time
+        guard speed <= 4.0 else {
+            print("Ignoring GPS jump:", distance, "m in", time, "s")
+            return
         }
-        /*
-        if let quest = currentWalk?.quest, currentWalk?.quest?.questReached == false {
-            distanceToQuest = next.distance(from: CLLocation(latitude: quest.target.latitude, longitude: quest.target.longitude))
-            if let distance = distanceToQuest, let onChange = onQuestDistanceChange {
-                onChange(distance)
-            }
-            if isQuestReached(quest: quest, location: next) {
-                currentWalk?.quest?.questReached = true
-                distanceToQuest = nil
-            }
-        }
-         */
+        
+        onLocationUpdate(next, distance, time)
         nullableLastRecordedLocation = next
-        currentWalk?.routeCoordinates.append(GeoPoint(latitude: next.coordinate.latitude, longitude: next.coordinate.longitude))
-        
     }
     
     func locationManager(
@@ -113,7 +96,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func startRecording() {
-        currentWalk = Walk()
         nullableLastRecordedLocation = nil
         isRecording = true
         manager.allowsBackgroundLocationUpdates = true
@@ -124,6 +106,5 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.stopUpdatingLocation()
         manager.allowsBackgroundLocationUpdates = false
         isRecording = false
-        distanceToQuest = nil
     }
 }

@@ -17,7 +17,7 @@ final class Walk {
     var totalDistance: CLLocationDistance = 0
     var duration: Double = 0
     
-    var quests: [Quest] = []
+    var quests: [QuestData] = []
 
     init() {
         id = UUID()
@@ -31,5 +31,15 @@ final class Walk {
                 longitude: $0.longitude
             )
         }
+    }
+    
+    func addPoint(point: CLLocation, distanceToPrev: CLLocationDistance?, timeToPrev: Double?) {
+        if let distance = distanceToPrev {
+            totalDistance += distance
+        }
+        if let time = timeToPrev {
+            duration += time
+        }
+        routeCoordinates.append(GeoPoint(latitude: point.coordinate.latitude, longitude: point.coordinate.longitude))
     }
 }
