@@ -9,12 +9,15 @@ import MapKit
 import SwiftUI
 
 enum QuestFactory {
-    static func make(referencePoint: CLLocation, questType: QuestType, heatMap: [(point: GeoPoint, count: Double)]) -> QuestData {
+    static func make(referencePoint: CLLocation, questType: QuestType, heatMap: [(point: GeoPoint, count: Double)], smallVariant: Bool) -> QuestData {
+        let minDistance = smallVariant ? 100.0 : 300.0
+        let maxDistance = smallVariant ? 600.0 : 1200.0
         switch questType {
         case .collect :
             var max = 0.0
-            let preCoins = (0..<20).map { _ in
-                let coinDistance = Double.random(in: QuestType.collect.distance.min...QuestType.collect.distance.max)
+            let pointAmount = smallVariant ? 40 : 100
+            let preCoins = (0..<pointAmount).map { _ in
+                let coinDistance = Double.random(in: minDistance...maxDistance)
                 let rawCoinLocation = getQuestTarget(startingPoint: referencePoint, distance: coinDistance)
                 let binnedLocation = getBinnedCoordinates(rawCoinLocation)
                 let value = heatMap.first {$0.point.latitude == binnedLocation[0] && $0.point.longitude == binnedLocation[1]}?.count ?? 0
@@ -31,7 +34,7 @@ enum QuestFactory {
             let targets = potentialCoins.filter { $0.value > 0.001 }
             return QuestData(targets: targets, type: questType)
         default:
-            let distance = Double.random(in: questType.distance.min...questType.distance.max)
+            let distance = Double.random(in: minDistance...maxDistance)
             let target = getQuestTarget(startingPoint: referencePoint, distance: distance)
             return QuestData(targets: [Target(point: target, value: 30.0)], type: questType)
         }
@@ -89,7 +92,7 @@ enum QuestFactory {
                 )
                 .tint(color)
             )
-        case .navigate, .navigateClose:
+        case .navigate:
             let center = CLLocationCoordinate2D(latitude: questData.targets[0].point.latitude, longitude: questData.targets[0].point.longitude)
             return AnyMapContent(Marker("", systemImage: questData.type.symbol, coordinate: center).tint(color))
         case .collect:

@@ -11,7 +11,6 @@ import MapKit
 import SwiftUI
 
 enum QuestType: String, Codable, CaseIterable {
-    case navigateClose
     case navigate
     case track
     case orbit
@@ -19,40 +18,27 @@ enum QuestType: String, Codable, CaseIterable {
     
     var name: String {
         switch self {
-        case .navigateClose:
-            return "Mini Quest"
         case .navigate:
-            return "Navigation Quest"
+            return "Navigate"
         case .collect:
-            return "Collection Quest"
+            return "Collect"
         case .orbit:
-            return "Circle Quest"
+            return "Circle"
         case .track:
-            return "Tracking Quest"
+            return "Track"
         }
     }
     
     var symbol: String {
         switch self {
-        case .navigateClose:
-            return "flag.pattern.checkered"
         case .navigate:
-            return "flag.pattern.checkered.2.crossed"
+            return "flag.pattern.checkered"
         case .collect:
             return "point.bottomleft.forward.to.point.topright.scurvepath"
         case .orbit:
             return "circle"
         case .track:
             return "magnifyingglass"
-        }
-    }
-    
-    var distance: (min: Double, max: Double) {
-        switch self {
-        case .navigate, .orbit:
-            return (300,1200)
-        case .track, .navigateClose, .collect:
-            return (100,600)
         }
     }
 }

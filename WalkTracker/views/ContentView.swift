@@ -15,7 +15,7 @@ import AVFAudio
 struct ContentView: View {
     @ObservedObject var soundController: SoundController
     var selectedQuest: QuestData?
-    let createQuest: (QuestType) async -> Void
+    let createQuest: (QuestType, Bool) -> Void
     let selectQuest: (QuestData) -> Void
     let unselectQuest: (QuestData) -> Void
     let startWalk: () -> Void
@@ -24,13 +24,14 @@ struct ContentView: View {
     let recording: Walk?
     let onDeleteWalk: () -> Void
     let heatMap: [(point: GeoPoint, count: Double)]
+    let enableQuestCreation: Bool
+    @Binding var dismissedChallengeCreation: Bool
     
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
     @State private var selectedWalk: Walk?
     
     @State var isHistoryPresented: Bool = false
-    @State var isQuestLogPresent: Bool = false
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
     
@@ -58,12 +59,19 @@ struct ContentView: View {
                 selectedQuest: selectedQuest,
             )
             VStack{
+                Spacer().frame(height: 50)
+                SideButtons(isHistoryPresented: $isHistoryPresented, visualizeHeatMap: $visualizeHeatMap)
+                Spacer()
                 if let quest = selectedQuest {
                     InformationContainer {
-                        QuestInformation(quest: quest)
-                        if quest.questReached {
-                            Text("Done").font(.headline)
-                        }
+                        HStack {
+                            Image(systemName: quest.type.symbol)
+                                .frame(width: 35)
+                            Text(quest.type.name)
+                                .font(.headline)
+                            Spacer()
+                            QuestFactory.progressIndicatorElement(questData: quest)
+                            }
                     } onClose: {
                         unselectQuest(quest)
                     }
@@ -75,10 +83,23 @@ struct ContentView: View {
                         selectedWalk = nil
                     }
                 }
-                Spacer()
-                SideButtons(isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent, visualizeHeatMap: $visualizeHeatMap)
+                if enableQuestCreation && dismissedChallengeCreation == false {
+                    QuestCreationContainer(createQuest: createQuest, dismissedChallengeCreation: $dismissedChallengeCreation)
+                }
                 HStack {
                     RecordingButton(activeWalk: recording, startRecording: startWalk, stopRecording: stopRecording)
+                    if dismissedChallengeCreation {
+                        Button {
+                            dismissedChallengeCreation = false
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 28, weight: .bold))
+                                .frame(width: 50, height: 50)
+                        
+                        }
+                        .buttonStyle(.glassProminent)
+                        .tint(.accentColor)
+                    }
                     if recording != nil, selectedQuest?.type == .track {
                         Button {
                             if soundController.isRunning {
@@ -120,20 +141,6 @@ struct ContentView: View {
                     try? modelContext.save()
                     onDeleteWalk()
                 }
-            )
-        .presentationDetents([.medium, .large])
-        }
-        .sheet(isPresented: $isQuestLogPresent) {
-            QuestLogView(quests: quests, onSelect: { quest in
-                if quest.questReached, let walk = quest.walk {
-                        selectedWalk = walk
-                    } else {
-                        selectQuest(quest)
-                    }
-                }, onDelete: { quest in
-                    modelContext.delete(quest)
-                    try? modelContext.save()
-                }, onCreate: createQuest
             )
         .presentationDetents([.medium, .large])
         }

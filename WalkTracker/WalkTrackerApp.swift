@@ -17,6 +17,8 @@ struct WalkTrackerApp: App {
     @State var locationManager: LocationManager
     
     @State private var heatMap: [(point: GeoPoint, count: Double)]
+    @State private var walkReferencePoint: CLLocation?
+    @State private var dismissedChallengeCreation: Bool = false
     
     init() {
         do {
@@ -49,26 +51,39 @@ struct WalkTrackerApp: App {
         }
     }
     
-    func createQuest (questType: QuestType) async {
-        do {
-            let location = try await locationManager.requestCurrentLocation()
-            let quest = QuestFactory.make(referencePoint: location, questType: questType, heatMap: heatMap)
-            let context = container.mainContext
-            context.insert(quest)
-        } catch {
-            fatalError("could not create quest \(error)")
-        }
+    func createQuest (questType: QuestType, smallVariant: Bool) {
+        guard let point = walkReferencePoint else { return }
+        let quest = QuestFactory.make(referencePoint: point, questType: questType, heatMap: heatMap, smallVariant: smallVariant)
+        let context = container.mainContext
+        context.insert(quest)
+        questController.activeQuest = quest
+    }
+    
+    func reset () {
+        walkReferencePoint = nil
+        dismissedChallengeCreation = false
+        locationManager.stopRecording()
+        self.questController.activeWalk = nil
     }
     
     func startWalk() {
         let newWalk = Walk()
         self.questController.activeWalk = newWalk
         locationManager.startRecording()
+        Task {
+            do {
+                let location = try await locationManager.requestCurrentLocation()
+                walkReferencePoint = location
+            } catch {
+                fatalError("could not find quest reference point \(error)")
+            }
+        }
+        
     }
     
     func saveWalk() {
-        locationManager.stopRecording()
         guard let walk = self.questController.activeWalk else { return }
+        reset()
         
         // persist walk
         let context = container.mainContext
@@ -84,8 +99,8 @@ struct WalkTrackerApp: App {
     }
     
     func discardWalk() {
-        locationManager.stopRecording()
-        self.questController.activeWalk = nil
+        reset()
+        self.questController.activeQuest = nil
     }
     
     var body: some Scene {
@@ -105,7 +120,9 @@ struct WalkTrackerApp: App {
                 discardWalk: discardWalk,
                 recording: questController.activeWalk,
                 onDeleteWalk: refreshHeatmap,
-                heatMap: heatMap
+                heatMap: heatMap,
+                enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
+                dismissedChallengeCreation: $dismissedChallengeCreation
             )
             .onAppear {
                 locationManager.requestPermission()
