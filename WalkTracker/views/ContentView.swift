@@ -31,7 +31,7 @@ struct ContentView: View {
     
     @State var isHistoryPresented: Bool = false
     @State var isQuestLogPresent: Bool = false
-    @State private var showAllWalks = true
+    @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
     
     @Environment(\.modelContext) private var modelContext
@@ -54,7 +54,7 @@ struct ContentView: View {
                 heatMap: heatMap,
                 cameraPosition: $cameraPosition,
                 selectedWalk: selectedWalk,
-                showAllWalks: showAllWalks,
+                visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
             )
             VStack{
@@ -76,7 +76,7 @@ struct ContentView: View {
                     }
                 }
                 Spacer()
-                SideButtons(isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent)
+                SideButtons(isHistoryPresented: $isHistoryPresented, isQuestLogPresent: $isQuestLogPresent, visualizeHeatMap: $visualizeHeatMap)
                 HStack {
                     RecordingButton(activeWalk: recording, startRecording: startWalk, stopRecording: stopRecording)
                     if recording != nil, selectedQuest?.type == .track {

@@ -16,7 +16,7 @@ struct CustomMap: View {
     @State private var closeMode = false
     @State private var cameraDistance: Double = 10_000
     var selectedWalk: Walk?
-    var showAllWalks: Bool
+    var visualizeHeatMap: Bool
     var selectedQuest: QuestData?
 
     var body: some View {
@@ -30,7 +30,7 @@ struct CustomMap: View {
                 MapPolyline(coordinates: recording.coordinates).stroke(.blue, lineWidth: 5)
             }
             
-            if showAllWalks {
+            if visualizeHeatMap {
                 ForEach(0..<heatMap.count, id: \.self) { index in
                     let item = heatMap[index]
                     let coordinate = CLLocationCoordinate2D(
