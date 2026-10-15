@@ -52,7 +52,7 @@ struct WalkTrackerApp: App {
     func createQuest (questType: QuestType) async {
         do {
             let location = try await locationManager.requestCurrentLocation()
-            let quest = QuestFactory.make(referencePoint: location, questType: questType)
+            let quest = QuestFactory.make(referencePoint: location, questType: questType, heatMap: heatMap)
             let context = container.mainContext
             context.insert(quest)
         } catch {

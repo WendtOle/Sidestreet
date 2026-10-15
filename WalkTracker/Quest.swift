@@ -49,9 +49,9 @@ enum QuestType: String, Codable, CaseIterable {
     
     var distance: (min: Double, max: Double) {
         switch self {
-        case .navigate, .collect, .orbit:
+        case .navigate, .orbit:
             return (300,1200)
-        case .track, .navigateClose:
+        case .track, .navigateClose, .collect:
             return (100,600)
         }
     }

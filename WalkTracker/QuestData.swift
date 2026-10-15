@@ -11,6 +11,12 @@ import SwiftData
 struct Target: Codable {
     var point: GeoPoint
     var value: Double
+    var collected: Bool = false
+
+    var collectionPoints: Int {
+        // Values are normalized to 0...1; every collectible earns at least one point.
+        max(1, Int((value * 100).rounded()))
+    }
 }
 
 @Model
