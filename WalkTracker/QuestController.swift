@@ -47,11 +47,11 @@ final class QuestController {
     }
     
     func udpateActivity () {
-        guard let activity = self.activeActivity, let walk = activeWalk, let quest = activeQuest else { return }
                 
+        guard let activity = self.activeActivity, let walk = activeWalk else { return }
         let state = SessionActivityExtensionAttributes.ContentState(
             distanceMeter: walk.totalDistance,
-            isTrackingQuestActive: quest.type == .track,
+            isTrackingQuestActive: activeQuest?.type == .track,
             isTrackingSoundRunning: soundController.isRunning
         )
 
