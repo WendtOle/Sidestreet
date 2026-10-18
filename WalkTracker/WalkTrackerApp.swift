@@ -165,7 +165,8 @@ struct WalkTrackerApp: App {
                 onDeleteWalk: refreshHeatmap,
                 heatMap: heatMap,
                 enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
-                toggleTrackingSound: toggleTrackingSound
+                toggleTrackingSound: toggleTrackingSound,
+                showWaitingForLocationIndicator: walkReferencePoint == nil && questController.activeWalk != nil,
             )
             .onAppear {
                 locationManager.requestPermission()

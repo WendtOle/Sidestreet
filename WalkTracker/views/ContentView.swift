@@ -26,6 +26,7 @@ struct ContentView: View {
     let heatMap: [(point: GeoPoint, count: Double)]
     let enableQuestCreation: Bool
     let toggleTrackingSound: () -> Void
+    let showWaitingForLocationIndicator: Bool
     
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
@@ -62,6 +63,19 @@ struct ContentView: View {
                 
             )
             VStack{
+                if showWaitingForLocationIndicator {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                            .controlSize(.small)
+                        
+                        Text("Waiting for location update").font(.caption)
+                    }
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 4)
+                    .glassEffect(
+                        in: RoundedRectangle(cornerRadius: 16)
+                    )
+                }
                 Spacer().frame(height: 50)
                 SideButtons(isHistoryPresented: $isHistoryPresented, visualizeHeatMap: $visualizeHeatMap)
                 Spacer()
