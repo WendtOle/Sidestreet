@@ -25,10 +25,8 @@ struct InformationContainer<Content:View>: View {
             .buttonStyle(.plain)
         }
         .padding()
-        .background(
-            .thinMaterial,
+        .glassEffect(
             in: RoundedRectangle(cornerRadius: 16)
         )
-        .padding(.horizontal)
     }
 }

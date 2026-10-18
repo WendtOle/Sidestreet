@@ -16,8 +16,10 @@ struct CustomMap: View {
     @State private var closeMode = false
     @State private var cameraDistance: Double = 10_000
     var selectedWalk: Walk?
+    var unselectWalk: () -> Void
     var visualizeHeatMap: Bool
     var selectedQuest: QuestData?
+    
 
     var body: some View {
         Map(position: $cameraPosition){
@@ -64,6 +66,31 @@ struct CustomMap: View {
                 MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
                 ForEach(selectedWalk.quests, id: \.id) { quest in
                     QuestFactory.mapElements(questData: quest)
+                }
+                if let endPoint = selectedWalk.routeCoordinates.last {
+                    Annotation("", coordinate: CLLocationCoordinate2D(
+                            latitude: endPoint.latitude,
+                            longitude: endPoint.longitude
+                        ), anchor: .bottom) {
+                            VStack {
+                                
+                                Button(action: unselectWalk) {
+                                    HStack(spacing: 16) {
+                                        Text("\(selectedWalk.totalDistance / 1000, specifier: "%.2f") km")
+                                            .font(.caption.bold())
+                                        Text(formatDuration(selectedWalk.duration))
+                                            .font(.caption.bold())
+                                        Image(systemName: "xmark")
+                                            .font(.system(size: 10, weight: .bold))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }.buttonStyle(.glassProminent)
+                                        
+                                
+                            }.padding(.bottom, 12)
+                             
+                    }
+                    .annotationTitles(.hidden)
                 }
             }
         }

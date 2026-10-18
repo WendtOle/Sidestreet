@@ -25,7 +25,6 @@ struct ContentView: View {
     let onDeleteWalk: () -> Void
     let heatMap: [(point: GeoPoint, count: Double)]
     let enableQuestCreation: Bool
-    @Binding var dismissedChallengeCreation: Bool
     let toggleTrackingSound: () -> Void
     
     @State private var cameraPosition: MapCameraPosition =
@@ -33,6 +32,7 @@ struct ContentView: View {
     @State private var selectedWalk: Walk?
     
     @State var isHistoryPresented: Bool = false
+    @State var isQuestCreationPresented: Bool = false
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
     
@@ -56,65 +56,78 @@ struct ContentView: View {
                 heatMap: heatMap,
                 cameraPosition: $cameraPosition,
                 selectedWalk: selectedWalk,
+                unselectWalk: { selectedWalk = nil },
                 visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
+                
             )
             VStack{
                 Spacer().frame(height: 50)
                 SideButtons(isHistoryPresented: $isHistoryPresented, visualizeHeatMap: $visualizeHeatMap)
                 Spacer()
-                if let quest = selectedQuest {
-                    InformationContainer {
-                        HStack {
-                            Image(systemName: quest.type.symbol)
-                                .frame(width: 35)
-                            Text(quest.type.name)
-                                .font(.headline)
-                            Spacer()
-                            QuestFactory.progressIndicatorElement(questData: quest)
+                if let walk = recording {
+                    VStack {
+                        WalkProgress(
+                            createdAt: walk.createdAt,
+                            distanceKm: walk.totalDistance / 1_000,
+                            accent: .green,
+                            softAccent: .blue
+                        ) {}
+                            .padding(.horizontal, 24)
+                            .padding(.top, 12)
+                            .padding(.bottom, 6)
+                        if let quest = selectedQuest {
+                            HStack {
+                                Image(systemName: quest.type.symbol)
+                                    .frame(width: 35)
+                                Text(quest.type.name)
+                                Spacer()
+                                QuestFactory.progressIndicatorElement(questData: quest)
+                                if recording != nil, selectedQuest?.type == .track {
+                                    Button {
+                                        toggleTrackingSound()
+                                    } label: {
+                                        
+                                        Image(systemName: soundController.isRunning ? "speaker.wave.2" : "speaker.slash")
+                                            .font(.system(size: 24, weight: .semibold))
+                                            .frame(width: 35, height: 35)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
                             }
-                    } onClose: {
-                        unselectQuest()
-                    }
-                }
-                if let walk = selectedWalk {
-                    InformationContainer {
-                        WalkInformation(walk: walk)
-                    } onClose: {
-                        selectedWalk = nil
-                    }
-                }
-                if enableQuestCreation && dismissedChallengeCreation == false {
-                    QuestCreationContainer(createQuest: createQuest, dismissedChallengeCreation: $dismissedChallengeCreation)
-                }
-                HStack {
-                    RecordingButton(activeWalk: recording, startRecording: startWalk, stopRecording: stopRecording)
-                    if dismissedChallengeCreation {
-                        Button {
-                            dismissedChallengeCreation = false
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 28, weight: .bold))
-                                .frame(width: 50, height: 50)
-                        
+                            .padding(12)
+                            .frame(maxWidth: .infinity)
+                            .background(.blue.opacity(0.25))
+                        } else if enableQuestCreation {
+                            HStack {
+                                Button("Take on a Challenge?") {
+                                    isQuestCreationPresented = true
+                                }
+                            }
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity)
+                            .background(.blue.opacity(0.25))
                         }
-                        .buttonStyle(.glassProminent)
-                        .tint(.accentColor)
                     }
-                    if recording != nil, selectedQuest?.type == .track {
-                        Button {
-                            toggleTrackingSound()
-                        } label: {
-                            
-                            Image(systemName: soundController.isRunning ? "speaker.wave.3" : "speaker.slash")
-                                .font(.system(size: 28, weight: .bold))
-                                .frame(width: 50, height: 50)
-                        
-                        }
-                        .buttonStyle(.glassProminent)
-                        .tint(soundController.isRunning ? Color.accentColor : Color.gray)
-                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .glassEffect(
+                        in: RoundedRectangle(cornerRadius: 16)
+                    )
                 }
+                Button {
+                    if recording != nil {
+                        stopRecording()
+                    } else {
+                        startWalk()
+                    }
+                } label: {
+                    Image(systemName: recording != nil ? "stop.fill" : "play.fill")
+                        .font(.system(size: 28, weight: .bold))
+                        .frame(width: 72, height: 50)
+                    
+                }
+                .buttonStyle(.glassProminent)
+                
             }
             .padding(.horizontal)
             .padding(.bottom)
@@ -141,6 +154,12 @@ struct ContentView: View {
             )
         .presentationDetents([.medium, .large])
         }
+        .sheet(isPresented: $isQuestCreationPresented) {
+            QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
+                .padding(24)
+                .presentationDetents([.fraction(0.7)])
+        }
+        
         .onChange(of: selectedWalk?.id) {
             guard let selectedWalk else {
                 return

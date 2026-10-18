@@ -20,7 +20,6 @@ struct WalkTrackerApp: App {
     
     @State private var heatMap: [(point: GeoPoint, count: Double)]
     @State private var walkReferencePoint: CLLocation?
-    @State private var dismissedChallengeCreation: Bool = false
     
     @State var activity: Activity<SessionActivityExtensionAttributes>?
     
@@ -98,7 +97,6 @@ struct WalkTrackerApp: App {
     
     func reset () {
         walkReferencePoint = nil
-        dismissedChallengeCreation = false
         locationManager.stopRecording()
         self.questController.activeWalk = nil
         stopActivitySession()
@@ -167,7 +165,6 @@ struct WalkTrackerApp: App {
                 onDeleteWalk: refreshHeatmap,
                 heatMap: heatMap,
                 enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
-                dismissedChallengeCreation: $dismissedChallengeCreation,
                 toggleTrackingSound: toggleTrackingSound
             )
             .onAppear {

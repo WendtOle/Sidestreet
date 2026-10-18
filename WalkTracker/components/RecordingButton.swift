@@ -32,10 +32,6 @@ struct RecordingButton: View {
                             .frame(width: 72, height: 50)
                     }
                     .padding(.leading, 12)
-                } else {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 28, weight: .bold))
-                        .frame(width: 72, height: 50)
                 }
             }
             .buttonStyle(.glassProminent)
