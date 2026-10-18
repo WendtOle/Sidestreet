@@ -8,6 +8,7 @@
 import AVFAudio
 import Combine
 import CoreLocation
+import Observation
 
 protocol Player {
     var isRunning: Bool {get}
@@ -15,9 +16,10 @@ protocol Player {
     func stop() -> Void
 }
 
+@Observable
 @MainActor
 final class SoundController: ObservableObject, Player {
-    @Published private(set) var isRunning = false
+    private(set) var isRunning = false
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()

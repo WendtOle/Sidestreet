@@ -13,6 +13,8 @@
 		7F8CC1DE30836BB300A2EAFC /* SessionActivityExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7F8CC1E53083812200A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */; };
 		7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */; };
+		7F8CC1E83083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */; };
+		7F8CC1E93083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +45,7 @@
 		7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityExtensionAttributes.swift; sourceTree = "<group>"; };
+		7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTrackingSoundIntent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -60,6 +63,13 @@
 			);
 			target = 7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */;
 		};
+		7FD87A943084A5E5000DAAB4 /* Exceptions for "WalkTracker" folder in "SessionActivityExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				utils/format.swift,
+			);
+			target = 7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,6 +77,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				7F42884E306FB96C00658834 /* Exceptions for "WalkTracker" folder in "WalkTracker" target */,
+				7FD87A943084A5E5000DAAB4 /* Exceptions for "WalkTracker" folder in "SessionActivityExtensionExtension" target */,
 			);
 			path = WalkTracker;
 			sourceTree = "<group>";
@@ -77,6 +88,11 @@
 				7F8CC1E330836BB400A2EAFC /* Exceptions for "SessionActivityExtension" folder in "SessionActivityExtensionExtension" target */,
 			);
 			path = SessionActivityExtension;
+			sourceTree = "<group>";
+		};
+		7FD87A81308498D0000DAAB4 /* components */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = components;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -101,6 +117,8 @@
 		7F428836306FAB4B00658834 = {
 			isa = PBXGroup;
 			children = (
+				7FD87A81308498D0000DAAB4 /* components */,
+				7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */,
 				7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */,
 				7F428841306FAB4B00658834 /* WalkTracker */,
 				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
@@ -146,6 +164,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				7F428841306FAB4B00658834 /* WalkTracker */,
+				7FD87A81308498D0000DAAB4 /* components */,
 			);
 			name = WalkTracker;
 			packageProductDependencies = (
@@ -167,6 +186,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
+				7FD87A81308498D0000DAAB4 /* components */,
 			);
 			name = SessionActivityExtensionExtension;
 			productName = SessionActivityExtensionExtension;
@@ -232,12 +252,14 @@
 			isa = PBXSourcesBuildPhase;
 			files = (
 				7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
+				7F8CC1E93083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */,
 			);
 		};
 		7F8CC1C830836BB100A2EAFC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
 				7F8CC1E53083812200A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
+				7F8CC1E83083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */

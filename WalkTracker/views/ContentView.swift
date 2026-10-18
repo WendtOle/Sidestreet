@@ -17,7 +17,7 @@ struct ContentView: View {
     var selectedQuest: QuestData?
     let createQuest: (QuestType, Bool) -> Void
     let selectQuest: (QuestData) -> Void
-    let unselectQuest: (QuestData) -> Void
+    let unselectQuest: () -> Void
     let startWalk: () -> Void
     let saveWalk: () -> Void
     let discardWalk: () -> Void
@@ -26,6 +26,7 @@ struct ContentView: View {
     let heatMap: [(point: GeoPoint, count: Double)]
     let enableQuestCreation: Bool
     @Binding var dismissedChallengeCreation: Bool
+    let toggleTrackingSound: () -> Void
     
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
@@ -73,7 +74,7 @@ struct ContentView: View {
                             QuestFactory.progressIndicatorElement(questData: quest)
                             }
                     } onClose: {
-                        unselectQuest(quest)
+                        unselectQuest()
                     }
                 }
                 if let walk = selectedWalk {
@@ -102,11 +103,7 @@ struct ContentView: View {
                     }
                     if recording != nil, selectedQuest?.type == .track {
                         Button {
-                            if soundController.isRunning {
-                                soundController.stop()
-                                return
-                            }
-                            soundController.start()
+                            toggleTrackingSound()
                         } label: {
                             
                             Image(systemName: soundController.isRunning ? "speaker.wave.3" : "speaker.slash")

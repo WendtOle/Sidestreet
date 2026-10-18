@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import ActivityKit
+import AppIntents
 
 @main
 struct WalkTrackerApp: App {
@@ -19,6 +21,8 @@ struct WalkTrackerApp: App {
     @State private var heatMap: [(point: GeoPoint, count: Double)]
     @State private var walkReferencePoint: CLLocation?
     @State private var dismissedChallengeCreation: Bool = false
+    
+    @State var activity: Activity<SessionActivityExtensionAttributes>?
     
     init() {
         do {
@@ -36,9 +40,42 @@ struct WalkTrackerApp: App {
         }
         let soundController = SoundController()
         self.soundController = soundController
+        AppDependencyManager.shared.add(dependency: soundController)
         let questController = QuestController(soundController: soundController)
         self.questController = questController
         locationManager = LocationManager(onLocationUpdate: questController.onLocationUpdate)
+    }
+    
+    func startActivitySession (createdAt: Date) {
+        do {
+            let activity = try Activity<SessionActivityExtensionAttributes>.request(
+                attributes: .init(name: "Test-Session", createdAt: createdAt),
+                content: ActivityContent(
+                    state: .init(distanceMeter: 0.0,
+                                 isTrackingQuestActive: false,
+                                 isTrackingSoundRunning: soundController.isRunning
+                                ),
+                    staleDate: nil
+                ),
+                pushType: nil
+            )
+            self.activity = activity
+            questController.activeActivity = activity
+        } catch {
+            print("Live Activity konnte nicht starten:", error)
+        }
+    }
+    
+    func stopActivitySession () {
+        guard let activity = self.activity else { return }
+        questController.activeActivity = nil
+        Task {
+            await activity.end(
+                activity.content,
+                dismissalPolicy: .immediate
+            )
+        }
+        
     }
     
     @MainActor
@@ -56,7 +93,7 @@ struct WalkTrackerApp: App {
         let quest = QuestFactory.make(referencePoint: point, questType: questType, heatMap: heatMap, smallVariant: smallVariant)
         let context = container.mainContext
         context.insert(quest)
-        questController.activeQuest = quest
+        questController.setQuest(quest: quest)
     }
     
     func reset () {
@@ -64,12 +101,14 @@ struct WalkTrackerApp: App {
         dismissedChallengeCreation = false
         locationManager.stopRecording()
         self.questController.activeWalk = nil
+        stopActivitySession()
     }
     
     func startWalk() {
         let newWalk = Walk()
         self.questController.activeWalk = newWalk
         locationManager.startRecording()
+        startActivitySession(createdAt: newWalk.createdAt)
         Task {
             do {
                 let location = try await locationManager.requestCurrentLocation()
@@ -92,7 +131,7 @@ struct WalkTrackerApp: App {
         // if quest is reached connect quest to walk
         if let quest = self.questController.activeQuest, quest.questReached {
             walk.quests.append(quest)
-            self.questController.activeQuest = nil
+            questController.removeQuest()
         }
         self.questController.activeWalk = nil
         refreshHeatmap()
@@ -100,7 +139,15 @@ struct WalkTrackerApp: App {
     
     func discardWalk() {
         reset()
-        self.questController.activeQuest = nil
+        self.questController.removeQuest()
+    }
+    
+    func toggleTrackingSound() {
+        if soundController.isRunning {
+            soundController.stop()
+        } else {
+            soundController.start()
+        }
     }
     
     var body: some Scene {
@@ -110,11 +157,9 @@ struct WalkTrackerApp: App {
                 selectedQuest: questController.activeQuest,
                 createQuest: createQuest,
                 selectQuest: {quest in
-                    questController.activeQuest = quest
+                    questController.setQuest(quest: quest)
                 },
-                unselectQuest: {_ in
-                    questController.activeQuest = nil
-                },
+                unselectQuest: questController.removeQuest,
                 startWalk: startWalk,
                 saveWalk: saveWalk,
                 discardWalk: discardWalk,
@@ -122,7 +167,8 @@ struct WalkTrackerApp: App {
                 onDeleteWalk: refreshHeatmap,
                 heatMap: heatMap,
                 enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
-                dismissedChallengeCreation: $dismissedChallengeCreation
+                dismissedChallengeCreation: $dismissedChallengeCreation,
+                toggleTrackingSound: toggleTrackingSound
             )
             .onAppear {
                 locationManager.requestPermission()
