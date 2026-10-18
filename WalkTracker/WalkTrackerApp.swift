@@ -10,8 +10,32 @@ import SwiftData
 import ActivityKit
 import AppIntents
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    var onTerminate: (() -> Void)?
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        onTerminate?()
+        let completion = DispatchSemaphore(value: 0)
+
+        Task.detached {
+            defer { completion.signal() }
+            for activity in Activity<SessionActivityExtensionAttributes>.activities {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
+        }
+
+        let result = completion.wait(timeout: .now() + 2)
+
+        if result == .timedOut {
+            print("Activity cleanup timed out")
+        }
+    }
+}
+
 @main
 struct WalkTrackerApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     private let container: ModelContainer
     
     @State private var soundController: SoundController
@@ -65,16 +89,13 @@ struct WalkTrackerApp: App {
         }
     }
     
-    func stopActivitySession () {
+    func stopActivitySession () async {
         guard let activity = self.activity else { return }
         questController.activeActivity = nil
-        Task {
-            await activity.end(
-                activity.content,
-                dismissalPolicy: .immediate
-            )
-        }
-        
+        await activity.end(
+            activity.content,
+            dismissalPolicy: .immediate
+        )
     }
     
     @MainActor
@@ -99,7 +120,9 @@ struct WalkTrackerApp: App {
         walkReferencePoint = nil
         locationManager.stopRecording()
         self.questController.activeWalk = nil
-        stopActivitySession()
+        Task {
+            await stopActivitySession()
+        }
     }
     
     func startWalk() {
@@ -120,18 +143,30 @@ struct WalkTrackerApp: App {
     
     func saveWalk() {
         guard let walk = self.questController.activeWalk else { return }
-        reset()
         
         // persist walk
         let context = container.mainContext
+        
         context.insert(walk)
         
         // if quest is reached connect quest to walk
         if let quest = self.questController.activeQuest, quest.questReached {
             walk.quests.append(quest)
+        }
+        
+        do {
+            try context.save()
+            print("Walk saved to persistent storage")
+        } catch {
+            print("Could not save walk: \(error)")
+            return
+        }
+        
+        if let quest = self.questController.activeQuest, quest.questReached {
             questController.removeQuest()
         }
-        self.questController.activeWalk = nil
+        
+        reset()
         refreshHeatmap()
     }
     
@@ -170,6 +205,9 @@ struct WalkTrackerApp: App {
             )
             .onAppear {
                 locationManager.requestPermission()
+                appDelegate.onTerminate = {
+                    saveWalk()
+                }
             }
         }
         .modelContainer(container)

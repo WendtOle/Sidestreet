@@ -7,8 +7,8 @@
 import ActivityKit
 import Foundation
 
-struct SessionActivityExtensionAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
+nonisolated struct SessionActivityExtensionAttributes: ActivityAttributes {
+    nonisolated public struct ContentState: Codable, Hashable {
         var distanceMeter: Double
         var isTrackingQuestActive: Bool
         var isTrackingSoundRunning: Bool
