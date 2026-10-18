@@ -23,10 +23,10 @@ struct RecordingButton: View {
                 }
             } label: {
                 if let walk = activeWalk {
-                    HStack(spacing: 20) {
-                        let formattedDistance = walk.totalDistance < 1_000 ? "\(Int(walk.totalDistance)) m" : String(format: "%.2f km", walk.totalDistance / 1_000)
-                        Text(formattedDistance)
-                        Text(formatDuration(walk.duration))
+                    HStack {
+                        WalkProgress(createdAt: walk.createdAt, distanceKm: walk.totalDistance / 1_000, accent: .green, softAccent: .blue) {}
+                            .padding(8)
+                        Spacer()
                         Image(systemName: "stop.fill")
                             .font(.system(size: 28, weight: .bold))
                             .frame(width: 72, height: 50)
