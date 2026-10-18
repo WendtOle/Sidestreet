@@ -8,10 +8,41 @@
 
 /* Begin PBXBuildFile section */
 		7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7F6359D73073B93C00B37931 /* GEOSwift */; };
+		7F8CC1CF30836BB100A2EAFC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */; };
+		7F8CC1D130836BB100A2EAFC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */; };
+		7F8CC1DE30836BB300A2EAFC /* SessionActivityExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7F8CC1E53083812200A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */; };
+		7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7F8CC1DC30836BB300A2EAFC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7F428837306FAB4B00658834 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7F8CC1CB30836BB100A2EAFC;
+			remoteInfo = SessionActivityExtensionExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7F8CC1DF30836BB400A2EAFC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				7F8CC1DE30836BB300A2EAFC /* SessionActivityExtensionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7F42883F306FAB4B00658834 /* WalkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SessionActivityExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityExtensionAttributes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -21,6 +52,13 @@
 				Info.plist,
 			);
 			target = 7F42883E306FAB4B00658834 /* WalkTracker */;
+		};
+		7F8CC1E330836BB400A2EAFC /* Exceptions for "SessionActivityExtension" folder in "SessionActivityExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -33,6 +71,14 @@
 			path = WalkTracker;
 			sourceTree = "<group>";
 		};
+		7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7F8CC1E330836BB400A2EAFC /* Exceptions for "SessionActivityExtension" folder in "SessionActivityExtensionExtension" target */,
+			);
+			path = SessionActivityExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,13 +88,23 @@
 				7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */,
 			);
 		};
+		7F8CC1C930836BB100A2EAFC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				7F8CC1D130836BB100A2EAFC /* SwiftUI.framework in Frameworks */,
+				7F8CC1CF30836BB100A2EAFC /* WidgetKit.framework in Frameworks */,
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		7F428836306FAB4B00658834 = {
 			isa = PBXGroup;
 			children = (
+				7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */,
 				7F428841306FAB4B00658834 /* WalkTracker */,
+				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
+				7F8CC1CD30836BB100A2EAFC /* Frameworks */,
 				7F428840306FAB4B00658834 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,8 +113,18 @@
 			isa = PBXGroup;
 			children = (
 				7F42883F306FAB4B00658834 /* WalkTracker.app */,
+				7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7F8CC1CD30836BB100A2EAFC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */,
+				7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,8 +137,12 @@
 				7F42883B306FAB4B00658834 /* Sources */,
 				7F42883C306FAB4B00658834 /* Frameworks */,
 				7F42883D306FAB4B00658834 /* Resources */,
+				7F8CC1DF30836BB400A2EAFC /* Embed Foundation Extensions */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				7F8CC1DD30836BB300A2EAFC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				7F428841306FAB4B00658834 /* WalkTracker */,
@@ -85,6 +155,24 @@
 			productReference = 7F42883F306FAB4B00658834 /* WalkTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7F8CC1E230836BB400A2EAFC /* Build configuration list for PBXNativeTarget "SessionActivityExtensionExtension" */;
+			buildPhases = (
+				7F8CC1C830836BB100A2EAFC /* Sources */,
+				7F8CC1C930836BB100A2EAFC /* Frameworks */,
+				7F8CC1CA30836BB100A2EAFC /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
+			);
+			name = SessionActivityExtensionExtension;
+			productName = SessionActivityExtensionExtension;
+			productReference = 7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,6 +184,9 @@
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					7F42883E306FAB4B00658834 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					7F8CC1CB30836BB100A2EAFC = {
 						CreatedOnToolsVersion = 27.0;
 					};
 				};
@@ -118,6 +209,7 @@
 			projectRoot = "";
 			targets = (
 				7F42883E306FAB4B00658834 /* WalkTracker */,
+				7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -128,15 +220,35 @@
 			files = (
 			);
 		};
+		7F8CC1CA30836BB100A2EAFC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7F42883B306FAB4B00658834 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
+			);
+		};
+		7F8CC1C830836BB100A2EAFC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				7F8CC1E53083812200A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7F8CC1DD30836BB300A2EAFC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */;
+			targetProxy = 7F8CC1DC30836BB300A2EAFC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7F428848306FAB4D00658834 /* Debug configuration for PBXProject "WalkTracker" */ = {
@@ -270,6 +382,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WalkTracker/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WalkTracker benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,12 +397,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) WALKTRACKER_APP";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -305,6 +419,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WalkTracker/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WalkTracker benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -319,12 +434,77 @@
 				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WALKTRACKER_APP;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		7F8CC1E030836BB400A2EAFC /* Debug configuration for PBXNativeTarget "SessionActivityExtensionExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GM94QPRC5W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SessionActivityExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SessionActivityExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker.SessionActivityExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		7F8CC1E130836BB400A2EAFC /* Release configuration for PBXNativeTarget "SessionActivityExtensionExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GM94QPRC5W;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SessionActivityExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SessionActivityExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker.SessionActivityExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -344,6 +524,14 @@
 			buildConfigurations = (
 				7F42884B306FAB4D00658834 /* Debug configuration for PBXNativeTarget "WalkTracker" */,
 				7F42884C306FAB4D00658834 /* Release configuration for PBXNativeTarget "WalkTracker" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		7F8CC1E230836BB400A2EAFC /* Build configuration list for PBXNativeTarget "SessionActivityExtensionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F8CC1E030836BB400A2EAFC /* Debug configuration for PBXNativeTarget "SessionActivityExtensionExtension" */,
+				7F8CC1E130836BB400A2EAFC /* Release configuration for PBXNativeTarget "SessionActivityExtensionExtension" */,
 			);
 			defaultConfigurationName = Release;
 		};
