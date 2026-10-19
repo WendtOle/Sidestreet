@@ -7,10 +7,12 @@
 
 import CoreLocation
 import Observation
+import Combine
 
 @Observable
 @MainActor
 final class LocationManager: NSObject, CLLocationManagerDelegate {
+    private(set) var servicesEnabled: Bool?
     private let manager = CLLocationManager()
     var lastLocation: CLLocation?
     var nullableLastRecordedLocation: CLLocation?
@@ -41,6 +43,23 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
 
                 manager.requestLocation()
             }
+    }
+    
+    func updateServiceEnabledStatus() async {
+        let enabled = await Task.detached(priority: .utility) {
+            CLLocationManager.locationServicesEnabled()
+        }.value
+
+        guard !Task.isCancelled else { return }
+        servicesEnabled = enabled
+    }
+    
+    nonisolated func locationManagerDidChangeAuthorization(
+        _ manager: CLLocationManager
+    ) {
+        Task { @MainActor [weak self] in
+            await self?.updateServiceEnabledStatus()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

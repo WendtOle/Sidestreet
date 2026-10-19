@@ -13,6 +13,7 @@ import GEOSwift
 import AVFAudio
 
 struct ContentView: View {
+    var isLocationServiceEnabled: Bool
     @ObservedObject var soundController: SoundController
     var selectedQuest: QuestData?
     let createQuest: (QuestType, Bool) -> Void
@@ -63,6 +64,10 @@ struct ContentView: View {
                 
             )
             VStack{
+                LocationEnabledAlert(
+                    isLocationServiceEnabled: isLocationServiceEnabled,
+                    isRecording: recording != nil
+                )
                 LocationUpdatePendingAlert(
                     isLocationUpdatePending: isLocationUpdatePending
                 )
@@ -131,6 +136,7 @@ struct ContentView: View {
                     
                 }
                 .buttonStyle(.glassProminent)
+                .disabled(recording == nil && !isLocationServiceEnabled)
                 
             }
             .padding(.horizontal)

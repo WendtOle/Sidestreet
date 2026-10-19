@@ -186,6 +186,7 @@ struct WalkTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(
+                isLocationServiceEnabled: locationManager.servicesEnabled ?? true,
                 soundController: soundController,
                 selectedQuest: questController.activeQuest,
                 createQuest: createQuest,
