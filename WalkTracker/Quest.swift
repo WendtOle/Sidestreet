@@ -13,7 +13,6 @@ import SwiftUI
 enum QuestType: String, Codable, CaseIterable {
     case navigate
     case track
-    case orbit
     case collect
     
     var name: String {
@@ -22,8 +21,6 @@ enum QuestType: String, Codable, CaseIterable {
             return "Navigate"
         case .collect:
             return "Collect"
-        case .orbit:
-            return "Circle"
         case .track:
             return "Track"
         }
@@ -35,8 +32,6 @@ enum QuestType: String, Codable, CaseIterable {
             return "flag.pattern.checkered"
         case .collect:
             return "point.bottomleft.forward.to.point.topright.scurvepath"
-        case .orbit:
-            return "circle"
         case .track:
             return "magnifyingglass"
         }

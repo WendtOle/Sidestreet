@@ -61,7 +61,7 @@ struct QuestLogView: View {
                                     defer {isLoading = false}
                                     await onCreate(type)
                                 }
-                            }.disabled(isLoading || type == QuestType.orbit)
+                            }.disabled(isLoading)
                         }
                         
                     } label: {
