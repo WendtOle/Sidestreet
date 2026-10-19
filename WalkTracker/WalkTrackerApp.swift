@@ -201,7 +201,7 @@ struct WalkTrackerApp: App {
                 heatMap: heatMap,
                 enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
                 toggleTrackingSound: toggleTrackingSound,
-                showWaitingForLocationIndicator: walkReferencePoint == nil && questController.activeWalk != nil,
+                isLocationUpdatePending: walkReferencePoint == nil && questController.activeWalk != nil,
             )
             .onAppear {
                 locationManager.requestPermission()
