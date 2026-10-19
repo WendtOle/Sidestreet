@@ -19,10 +19,12 @@ struct CustomMap: View {
     var unselectWalk: () -> Void
     var visualizeHeatMap: Bool
     var selectedQuest: QuestData?
+    var isLocationServiceEnabled: Bool
+    let mapScope: Namespace.ID
     
 
     var body: some View {
-        Map(position: $cameraPosition){
+        Map(position: $cameraPosition, scope: mapScope){
             UserAnnotation()
             if let selectedQuest {
                 QuestFactory.mapElements(questData: selectedQuest)
@@ -104,5 +106,6 @@ struct CustomMap: View {
             pointsOfInterest: .excludingAll,
             showsTraffic: false
         ))
+        .mapControls { } // Remove automatically placed controls
     }
 }

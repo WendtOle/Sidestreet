@@ -29,6 +29,8 @@ struct ContentView: View {
     let toggleTrackingSound: () -> Void
     let isLocationUpdatePending: Bool
     
+    @Namespace private var mapScope
+    
     @State private var cameraPosition: MapCameraPosition =
         .userLocation(followsHeading: false, fallback: .automatic)
     @State private var selectedWalk: Walk?
@@ -61,7 +63,8 @@ struct ContentView: View {
                 unselectWalk: { selectedWalk = nil },
                 visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
-                
+                isLocationServiceEnabled: isLocationServiceEnabled,
+                mapScope: mapScope
             )
             VStack{
                 LocationEnabledAlert(
@@ -71,9 +74,41 @@ struct ContentView: View {
                 LocationUpdatePendingAlert(
                     isLocationUpdatePending: isLocationUpdatePending
                 )
-                Spacer().frame(height: 50)
+                HStack {
+                    Spacer()
+                    MapScaleView(scope: mapScope)
+                    Spacer()
+                }
+                .frame(height: 30)
                 SideButtons(isHistoryPresented: $isHistoryPresented, visualizeHeatMap: $visualizeHeatMap)
                 Spacer()
+                
+                if isLocationServiceEnabled {
+                    HStack{
+                        Spacer()
+                        Button {} label: {
+                            VStack (spacing: 16){
+                                MapCompass(scope: mapScope)
+                                    .mapControlVisibility(.visible)
+                                Button {
+                                    withAnimation {
+                                        cameraPosition = .userLocation(
+                                            followsHeading: false,
+                                            fallback: .automatic
+                                        )
+                                    }
+                                } label: {
+                                    Image(systemName: cameraPosition.followsUserLocation
+                                          ? "location.fill"
+                                          : "location")
+                                    .font(.system(size: 28, weight: .medium))
+                                }
+                            }
+                        }
+                        .padding(.vertical)
+                        .buttonStyle(.glass)
+                    }
+                }
                 if let walk = recording {
                     VStack {
                         WalkProgress(
@@ -137,11 +172,10 @@ struct ContentView: View {
                 }
                 .buttonStyle(.glassProminent)
                 .disabled(recording == nil && !isLocationServiceEnabled)
-                
             }
             .padding(.horizontal)
-            .padding(.bottom)
         }
+        .mapScope(mapScope)
         .sheet(isPresented: $isHistoryPresented) {
             WalkHistoryView(walks: walks, onSelect: { walk in
                 selectedWalk = walk
