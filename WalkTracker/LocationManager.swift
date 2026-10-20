@@ -17,7 +17,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     var lastLocation: CLLocation?
     var nullableLastRecordedLocation: CLLocation?
     var isRecording = false
-    private var locationContinuation: CheckedContinuation<CLLocation, Error>?
     private var onLocationUpdate: (_ location: CLLocation, _ distanceToPrev: CLLocationDistance?, _ timeSincePrev: Double?) -> Void
     
     init(onLocationUpdate: @escaping (CLLocation, CLLocationDistance?, Double?) -> Void) {
@@ -35,14 +34,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func requestPermission() {
         guard manager.authorizationStatus == .notDetermined else { return }
         manager.requestWhenInUseAuthorization()
-    }
-    
-    func requestCurrentLocation() async throws -> CLLocation {
-        try await withCheckedThrowingContinuation { continuation in
-                locationContinuation = continuation
-
-                manager.requestLocation()
-            }
     }
     
     func updateServiceEnabledStatus() async {
@@ -67,11 +58,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             return
         }
         lastLocation = next
-        
-        if let continuation = locationContinuation {
-            locationContinuation = nil
-            continuation.resume(returning: next)
-        }
 
         guard isRecording else {
             return
@@ -100,18 +86,6 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         
         onLocationUpdate(next, distance, time)
         nullableLastRecordedLocation = next
-    }
-    
-    func locationManager(
-        _ manager: CLLocationManager,
-        didFailWithError error: Error
-    ) {
-        if let continuation = locationContinuation {
-            locationContinuation = nil
-            continuation.resume(throwing: error)
-        }
-        
-        print("Location error:", error)
     }
     
     func startRecording() {

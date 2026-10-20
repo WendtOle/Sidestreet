@@ -47,7 +47,6 @@ final class QuestController {
     }
     
     func udpateActivity () {
-                
         guard let activity = self.activeActivity, let walk = activeWalk else { return }
         let state = SessionActivityExtensionAttributes.ContentState(
             distanceMeter: walk.totalDistance,

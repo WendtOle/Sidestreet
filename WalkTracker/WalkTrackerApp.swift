@@ -109,8 +109,8 @@ struct WalkTrackerApp: App {
     }
     
     func createQuest (questType: QuestType, smallVariant: Bool) {
-        guard let point = walkReferencePoint else { return }
-        let quest = QuestFactory.make(referencePoint: point, questType: questType, heatMap: heatMap, smallVariant: smallVariant)
+        guard let walk = questController.activeWalk, let point = walk.coordinates.last else { return }
+        let quest = QuestFactory.make(referencePoint: CLLocation(latitude: point.latitude, longitude: point.longitude), questType: questType, heatMap: heatMap, smallVariant: smallVariant)
         let context = container.mainContext
         context.insert(quest)
         questController.setQuest(quest: quest)
@@ -130,15 +130,6 @@ struct WalkTrackerApp: App {
         self.questController.activeWalk = newWalk
         locationManager.startRecording()
         startActivitySession(createdAt: newWalk.createdAt)
-        Task {
-            do {
-                let location = try await locationManager.requestCurrentLocation()
-                walkReferencePoint = location
-            } catch {
-                fatalError("could not find quest reference point \(error)")
-            }
-        }
-        
     }
     
     func saveWalk() {
@@ -200,9 +191,9 @@ struct WalkTrackerApp: App {
                 recording: questController.activeWalk,
                 onDeleteWalk: refreshHeatmap,
                 heatMap: heatMap,
-                enableQuestCreation: walkReferencePoint != nil && questController.activeQuest == nil,
+                enableQuestCreation: questController.activeWalk?.coordinates.isEmpty == false && questController.activeQuest == nil,
                 toggleTrackingSound: toggleTrackingSound,
-                isLocationUpdatePending: walkReferencePoint == nil && questController.activeWalk != nil,
+                isLocationUpdatePending: questController.activeWalk?.coordinates.isEmpty == true,
             )
             .onAppear {
                 locationManager.requestPermission()
