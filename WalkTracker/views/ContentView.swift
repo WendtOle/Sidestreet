@@ -125,6 +125,7 @@ struct ContentView: View {
                                 Image(systemName: quest.type.symbol)
                                     .frame(width: 35)
                                 Text(quest.type.name)
+                                QuestTypeExplanation(type: quest.type)
                                 Spacer()
                                 QuestFactory.progressIndicatorElement(questData: quest)
                                 if recording != nil, selectedQuest?.type == .track {
