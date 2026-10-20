@@ -36,6 +36,40 @@ enum QuestType: String, Codable, CaseIterable {
             return "magnifyingglass"
         }
     }
+    
+    var helpDescription: String {
+        switch self {
+        case .navigate:
+            return """
+            Find your way to a randomly chosen destination.
+            """
+
+        case .track:
+            return """
+            Find a randomly chosen destination using only sound.
+
+            Turn on sound and follow the beeps. They get faster \
+            as you move closer and slower as you move farther away.
+            """
+
+        case .collect:
+            return """
+            Explore your neighbourhood and collect coins to \
+            reach the target score.
+
+            Coins in places you haven’t visited recently \
+            are worth more points.
+            """
+        }
+    }
+
+    var helpImageName: String {
+        switch self {
+        case .navigate: return "challenge-help-navigate"
+        case .track:    return "challenge-help-track"
+        case .collect:  return "challenge-help-collect"
+        }
+    }
 }
 
 func getQuestTarget (startingPoint: CLLocation, distance: Double) -> GeoPoint {
