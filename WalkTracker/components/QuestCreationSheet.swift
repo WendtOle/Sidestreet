@@ -10,44 +10,69 @@ struct QuestCreationSheet: View {
     @State var choosenType: QuestType = QuestType.navigate
     @State var duration: ChallengeDuration = ChallengeDuration.long
     @Binding var isQuestCreationPresented: Bool
+
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Button("Cancel") {
                     isQuestCreationPresented = false
                 }
                 Spacer()
             }
-            .padding(.bottom, 8)
             
             Text("Find your challenge").font(.title)
-            Text("Pick what you want to focus on.").font(.subheadline)
             
-            Form {
-                Section("What kind?") {
-                    Picker("Kind", selection: $choosenType) {
-                        ForEach([QuestType.navigate, QuestType.track, QuestType.collect], id: \.self) { type in
-                            Label(type.name, systemImage: type.symbol)
-                                .tag(type)
-                        }
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.inline)
+            VStack(spacing: 8) {
+                HStack {
+                    Text("What kind?").font(.headline)
+                    Spacer()
                 }
-                
-                Section("How long?") {
-                    Picker("Duration", selection: $duration) {
-                        Text("Short").tag(ChallengeDuration.short)
-                        Text("Long").tag(ChallengeDuration.long)
+                Picker("Challenge type", selection: $choosenType) {
+                    ForEach(QuestType.allCases, id: \.self) { type in
+                        Label(type.name, systemImage: type.symbol)
+                            .tag(type)
                     }
-                    .pickerStyle(.segmented)
+                }
+                .pickerStyle(.segmented)
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Image(choosenType.helpImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 130)
+                        .frame(maxWidth: .infinity)
+                    
+                    
+                    Label(
+                        choosenType.name,
+                        systemImage: choosenType.symbol
+                    )
+                    .font(.callout.bold())
+                    
+                    Text(choosenType.helpDescription)
+                        .font(.subheadline)
+                        .fixedSize(
+                            horizontal: false,
+                            vertical: true
+                        )
                 }
             }
-            .frame(height: 330)
-            .scrollDisabled(true)
+            .padding()
             
+            Divider()
             
+            VStack(alignment: .leading, spacing: 8) {
+                Text("How long?").font(.headline.bold())
+                Text("Short challenges keep you close to your starting point. Long challenges take you farther away.").font(.subheadline)
+                Picker("Duration", selection: $duration) {
+                    Text("Short").tag(ChallengeDuration.short)
+                    Text("Long").tag(ChallengeDuration.long)
+                }
+                .pickerStyle(.segmented)
+            }
+            .padding()
+                        
             Button {
                 createQuest(choosenType, duration == ChallengeDuration.short)
                 isQuestCreationPresented = false
@@ -58,8 +83,6 @@ struct QuestCreationSheet: View {
                     .padding(.vertical, 8)
             }
             .buttonStyle(.glassProminent)
-            
-            
         }
         
     }

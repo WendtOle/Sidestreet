@@ -200,10 +200,8 @@ struct ContentView: View {
         }
         .sheet(isPresented: $isQuestCreationPresented) {
             QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
-                .padding(24)
-                .presentationDetents([.fraction(0.7)])
+                .padding(20)
         }
-        
         .onChange(of: selectedWalk?.id) {
             guard let selectedWalk else {
                 return
