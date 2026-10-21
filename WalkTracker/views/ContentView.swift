@@ -35,7 +35,6 @@ struct ContentView: View {
         .userLocation(followsHeading: false, fallback: .automatic)
     @State private var selectedWalk: Walk?
     
-    @State var isHistoryPresented: Bool = false
     @State var isQuestCreationPresented: Bool = false
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
@@ -84,15 +83,25 @@ struct ContentView: View {
                 .frame(height: 30)
                 Spacer()
                 HStack(alignment: .bottom){
-                    Button {
-                        isHistoryPresented = true
-                    } label: {
-                        Image(systemName: "clock.arrow.circlepath")
-                            .font(.system(size: 20))
-                            .frame(width: 32, height: 32)
+                    WalkHistoryView(walks: walks, onSelect: { walk in
+                        selectedWalk = walk
+                        if let position = frameRoute(for: walk.coordinates) {
+                            withAnimation(
+                                .timingCurve(
+                                    0.2, 0.8,
+                                    0.2, 1.0,
+                                    duration: 3
+                                )
+                            ) {
+                                cameraPosition = position
+                            }
+                        }
+                    }, onDelete: { walk in
+                        modelContext.delete(walk)
+                        try? modelContext.save()
+                        onDeleteWalk()
                     }
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
+                    )
                     Spacer()
                     VStack {
                         if isLocationServiceEnabled {
@@ -195,30 +204,6 @@ struct ContentView: View {
             }
         }
         .mapScope(mapScope)
-        .sheet(isPresented: $isHistoryPresented) {
-            SheetWrapper(isPresented: $isHistoryPresented, title: "Historie") {
-                WalkHistoryView(walks: walks, onSelect: { walk in
-                    selectedWalk = walk
-                    if let position = frameRoute(for: walk.coordinates) {
-                        withAnimation(
-                            .timingCurve(
-                                0.2, 0.8,
-                                0.2, 1.0,
-                                duration: 3
-                            )
-                        ) {
-                            cameraPosition = position
-                        }
-                    }
-                }, onDelete: { walk in
-                    modelContext.delete(walk)
-                    try? modelContext.save()
-                    onDeleteWalk()
-                }
-                )
-            }
-        .presentationDetents([.medium, .large])
-        }
         .adaptiveSheet(isPresent: $isQuestCreationPresented, title: "Find your challenge", exitTitle: "Cancel"){
             QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
         }
