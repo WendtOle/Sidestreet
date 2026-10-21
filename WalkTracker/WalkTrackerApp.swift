@@ -49,8 +49,9 @@ struct WalkTrackerApp: App {
     
     init() {
         do {
-            let modelContainer = try ModelContainer(for: QuestData.self, Walk.self)
+            let modelContainer = try ModelContainer(for: QuestData.self, Walk.self, SettingsData.self)
             container = modelContainer
+            try SettingsData.createIfNeeded(in: modelContainer.mainContext)
             
             let walks = try modelContainer.mainContext.fetch(
                 FetchDescriptor<Walk>()

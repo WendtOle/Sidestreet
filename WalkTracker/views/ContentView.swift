@@ -190,6 +190,9 @@ struct ContentView: View {
                 .disabled(recording == nil && !isLocationServiceEnabled)
             }
             .padding(.horizontal)
+            .overlay(alignment: .topLeading) {
+                AppMenu()
+            }
         }
         .mapScope(mapScope)
         .sheet(isPresented: $isHistoryPresented) {
