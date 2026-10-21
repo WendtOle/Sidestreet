@@ -82,21 +82,18 @@ struct ContentView: View {
                     Spacer()
                 }
                 .frame(height: 30)
-                HStack {
-                    VStack {
-                        Button {
-                            isHistoryPresented = true
-                        } label: {
-                            Image(systemName: "clock.arrow.circlepath")
-                                .font(.system(size: 18))
-                                .frame(width: 30, height: 20)
-                        }
-                        .buttonStyle(.glass)
-                    }
-                    Spacer()
-                }
                 Spacer()
-                
+                HStack(alignment: .bottom){
+                    Button {
+                        isHistoryPresented = true
+                    } label: {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.system(size: 20))
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    Spacer()
                     VStack {
                         if isLocationServiceEnabled {
                             MapCompass(scope: mapScope)
