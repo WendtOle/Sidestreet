@@ -15,14 +15,7 @@ struct ActivityHeader: View {
     var body: some View {
         HStack {
             HStack(spacing: 7) {
-                Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.black)
-                    .frame(width: 24, height: 24)
-                    .background(
-                        color,
-                        in: RoundedRectangle(cornerRadius: 7)
-                    )
+                AppIcon()
 
                 Text(appName)
                     .font(.subheadline.weight(.medium))
