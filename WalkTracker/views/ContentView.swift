@@ -97,14 +97,14 @@ struct ContentView: View {
                 }
                 Spacer()
                 
-                if isLocationServiceEnabled {
-                    HStack{
-                        Spacer()
+                    VStack {
+                        if isLocationServiceEnabled {
+                            MapCompass(scope: mapScope)
+                                .mapControlVisibility(.visible)
+                        }
                         Button {} label: {
                             VStack (spacing: 16){
                                 MapStyleSelector(mapCameraPosition: cameraPosition, style: $mapStyle, showsHeatMap: $visualizeHeatMap)
-                                MapCompass(scope: mapScope)
-                                    .mapControlVisibility(.visible)
                                 Button {
                                     withAnimation {
                                         cameraPosition = .userLocation(
@@ -116,13 +116,16 @@ struct ContentView: View {
                                     Image(systemName: cameraPosition.followsUserLocation
                                           ? "location.fill"
                                           : "location")
-                                    .font(.system(size: 24, weight: .medium))
+                                    .font(.system(size: 20))
                                 }
+                                .disabled(!isLocationServiceEnabled)
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical)
                         .buttonStyle(.glass)
+                        .glassEffect(.regular, in: .capsule)
                     }
+
                 }
                 if let walk = recording {
                     VStack {

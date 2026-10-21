@@ -13,7 +13,7 @@ struct MapStyleSelector: View {
             isPresent = true
         } label: {
             Image(systemName: "square.3.layers.3d")
-                .font(.system(size: 24))
+                .font(.system(size: 20))
                 .tint(.black)
         }
         .adaptiveSheet(isPresent: $isPresent, title: "Map Modes") {
