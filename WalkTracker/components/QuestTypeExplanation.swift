@@ -13,21 +13,8 @@ struct QuestTypeExplanation: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.borderless)
-        .sheet(isPresented: $isPresent) {
+        .adaptiveSheet(isPresent: $isPresent, title: type.longName)  {
             VStack(alignment: .leading, spacing: 12) {
-                HStack{
-                    Spacer()
-                    Button("Done") {
-                        isPresent = false
-                    }
-                }
-                Spacer()
-                Label(
-                    type.name,
-                    systemImage: type.symbol
-                )
-                .font(.body.bold())
-                
                 Text(type.helpDescription)
                     .font(.callout)
                     .fixedSize(
@@ -40,10 +27,7 @@ struct QuestTypeExplanation: View {
                     .frame(height: 160)
                     .frame(maxWidth: .infinity)
                 
-                Spacer()
             }
-            .padding(24)
-            .presentationDetents([.medium])
         }
     }
 }

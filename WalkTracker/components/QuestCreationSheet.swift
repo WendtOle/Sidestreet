@@ -13,17 +13,8 @@ struct QuestCreationSheet: View {
 
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Button("Cancel") {
-                    isQuestCreationPresented = false
-                }
-                Spacer()
-            }
-            
-            Text("Find your challenge").font(.title)
-            
-            VStack(spacing: 8) {
+        VStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text("What kind?").font(.headline)
                     Spacer()

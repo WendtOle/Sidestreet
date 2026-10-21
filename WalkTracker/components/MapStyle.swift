@@ -16,21 +16,13 @@ struct MapStyleSelector: View {
                 .font(.system(size: 24))
                 .tint(.black)
         }
-        .sheet(isPresented: $isPresent) {
-            VStack(alignment: .leading){
-                HStack {
-                    Spacer()
-                    Button("Done") {
-                        isPresent = false
-                    }
-                }
-                Text("Map Modes").font(.title)
+        .adaptiveSheet(isPresent: $isPresent, title: "Map Modes") {
+            VStack {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(Style.allCases) { option in
                         styleCard(option)
                     }
                 }
-                Spacer()
                 Toggle(isOn: $showsHeatMap) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Visit history")
@@ -49,10 +41,7 @@ struct MapStyleSelector: View {
                     Color.primary.opacity(0.08),
                     in: RoundedRectangle(cornerRadius: 24)
                 )
-                Spacer()
             }
-            .padding(20)
-            .presentationDetents([.medium])
         }
     }
     

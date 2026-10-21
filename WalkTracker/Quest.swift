@@ -26,6 +26,17 @@ enum QuestType: String, Codable, CaseIterable {
         }
     }
     
+    var longName: String {
+        switch self {
+        case .navigate:
+            return "Navigation Challenge"
+        case .collect:
+            return "Collecting Challenge"
+        case .track:
+            return "Tracking Challenge"
+        }
+    }
+    
     var symbol: String {
         switch self {
         case .navigate:

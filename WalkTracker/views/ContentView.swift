@@ -193,30 +193,31 @@ struct ContentView: View {
         }
         .mapScope(mapScope)
         .sheet(isPresented: $isHistoryPresented) {
-            WalkHistoryView(walks: walks, onSelect: { walk in
-                selectedWalk = walk
-                if let position = frameRoute(for: walk.coordinates) {
-                    withAnimation(
-                        .timingCurve(
-                            0.2, 0.8,
-                            0.2, 1.0,
-                            duration: 3
-                        )
-                    ) {
-                        cameraPosition = position
+            SheetWrapper(isPresented: $isHistoryPresented, title: "Historie") {
+                WalkHistoryView(walks: walks, onSelect: { walk in
+                    selectedWalk = walk
+                    if let position = frameRoute(for: walk.coordinates) {
+                        withAnimation(
+                            .timingCurve(
+                                0.2, 0.8,
+                                0.2, 1.0,
+                                duration: 3
+                            )
+                        ) {
+                            cameraPosition = position
+                        }
                     }
-                }
                 }, onDelete: { walk in
                     modelContext.delete(walk)
                     try? modelContext.save()
                     onDeleteWalk()
                 }
-            )
+                )
+            }
         .presentationDetents([.medium, .large])
         }
-        .sheet(isPresented: $isQuestCreationPresented) {
+        .adaptiveSheet(isPresent: $isQuestCreationPresented, title: "Find your challenge", exitTitle: "Cancel"){
             QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
-                .padding(20)
         }
         .onChange(of: selectedWalk?.id) {
             guard let selectedWalk else {

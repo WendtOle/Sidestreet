@@ -15,24 +15,22 @@ struct WalkHistoryView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationStack {
-            List{
-                ForEach(walks) {walk in
-                    Button {
-                        onSelect(walk)
-                        dismiss()
+        List{
+            ForEach(walks) {walk in
+                Button {
+                    onSelect(walk)
+                    dismiss()
+                } label: {
+                    WalkInformation(walk: walk)
+                }
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        onDelete(walk)
                     } label: {
-                        WalkInformation(walk: walk)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button(role: .destructive) {
-                            onDelete(walk)
-                        } label: {
-                            Label("Löschen", systemImage: "trash")
-                        }
+                        Label("Löschen", systemImage: "trash")
                     }
                 }
-            }.navigationTitle("Historie")
+            }
         }
     }
 }
