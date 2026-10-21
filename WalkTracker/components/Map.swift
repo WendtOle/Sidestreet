@@ -9,6 +9,7 @@ import MapKit
 import CoreLocation
 
 
+
 struct CustomMap: View {
     var recording: Walk?
     var heatMap: [(point: GeoPoint, count: Double)]
@@ -21,7 +22,7 @@ struct CustomMap: View {
     var selectedQuest: QuestData?
     var isLocationServiceEnabled: Bool
     let mapScope: Namespace.ID
-    
+    var mapStyle: Style
 
     var body: some View {
         Map(position: $cameraPosition, scope: mapScope){
@@ -102,10 +103,7 @@ struct CustomMap: View {
                 closeMode = newCloseMode
             }
         }
-        .mapStyle(.standard(
-            pointsOfInterest: .excludingAll,
-            showsTraffic: false
-        ))
         .mapControls { } // Remove automatically placed controls
+        .mapStyle(mapStyle.mapStyle)
     }
 }

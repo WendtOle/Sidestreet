@@ -39,6 +39,7 @@ struct ContentView: View {
     @State var isQuestCreationPresented: Bool = false
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
+    @State var mapStyle: Style = .standard
     
     @Environment(\.modelContext) private var modelContext
     
@@ -64,7 +65,8 @@ struct ContentView: View {
                 visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
                 isLocationServiceEnabled: isLocationServiceEnabled,
-                mapScope: mapScope
+                mapScope: mapScope,
+                mapStyle: mapStyle
             )
             VStack{
                 LocationEnabledAlert(
@@ -80,7 +82,19 @@ struct ContentView: View {
                     Spacer()
                 }
                 .frame(height: 30)
-                SideButtons(isHistoryPresented: $isHistoryPresented, visualizeHeatMap: $visualizeHeatMap)
+                HStack {
+                    VStack {
+                        Button {
+                            isHistoryPresented = true
+                        } label: {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .font(.system(size: 18))
+                                .frame(width: 30, height: 20)
+                        }
+                        .buttonStyle(.glass)
+                    }
+                    Spacer()
+                }
                 Spacer()
                 
                 if isLocationServiceEnabled {
@@ -88,6 +102,7 @@ struct ContentView: View {
                         Spacer()
                         Button {} label: {
                             VStack (spacing: 16){
+                                MapStyleSelector(mapCameraPosition: cameraPosition, style: $mapStyle, showsHeatMap: $visualizeHeatMap)
                                 MapCompass(scope: mapScope)
                                     .mapControlVisibility(.visible)
                                 Button {
@@ -101,7 +116,7 @@ struct ContentView: View {
                                     Image(systemName: cameraPosition.followsUserLocation
                                           ? "location.fill"
                                           : "location")
-                                    .font(.system(size: 28, weight: .medium))
+                                    .font(.system(size: 24, weight: .medium))
                                 }
                             }
                         }
