@@ -59,9 +59,10 @@ enum QuestFactory {
             }
             return
         case .collect:
+            let DISTANCE = 10.0
             let updatedTargets = questData.targets.map { target in
                 let distance = location.distance(from: CLLocation(latitude: target.point.latitude, longitude: target.point.longitude))
-                if distance > 30.0 {
+                if distance > DISTANCE {
                     return target
                 }
                 return Target(point: target.point, value: target.value, collected: true)
@@ -107,29 +108,11 @@ enum QuestFactory {
             let center = CLLocationCoordinate2D(latitude: questData.targets[0].point.latitude, longitude: questData.targets[0].point.longitude)
             return AnyMapContent(Marker("", systemImage: questData.type.symbol, coordinate: center).tint(color))
         case .collect:
-            let remainingTargets = questData.targets.enumerated().filter { !$0.element.collected }
+            let targetsToDraw = questData.targets.enumerated().filter { walkFinished ? $0.element.collected : $0.element.collected }
             return AnyMapContent(
-                ForEach(remainingTargets, id: \.offset) { target in
+                ForEach(targetsToDraw, id: \.offset) { target in
                     let item = target.element
-                    let coordinate = CLLocationCoordinate2D(
-                        latitude: item.point.latitude,
-                        longitude: item.point.longitude
-                    )
-                    let valueToPrint = "\(Int(item.value)) pt\(item.value > 1 ? "s": "")"
-
-                    Annotation("Price", coordinate: coordinate, anchor: .bottom) {
-                        Text(valueToPrint)
-                            .font(.caption.bold())
-                            .padding(6)
-                            .glassEffect()
-                        VStack(spacing: 4) {
-                            Image(systemName: "mappin")
-                                .font(.system(size: 24))
-                                .foregroundStyle(.blue)
-                        }
-                    }
-                    .annotationTitles(.hidden)
-                    
+                    drawPoint(target: item)
                 })
         default:
             return AnyMapContent(EmptyMapContent())
@@ -160,4 +143,25 @@ enum QuestFactory {
             }
         }
     }
+}
+
+func drawPoint(target: Target) -> some MapContent {
+    let coordinate = CLLocationCoordinate2D(
+        latitude: target.point.latitude,
+        longitude: target.point.longitude
+    )
+    let valueToPrint = "\(Int(target.value)) pt\(target.value > 1 ? "s": "")"
+
+    return Annotation("Price", coordinate: coordinate, anchor: .bottom) {
+        Text(valueToPrint)
+            .font(.caption.bold())
+            .padding(6)
+            .glassEffect()
+        VStack(spacing: 4) {
+            Image(systemName: "mappin")
+                .font(.system(size: 24))
+                .foregroundStyle(.blue)
+        }
+    }
+    .annotationTitles(.hidden)
 }
