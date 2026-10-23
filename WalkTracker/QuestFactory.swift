@@ -52,8 +52,24 @@ enum QuestFactory {
 
         switch questData.type {
         case .track:
+            let DISTANCE = 20.0
+            let SCORE_DISTANCE = 100.0
+            if distanceToFirst < SCORE_DISTANCE {
+                if let nearestReachedPoint = questData.targets.last {
+                    if nearestReachedPoint.value > distanceToFirst {
+                        questData.targets[1].value = distanceToFirst
+                    }
+                } else {
+                    questData.targets.append(
+                        Target(
+                            point: GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
+                            value: distanceToFirst
+                        )
+                    )
+                }
+            }
             soundController.setBeepIntervalByDistance(distance: distanceToFirst)
-            if distanceToFirst <= firstTarget.value {
+            if distanceToFirst <= DISTANCE {
                 questData.questReached = true
                 soundController.stop()
             }
@@ -77,8 +93,10 @@ enum QuestFactory {
             if let toReachScore = questData.targetScore, score >= Double(toReachScore) {
                 questData.questReached = true
             }
-        default:
-            if distanceToFirst <= firstTarget.value {
+        case .navigate:
+            let DISTANCE = 20.0
+            let SCORE_DISTANCE = 100.0
+            if distanceToFirst <= DISTANCE {
                 questData.questReached = true
             }
             return
@@ -87,6 +105,13 @@ enum QuestFactory {
     
     static func mapElements (questData: QuestData, walkFinished: Bool) -> AnyMapContent  {
         let color = questData.questReached ? Color.orange : walkFinished ? .red : .green
+        guard let firstTarget = questData.targets.first else {
+            return AnyMapContent(EmptyMapContent())
+        }
+        let firstTargetPoint = CLLocationCoordinate2D(
+            latitude: firstTarget.point.latitude,
+            longitude: firstTarget.point.longitude
+        )
         
         switch questData.type {
         case .track:
@@ -94,19 +119,20 @@ enum QuestFactory {
                 return AnyMapContent(EmptyMapContent())
             }
             return AnyMapContent(
-                Marker(
-                    "",
-                    systemImage: questData.type.symbol,
-                    coordinate: CLLocationCoordinate2D(
-                        latitude: questData.targets[0].point.latitude,
-                        longitude: questData.targets[0].point.longitude
-                    )
-                )
-                .tint(color)
+                Group {
+                    Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
+                        .tint(color)
+                    drawClosestPoint(questData: questData)
+                }
             )
         case .navigate:
-            let center = CLLocationCoordinate2D(latitude: questData.targets[0].point.latitude, longitude: questData.targets[0].point.longitude)
-            return AnyMapContent(Marker("", systemImage: questData.type.symbol, coordinate: center).tint(color))
+            return AnyMapContent(
+                Group {
+                    Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
+                        .tint(color)
+                    drawClosestPoint(questData: questData)
+                }
+            )
         case .collect:
             let targetsToDraw = questData.targets.enumerated().filter { walkFinished ? $0.element.collected : $0.element.collected }
             return AnyMapContent(
@@ -142,6 +168,23 @@ enum QuestFactory {
                 Text("Done").font(.headline)
             }
         }
+    }
+}
+
+@MapContentBuilder
+func drawClosestPoint(questData: QuestData) -> some MapContent {
+    if questData.targets.count > 1, let nearestReachedPoint = questData.targets.last {
+        let nearestReachedPointCoordinate = CLLocationCoordinate2D(latitude: nearestReachedPoint.point.latitude, longitude: nearestReachedPoint.point.longitude)
+        Annotation("Price", coordinate: nearestReachedPointCoordinate, anchor: .bottom) {
+            Text("\(Int(100-nearestReachedPoint.value))")
+                .font(.caption.bold())
+                .padding(6)
+                .glassEffect()
+            Image(systemName: "mappin")
+                .font(.system(size: 24))
+                .foregroundStyle(.blue)
+        }
+        .annotationTitles(.hidden)
     }
 }
 
