@@ -85,12 +85,12 @@ enum QuestFactory {
         }
     }
     
-    static func mapElements (questData: QuestData) -> AnyMapContent  {
-        let color = questData.questReached ? Color.orange : .green
+    static func mapElements (questData: QuestData, walkFinished: Bool) -> AnyMapContent  {
+        let color = questData.questReached ? Color.orange : walkFinished ? .red : .green
         
         switch questData.type {
         case .track:
-            if !questData.questReached {
+            if !questData.questReached && !walkFinished {
                 return AnyMapContent(EmptyMapContent())
             }
             return AnyMapContent(

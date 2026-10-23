@@ -28,7 +28,7 @@ struct CustomMap: View {
         Map(position: $cameraPosition, scope: mapScope){
             UserAnnotation()
             if let selectedQuest {
-                QuestFactory.mapElements(questData: selectedQuest)
+                QuestFactory.mapElements(questData: selectedQuest, walkFinished: recording == nil)
             }
             
             if let recording {
@@ -68,7 +68,7 @@ struct CustomMap: View {
             if let selectedWalk {
                 MapPolyline(coordinates: selectedWalk.coordinates).stroke(.orange, lineWidth: 5)
                 ForEach(selectedWalk.quests, id: \.id) { quest in
-                    QuestFactory.mapElements(questData: quest)
+                    QuestFactory.mapElements(questData: quest, walkFinished: true)
                 }
                 if let endPoint = selectedWalk.routeCoordinates.last {
                     Annotation("", coordinate: CLLocationCoordinate2D(

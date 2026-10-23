@@ -141,8 +141,7 @@ struct WalkTrackerApp: App {
         
         context.insert(walk)
         
-        // if quest is reached connect quest to walk
-        if let quest = self.questController.activeQuest, quest.questReached {
+        if let quest = self.questController.activeQuest {
             walk.quests.append(quest)
         }
         
@@ -154,7 +153,7 @@ struct WalkTrackerApp: App {
             return
         }
         
-        if let quest = self.questController.activeQuest, quest.questReached {
+        if self.questController.activeQuest != nil {
             questController.removeQuest()
         }
         
