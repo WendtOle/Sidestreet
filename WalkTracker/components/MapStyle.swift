@@ -14,7 +14,7 @@ struct MapStyleSelector: View {
         } label: {
             Image(systemName: "square.3.layers.3d")
                 .font(.system(size: 20))
-                .tint(.black)
+                .tint(.primary)
         }
         .adaptiveSheet(isPresent: $isPresent, title: "Map Modes") {
             VStack {

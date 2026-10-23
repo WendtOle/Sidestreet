@@ -123,13 +123,13 @@ struct ContentView: View {
                                           ? "location.fill"
                                           : "location")
                                     .font(.system(size: 20))
+                                    .tint(.primary)
                                 }
                                 .disabled(!isLocationServiceEnabled)
                             }
                             .padding(.vertical, 4)
                         }
                         .buttonStyle(.glass)
-                        .glassEffect(.regular, in: .capsule)
                     }
 
                 }
