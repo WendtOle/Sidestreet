@@ -52,27 +52,14 @@ enum QuestFactory {
 
         switch questData.type {
         case .track:
+            markClosed(distance: distanceToFirst, currentLocation: location, questData: questData)
+            
             let DISTANCE = 20.0
-            let SCORE_DISTANCE = 100.0
-            if distanceToFirst < SCORE_DISTANCE {
-                if let nearestReachedPoint = questData.targets.last {
-                    if nearestReachedPoint.value > distanceToFirst {
-                        questData.targets[1].value = distanceToFirst
-                    }
-                } else {
-                    questData.targets.append(
-                        Target(
-                            point: GeoPoint(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude),
-                            value: distanceToFirst
-                        )
-                    )
-                }
-            }
-            soundController.setBeepIntervalByDistance(distance: distanceToFirst)
             if distanceToFirst <= DISTANCE {
                 questData.questReached = true
                 soundController.stop()
             }
+            soundController.setBeepIntervalByDistance(distance: distanceToFirst)
             return
         case .collect:
             let DISTANCE = 10.0
@@ -95,10 +82,10 @@ enum QuestFactory {
             }
         case .navigate:
             let DISTANCE = 20.0
-            let SCORE_DISTANCE = 100.0
             if distanceToFirst <= DISTANCE {
                 questData.questReached = true
             }
+            markClosed(distance: distanceToFirst, currentLocation: location, questData: questData)
             return
         }
     }
@@ -158,15 +145,28 @@ enum QuestFactory {
             if let toReachScore = questData.targetScore {
                 HStack {
                     Text("\(Int(score)) / \(toReachScore) pts")
-                    if (questData.questReached) {
-                        Text("Done").font(.headline)
-                    }
                 }
             }
         default:
-            if questData.questReached {
-                Text("Done").font(.headline)
+            Text("")
+        }
+    }
+}
+
+func markClosed(distance: CLLocationDistance, currentLocation: CLLocation, questData: QuestData) {
+    let SCORE_DISTANCE = 100.0
+    if distance < SCORE_DISTANCE {
+        if let nearestReachedPoint = questData.targets.last, questData.targets.count == 2 {
+            if nearestReachedPoint.value > distance {
+                questData.targets[1].value = distance
             }
+        } else {
+            questData.targets.append(
+                Target(
+                    point: GeoPoint(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude),
+                    value: distance
+                )
+            )
         }
     }
 }
@@ -176,13 +176,13 @@ func drawClosestPoint(questData: QuestData) -> some MapContent {
     if questData.targets.count > 1, let nearestReachedPoint = questData.targets.last {
         let nearestReachedPointCoordinate = CLLocationCoordinate2D(latitude: nearestReachedPoint.point.latitude, longitude: nearestReachedPoint.point.longitude)
         Annotation("Price", coordinate: nearestReachedPointCoordinate, anchor: .bottom) {
-            Text("\(Int(100-nearestReachedPoint.value))")
+            Text("\(Int(nearestReachedPoint.value)) m away")
                 .font(.caption.bold())
                 .padding(6)
                 .glassEffect()
             Image(systemName: "mappin")
                 .font(.system(size: 24))
-                .foregroundStyle(.blue)
+                .foregroundStyle(.orange)
         }
         .annotationTitles(.hidden)
     }
