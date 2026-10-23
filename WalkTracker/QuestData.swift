@@ -12,11 +12,6 @@ struct Target: Codable {
     var point: GeoPoint
     var value: Double
     var collected: Bool = false
-
-    var collectionPoints: Int {
-        // Values are normalized to 0...1; every collectible earns at least one point.
-        max(1, Int((value * 100).rounded()))
-    }
 }
 
 @Model
@@ -25,15 +20,17 @@ class QuestData {
     var createdAt: Date
     
     var targets: [Target]
+    var targetScore: Int?
     var questReached: Bool = false
     var type: QuestType
     var walk: Walk?
     
-    init(targets: [Target], type: QuestType) {
+    init(targets: [Target], type: QuestType, targetScore: Int? = nil) {
         self.id = UUID()
         self.createdAt = Date()
         self.targets = targets
         self.type = type
+        self.targetScore = targetScore
     }
 }
 

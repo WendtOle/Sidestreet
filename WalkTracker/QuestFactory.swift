@@ -17,7 +17,7 @@ enum QuestFactory {
             var max = 0.0
             let pointAmount = smallVariant ? 40 : 100
             let preCoins = (0..<pointAmount).map { _ in
-                let coinDistance = Double.random(in: minDistance...maxDistance)
+                let coinDistance = Double.random(in: 100.0...maxDistance)
                 let rawCoinLocation = getQuestTarget(startingPoint: referencePoint, distance: coinDistance)
                 let binnedLocation = getBinnedCoordinates(rawCoinLocation)
                 let value = heatMap.first {$0.point.latitude == binnedLocation[0] && $0.point.longitude == binnedLocation[1]}?.count ?? 0
@@ -28,11 +28,16 @@ enum QuestFactory {
             }
             
             let potentialCoins = (preCoins).map { coin in
-                let value = max > 0 ? 1 - (coin.value / max) : 1
-                return Target(point: coin.point, value: value)
+                let pureValue = max > 0 ? 1 - (coin.value / max) : 1
+                let value = pureValue == 1 ? 10 : (pureValue * pureValue * pureValue * 5)
+                return Target(point: coin.point, value: Double(Int(value)))
             }
-            let targets = potentialCoins.filter { $0.value > 0.001 }
-            return QuestData(targets: targets, type: questType)
+            let targets = potentialCoins.filter { $0.value > 0 }
+            let sum = targets.reduce(0) {acc, curr in
+                return acc + curr.value
+            }
+            print("\(sum) - \(targets.count) - \(sum / Double(targets.count))")
+            return QuestData(targets: targets, type: questType, targetScore: smallVariant ? 50 : 80)
         default:
             let distance = Double.random(in: minDistance...maxDistance)
             let target = getQuestTarget(startingPoint: referencePoint, distance: distance)
@@ -54,15 +59,21 @@ enum QuestFactory {
             }
             return
         case .collect:
-            let toCollect = questData.targets.map { target in
+            let updatedTargets = questData.targets.map { target in
                 let distance = location.distance(from: CLLocation(latitude: target.point.latitude, longitude: target.point.longitude))
                 if distance > 30.0 {
                     return target
                 }
                 return Target(point: target.point, value: target.value, collected: true)
             }
-            questData.targets = toCollect
-            if toCollect.allSatisfy({ $0.collected }) {
+            questData.targets = updatedTargets
+            let score = updatedTargets.reduce(0) {acc, target in
+                if target.collected {
+                    return acc + target.value
+                }
+                return acc
+            }
+            if let toReachScore = questData.targetScore, score >= Double(toReachScore) {
                 questData.questReached = true
             }
         default:
@@ -104,25 +115,22 @@ enum QuestFactory {
                         latitude: item.point.latitude,
                         longitude: item.point.longitude
                     )
-                    let maxRadius = 19.0
-                    let minRadius = 0.0
-                    let radius = Double(item.value) * (maxRadius - minRadius)
-                    MapCircle(
-                        center: coordinate,
-                        radius: radius
-                    )
-                    .foregroundStyle(.yellow)
+                    let valueToPrint = "\(Int(item.value)) pt\(item.value > 1 ? "s": "")"
+
+                    Annotation("Price", coordinate: coordinate, anchor: .bottom) {
+                        Text(valueToPrint)
+                            .font(.caption.bold())
+                            .padding(6)
+                            .glassEffect()
+                        VStack(spacing: 4) {
+                            Image(systemName: "mappin")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.blue)
+                        }
+                    }
+                    .annotationTitles(.hidden)
                     
-                    /*
-                     Annotation("", coordinate: coordinate, anchor: .center) {
-                     Text("\(Int(item.value * 100))")
-                     .font(.system(size: 10, weight: .bold))
-                     .foregroundStyle(.blue)
-                     .fixedSize()
-                     }
-                     */
-                }
-                )
+                })
         default:
             return AnyMapContent(EmptyMapContent())
         }
@@ -134,11 +142,18 @@ enum QuestFactory {
         case .collect:
             let score = questData.targets.reduce(0) {accumulated, target in
                 if target.collected {
-                    return accumulated + target.collectionPoints
+                    return accumulated + target.value
                 }
                 return accumulated
             }
-            Text("\(score) points").font(.headline)
+            if let toReachScore = questData.targetScore {
+                HStack {
+                    Text("\(Int(score)) / \(toReachScore) pts")
+                    if (questData.questReached) {
+                        Text("Done").font(.headline)
+                    }
+                }
+            }
         default:
             if questData.questReached {
                 Text("Done").font(.headline)
