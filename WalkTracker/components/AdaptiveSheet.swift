@@ -6,36 +6,38 @@ import SwiftUI
 
 struct SheetWrapper<Content: View>: View {
     @Binding var isPresented: Bool
-    let title: String
+    let nullableTitle: String?
     let exitTitle: String
     let content: Content
 
     init(
         isPresented: Binding<Bool>,
-        title: String,
+        title: String? = nil,
         exitTitle: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
         _isPresented = isPresented
-        self.title = title
+        self.nullableTitle = title
         self.content = content()
         self.exitTitle = exitTitle ?? "Done"
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Spacer()
-
-                Button(exitTitle) {
-                    isPresented = false
+        VStack(alignment: .leading, spacing: 8) {
+            VStack(spacing: 0) {
+                HStack {
+                    Spacer()
+                    
+                    Button(exitTitle) {
+                        isPresented = false
+                    }
+                }
+                if let title = nullableTitle {
+                    Text(title)
+                        .font(.title)
+                        .padding(.bottom, 16)
                 }
             }
-
-            Text(title)
-                .font(.title)
-                .padding(.bottom, 16)
-
             content
         }
         .padding(20)
@@ -45,7 +47,7 @@ struct SheetWrapper<Content: View>: View {
 extension View {
     func adaptiveSheet<SheetContent: View>(
         isPresent: Binding<Bool>,
-        title: String,
+        title: String? = nil,
         exitTitle: String? = nil,
         @ViewBuilder sheetContent: () -> SheetContent
     ) -> some View {

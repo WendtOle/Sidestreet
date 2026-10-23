@@ -35,7 +35,7 @@ struct WalkInformation: View {
                 }
             }
         }
-        .adaptiveSheet(isPresent: $isPresent, title: "\(walk.createdAt.formatted())") {
+        .adaptiveSheet(isPresent: $isPresent) {
             WalkSummary(walk: walk)
         }
     }
@@ -62,33 +62,66 @@ struct WalkSummary: View {
         let speedText = speed.formatted(
             .number.precision(.fractionLength(1))
         )
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Spacer()
-                SmallMetric(title: "Distance") {
-                    Text("\(distanceText) km")
+        
+        let shape = RoundedRectangle(
+            cornerRadius: 20,
+            style: .continuous
+        )
+        
+        VStack(spacing: 12) {
+            if let quest = walk.quests.first {
+                HStack(spacing: 8) {
+                    Image(systemName: quest.type.symbol)
+                    Text("\(quest.type.longName) \(quest.questReached ? "completed" : "failed")").font(.headline.weight(.semibold))
                 }
-                Spacer()
-                SmallMetric(title: "Duration") {
-                    Text(formatDuration(walk.duration))
+                HStack(spacing: 8) {
+                    QuestFactory.progressIndicatorElement(questData: quest)
                 }
-                Spacer()
-                SmallMetric(title: "Speed") {
-                    Text("\(speedText) km/h" )
-                }
-                Spacer()
             }
-            
             Map(interactionModes: []) {
                 MapPolyline(coordinates: walk.coordinates).stroke(.orange, lineWidth: 5)
                 ForEach(walk.quests, id: \.id) { quest in
                     QuestFactory.mapElements(questData: quest, walkFinished: true)
                 }
             }
-            .frame(minHeight: 300)
-            if let quest = walk.quests.first {
-                Text(quest.questReached ? "Challenge completed" : "Challenge failed").font(.body)
+            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .padding(6)
+            .overlay {
+                if let quest = walk.quests.first {
+                    shape.strokeBorder(quest.questReached ? .green : .red, lineWidth: 2)
+                }
+            }
+            .contentShape(shape)
+            .frame(minHeight: 350)
+            .overlay(alignment: .bottomTrailing) {
+                Group {
+                    HStack(spacing:8) {
+                        Text("\(distanceText) km").font(.callout)
+                        Text(formatDuration(walk.duration)).font(.callout)
+                        Text("\(speedText) km/h").font(.callout)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .glassEffect()
+                }
+                .padding(12)
+            }
+            .overlay(alignment: .topLeading) {
+                TextBubble(text: "\(walk.createdAt.formatted())")
+                    .padding(12)
             }
         }
     }
+}
+
+private struct TextBubble: View {
+    let text: String
+    
+    var body: some View {
+        Text(text).font(.callout)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .glassEffect()
+    }
+    
 }

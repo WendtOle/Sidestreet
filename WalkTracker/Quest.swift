@@ -29,11 +29,11 @@ enum QuestType: String, Codable, CaseIterable {
     var longName: String {
         switch self {
         case .navigate:
-            return "Navigation Challenge"
+            return "Navigation challenge"
         case .collect:
-            return "Collecting Challenge"
+            return "Collecting challenge"
         case .track:
-            return "Tracking Challenge"
+            return "Tracking challenge"
         }
     }
     

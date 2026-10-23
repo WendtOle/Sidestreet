@@ -217,7 +217,7 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
-        .adaptiveSheet(isPresent: $showRecentlySavedWalk, title: "Your walk") {
+        .adaptiveSheet(isPresent: $showRecentlySavedWalk) {
             if let walk = walks.first {
                 WalkSummary(walk: walk)
             }
