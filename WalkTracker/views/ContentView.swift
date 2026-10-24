@@ -38,6 +38,7 @@ struct ContentView: View {
     @State var isQuestCreationPresented: Bool = false
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
+    @State private var showRecentlySavedWalk = false
     @State var mapStyle: Style = .standard
     
     @Environment(\.modelContext) private var modelContext
@@ -87,23 +88,23 @@ struct ContentView: View {
                 Spacer()
                 HStack(alignment: .bottom){
                     WalkHistoryView(walks: walks, onSelect: { walk in
-                        selectedWalk = walk
-                        if let position = frameRoute(for: walk.coordinates) {
-                            withAnimation(
-                                .timingCurve(
-                                    0.2, 0.8,
-                                    0.2, 1.0,
-                                    duration: 3
-                                )
-                            ) {
-                                cameraPosition = position
+                            selectedWalk = walk
+                            if let position = frameRoute(for: walk.coordinates) {
+                                withAnimation(
+                                    .timingCurve(
+                                        0.2, 0.8,
+                                        0.2, 1.0,
+                                        duration: 3
+                                    )
+                                ) {
+                                    cameraPosition = position
+                                }
                             }
+                        }, onDelete: { walk in
+                            modelContext.delete(walk)
+                            try? modelContext.save()
+                            onDeleteWalk()
                         }
-                    }, onDelete: { walk in
-                        modelContext.delete(walk)
-                        try? modelContext.save()
-                        onDeleteWalk()
-                    }
                     )
                     Spacer()
                     VStack {
@@ -216,10 +217,16 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
+        .adaptiveSheet(isPresent: $showRecentlySavedWalk, title: "Your walk") {
+            if let walk = walks.first {
+                WalkSummary(walk: walk)
+            }
+        }
         .confirmationDialog("Finish recording?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
             if let settings = settingsRecords.first {
                 Button(settings.enableDiscardingWalks ? "Save" : "Finish", role: .confirm) {
                     saveWalk()
+                    showRecentlySavedWalk = true
                 }
                 if settings.enableDiscardingWalks {
                     Button("Discard", role: .destructive) {

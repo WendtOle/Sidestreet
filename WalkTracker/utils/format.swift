@@ -15,7 +15,9 @@ func formatDuration(_ seconds: Double) -> String {
 
     if hours > 0 {
         return String(format: "%02d:%02d h", hours, minutes)
+    } else if minutes > 0 {
+        return String(format: "%02d min", minutes)
     } else {
-        return String(format: "%02d:%02d min", minutes, seconds)
+        return String(format: "%02d sec", seconds)
     }
 }
