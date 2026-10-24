@@ -52,7 +52,7 @@ enum QuestFactory {
 
         switch questData.type {
         case .track:
-            markClosed(distance: distanceToFirst, currentLocation: location, questData: questData)
+            markClosest(distance: distanceToFirst, currentLocation: location, questData: questData)
             
             let DISTANCE = 20.0
             if distanceToFirst <= DISTANCE {
@@ -85,7 +85,7 @@ enum QuestFactory {
             if distanceToFirst <= DISTANCE {
                 questData.questReached = true
             }
-            markClosed(distance: distanceToFirst, currentLocation: location, questData: questData)
+            markClosest(distance: distanceToFirst, currentLocation: location, questData: questData)
             return
         }
     }
@@ -109,7 +109,7 @@ enum QuestFactory {
                 Group {
                     Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
                         .tint(color)
-                    drawClosestPoint(questData: questData)
+                    drawClosestPoint(questData: questData, color: walkFinished ? .orange : .blue)
                 }
             )
         case .navigate:
@@ -117,7 +117,7 @@ enum QuestFactory {
                 Group {
                     Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
                         .tint(color)
-                    drawClosestPoint(questData: questData)
+                    drawClosestPoint(questData: questData, color: walkFinished ? .orange : .blue)
                 }
             )
         case .collect:
@@ -153,26 +153,25 @@ enum QuestFactory {
     }
 }
 
-func markClosed(distance: CLLocationDistance, currentLocation: CLLocation, questData: QuestData) {
+func markClosest(distance: CLLocationDistance, currentLocation: CLLocation, questData: QuestData) {
     let SCORE_DISTANCE = 100.0
     if distance < SCORE_DISTANCE {
+        let newClosest = Target(
+            point: GeoPoint(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude),
+            value: distance
+        )
         if let nearestReachedPoint = questData.targets.last, questData.targets.count == 2 {
             if nearestReachedPoint.value > distance {
-                questData.targets[1].value = distance
+                questData.targets[1] = newClosest
             }
         } else {
-            questData.targets.append(
-                Target(
-                    point: GeoPoint(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude),
-                    value: distance
-                )
-            )
+            questData.targets.append(newClosest)
         }
     }
 }
 
 @MapContentBuilder
-func drawClosestPoint(questData: QuestData) -> some MapContent {
+func drawClosestPoint(questData: QuestData, color: Color) -> some MapContent {
     if questData.targets.count > 1, let nearestReachedPoint = questData.targets.last {
         let nearestReachedPointCoordinate = CLLocationCoordinate2D(latitude: nearestReachedPoint.point.latitude, longitude: nearestReachedPoint.point.longitude)
         Annotation("Price", coordinate: nearestReachedPointCoordinate, anchor: .bottom) {
@@ -182,7 +181,7 @@ func drawClosestPoint(questData: QuestData) -> some MapContent {
                 .glassEffect()
             Image(systemName: "mappin")
                 .font(.system(size: 24))
-                .foregroundStyle(.orange)
+                .foregroundStyle(color)
         }
         .annotationTitles(.hidden)
     }
