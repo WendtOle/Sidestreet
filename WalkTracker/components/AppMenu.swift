@@ -35,15 +35,20 @@ struct AppMenu: View {
             """)
             }
             .adaptiveSheet(isPresent: $isSettingsPresent, title: "Settings") {
-                Toggle("Intro dismissed", isOn: $settings.introDismissed)
-                    .toggleStyle(.switch)
-                    .tint(.blue)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 14)
-                    .background(
-                        Color.primary.opacity(0.08),
-                        in: RoundedRectangle(cornerRadius: 24)
-                    )
+                VStack (spacing: 24) {
+                    Toggle("Enable discarding walks", isOn: $settings.enableDiscardingWalks)
+                        .toggleStyle(.switch)
+                        .tint(.blue)
+                    Toggle("Intro dismissed", isOn: $settings.introDismissed)
+                        .toggleStyle(.switch)
+                        .tint(.blue)
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 14)
+                .background(
+                    Color.primary.opacity(0.08),
+                    in: RoundedRectangle(cornerRadius: 24)
+                )
             }
         }
     }

@@ -14,6 +14,7 @@ final class SettingsData {
     private(set) var key: String = "app"
     
     var introDismissed: Bool = false
+    var enableDiscardingWalks: Bool = false
     
     private init() {}
     

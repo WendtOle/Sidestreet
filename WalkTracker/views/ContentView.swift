@@ -47,6 +47,9 @@ struct ContentView: View {
         
     @Query(sort: \QuestData.createdAt, order: .reverse)
     private var quests: [QuestData]
+    
+    @Query(filter: #Predicate<SettingsData> { $0.key == "app" })
+    private var settingsRecords: [SettingsData]
         
     
     func stopRecording() {
@@ -213,12 +216,19 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
-        .confirmationDialog("Save walk?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
-            Button("Save") {
-                saveWalk()
+        .confirmationDialog("Finish recording?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
+            if let settings = settingsRecords.first {
+                Button(settings.enableDiscardingWalks ? "Save" : "Finish", role: .confirm) {
+                    saveWalk()
+                }
+                if settings.enableDiscardingWalks {
+                    Button("Discard", role: .destructive) {
+                        discardWalk()
+                    }
+                }
             }
-            Button("Discard", role: .destructive) {
-                discardWalk()
+            Button("Continue", role: .close) {
+                showSaveConfirmation = false
             }
         }
     }
