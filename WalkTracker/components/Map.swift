@@ -50,7 +50,7 @@ struct CustomMap: View {
                         center: coordinate,
                         radius: radius
                     )
-                    .foregroundStyle(Color.gray.opacity(0.3))
+                    .foregroundStyle(mapStyle == .satellite ? .yellow.opacity(0.25) : .gray.opacity(0.25))
                     
                     /*
                     Annotation("", coordinate: coordinate, anchor: .center) {
