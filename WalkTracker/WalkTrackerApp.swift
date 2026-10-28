@@ -120,6 +120,7 @@ struct WalkTrackerApp: App {
     func reset () {
         walkReferencePoint = nil
         locationManager.stopRecording()
+        soundController.stop()
         self.questController.activeWalk = nil
         Task {
             await stopActivitySession()
