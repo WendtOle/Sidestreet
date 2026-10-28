@@ -81,8 +81,8 @@ struct WalkHistoryView: View {
                     let speedText = speed.formatted(
                         .number.precision(.fractionLength(1))
                     )
-                    let averageDuration = duration / Double(recent.count)
-                    let averageDistanceKm = distanceKm / Double(recent.count)
+                    let averageDuration = duration / Double(7)
+                    let averageDistanceKm = distanceKm / Double(7)
                     let averageDistanceText = averageDistanceKm.formatted(
                         .number.precision(.fractionLength(1))
                     )
@@ -95,7 +95,7 @@ struct WalkHistoryView: View {
                                 Text("\(distanceText) km")
                             }
                             Spacer()
-                            SmallMetric(title: "Average distance") {
+                            SmallMetric(title: "Average distance per day") {
                                 Text("\(averageDistanceText) km")
                             }
                             Spacer()
@@ -106,7 +106,7 @@ struct WalkHistoryView: View {
                                 Text(formatDuration(duration))
                             }
                             Spacer()
-                            SmallMetric(title: "Average duration") {
+                            SmallMetric(title: "Average duration per day") {
                                 Text(formatDuration(averageDuration))
                             }
                             Spacer()
