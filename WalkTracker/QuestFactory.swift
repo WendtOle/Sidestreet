@@ -121,7 +121,7 @@ enum QuestFactory {
                 }
             )
         case .collect:
-            let targetsToDraw = questData.targets.enumerated().filter { walkFinished ? $0.element.collected : $0.element.collected }
+            let targetsToDraw = questData.targets.enumerated().filter { walkFinished ? $0.element.collected : !$0.element.collected }
             return AnyMapContent(
                 ForEach(targetsToDraw, id: \.offset) { target in
                     let item = target.element
