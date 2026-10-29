@@ -53,27 +53,44 @@ struct SessionActivityExtensionLiveActivity: Widget {
             .activityBackgroundTint(.clear)
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded UI goes here.  Compose the expanded UI through
-                // various regions, like leading/trailing/center/bottom
                 DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
+                    AppIcon(size: .large)
+                        .accessibilityLabel("Sidestreet")
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
-                }
-                DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom")
-                    // more content
+                    islandDistance(context.state.distanceMeter)
+                        .font(.title2.weight(.semibold))
                 }
             } compactLeading: {
-                Text("L")
+                AppIcon()
+                    .accessibilityLabel("Sidestreet")
             } compactTrailing: {
-                Text("T")
+                islandDistance(context.state.distanceMeter)
+                    .font(.caption.weight(.semibold))
             } minimal: {
-                Text("B")
+                AppIcon()
+                    .accessibilityLabel("Sidestreet walk in progress")
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
-            .keylineTint(Color.red)
+            .keylineTint(Color("AccentColor"))
         }
+    }
+
+    private func islandDistance(_ meters: Double) -> some View {
+        let distance = meters.isFinite ? max(0, meters) : 0
+        // Switch at the rounded metre boundary to avoid showing "1,000 m".
+        let usesKilometers = distance.rounded() >= 1_000
+        let value = usesKilometers ? distance / 1_000 : distance
+        let number = value.formatted(
+            .number.precision(.fractionLength(usesKilometers ? 1 : 0))
+        )
+        let unit = usesKilometers ? "km" : "m"
+
+        return Text("\(number) \(unit)")
+            .monospacedDigit()
+            .foregroundStyle(.white)
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .accessibilityLabel("Distance walked")
+            .accessibilityValue(Text("\(number) \(usesKilometers ? "kilometers" : "meters")"))
     }
 }
