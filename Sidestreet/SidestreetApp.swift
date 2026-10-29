@@ -26,7 +26,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 @main
-struct WalkTrackerApp: App {
+struct SidestreetApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     private let container: ModelContainer

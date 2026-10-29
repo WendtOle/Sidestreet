@@ -30,11 +30,11 @@ struct AppMenu: View {
                         )
                     .padding(.horizontal, 18)
             }
-            .alert("WalkTracker", isPresented: $isAboutPresent) {
+            .alert("Sidestreet", isPresented: $isAboutPresent) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text("""
-            WalkTracker was created by Ole Wendt.
+            Sidestreet was created by Ole Wendt.
             
             Visit ole-wendt.de for more projects.
             """)

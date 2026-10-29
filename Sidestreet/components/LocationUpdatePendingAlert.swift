@@ -21,7 +21,7 @@ struct LocationUpdatePendingAlert: View {
         .alert("Waiting for location update", isPresented: $isAlertPresent) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("WalkTracker needs your current location before you can create a challenge. This may take a moment. For better reception, try moving to an open area.")
+            Text("Sidestreet needs your current location before you can create a challenge. This may take a moment. For better reception, try moving to an open area.")
         }
     }
 }

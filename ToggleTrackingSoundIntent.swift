@@ -9,14 +9,14 @@ struct ToggleTrackingSoundIntent: LiveActivityIntent {
         .alwaysAllowed
     }
     
-    #if WALKTRACKER_APP
+    #if SIDESTREET_APP
     @Dependency private var soundController: SoundController
     #endif
 
     
     @MainActor
     func perform() async throws -> some IntentResult {
-        #if WALKTRACKER_APP
+        #if SIDESTREET_APP
         if soundController.isRunning {
             soundController.stop()
         } else {

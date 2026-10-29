@@ -42,7 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7F42883F306FAB4B00658834 /* WalkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F42883F306FAB4B00658834 /* Sidestreet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sidestreet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SessionActivityExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -52,12 +52,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		7F42884E306FB96C00658834 /* Exceptions for "WalkTracker" folder in "WalkTracker" target */ = {
+		7F42884E306FB96C00658834 /* Exceptions for "Sidestreet" folder in "Sidestreet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 7F42883E306FAB4B00658834 /* WalkTracker */;
+			target = 7F42883E306FAB4B00658834 /* Sidestreet */;
 		};
 		7F8CC1E330836BB400A2EAFC /* Exceptions for "SessionActivityExtension" folder in "SessionActivityExtensionExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -66,7 +66,7 @@
 			);
 			target = 7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */;
 		};
-		7FD87A943084A5E5000DAAB4 /* Exceptions for "WalkTracker" folder in "SessionActivityExtensionExtension" target */ = {
+		7FD87A943084A5E5000DAAB4 /* Exceptions for "Sidestreet" folder in "SessionActivityExtensionExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				utils/format.swift,
@@ -76,13 +76,13 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		7F428841306FAB4B00658834 /* WalkTracker */ = {
+		7F428841306FAB4B00658834 /* Sidestreet */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				7F42884E306FB96C00658834 /* Exceptions for "WalkTracker" folder in "WalkTracker" target */,
-				7FD87A943084A5E5000DAAB4 /* Exceptions for "WalkTracker" folder in "SessionActivityExtensionExtension" target */,
+				7F42884E306FB96C00658834 /* Exceptions for "Sidestreet" folder in "Sidestreet" target */,
+				7FD87A943084A5E5000DAAB4 /* Exceptions for "Sidestreet" folder in "SessionActivityExtensionExtension" target */,
 			);
-			path = WalkTracker;
+			path = Sidestreet;
 			sourceTree = "<group>";
 		};
 		7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */ = {
@@ -123,7 +123,7 @@
 				7FD87A81308498D0000DAAB4 /* components */,
 				7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */,
 				7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */,
-				7F428841306FAB4B00658834 /* WalkTracker */,
+				7F428841306FAB4B00658834 /* Sidestreet */,
 				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
 				7F8CC1CD30836BB100A2EAFC /* Frameworks */,
 				7F428840306FAB4B00658834 /* Products */,
@@ -134,7 +134,7 @@
 		7F428840306FAB4B00658834 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7F42883F306FAB4B00658834 /* WalkTracker.app */,
+				7F42883F306FAB4B00658834 /* Sidestreet.app */,
 				7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */,
 			);
 			name = Products;
@@ -152,9 +152,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7F42883E306FAB4B00658834 /* WalkTracker */ = {
+		7F42883E306FAB4B00658834 /* Sidestreet */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7F42884A306FAB4D00658834 /* Build configuration list for PBXNativeTarget "WalkTracker" */;
+			buildConfigurationList = 7F42884A306FAB4D00658834 /* Build configuration list for PBXNativeTarget "Sidestreet" */;
 			buildPhases = (
 				7F42883B306FAB4B00658834 /* Sources */,
 				7F42883C306FAB4B00658834 /* Frameworks */,
@@ -167,15 +167,15 @@
 				7F8CC1DD30836BB300A2EAFC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				7F428841306FAB4B00658834 /* WalkTracker */,
+				7F428841306FAB4B00658834 /* Sidestreet */,
 				7FD87A81308498D0000DAAB4 /* components */,
 			);
-			name = WalkTracker;
+			name = Sidestreet;
 			packageProductDependencies = (
 				7F6359D73073B93C00B37931 /* GEOSwift */,
 			);
-			productName = WalkTracker;
-			productReference = 7F42883F306FAB4B00658834 /* WalkTracker.app */;
+			productName = Sidestreet;
+			productReference = 7F42883F306FAB4B00658834 /* Sidestreet.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */ = {
@@ -215,7 +215,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7F42883A306FAB4B00658834 /* Build configuration list for PBXProject "WalkTracker" */;
+			buildConfigurationList = 7F42883A306FAB4B00658834 /* Build configuration list for PBXProject "Sidestreet" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -232,7 +232,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7F42883E306FAB4B00658834 /* WalkTracker */,
+				7F42883E306FAB4B00658834 /* Sidestreet */,
 				7F8CC1CB30836BB100A2EAFC /* SessionActivityExtensionExtension */,
 			);
 		};
@@ -279,7 +279,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		7F428848306FAB4D00658834 /* Debug configuration for PBXProject "WalkTracker" */ = {
+		7F428848306FAB4D00658834 /* Debug configuration for PBXProject "Sidestreet" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -342,7 +342,7 @@
 			};
 			name = Debug;
 		};
-		7F428849306FAB4D00658834 /* Release configuration for PBXProject "WalkTracker" */ = {
+		7F428849306FAB4D00658834 /* Release configuration for PBXProject "Sidestreet" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -398,7 +398,7 @@
 			};
 			name = Release;
 		};
-		7F42884B306FAB4D00658834 /* Debug configuration for PBXNativeTarget "WalkTracker" */ = {
+		7F42884B306FAB4D00658834 /* Debug configuration for PBXNativeTarget "Sidestreet" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -408,8 +408,9 @@
 				DEVELOPMENT_TEAM = GM94QPRC5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WalkTracker/Info.plist;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WalkTracker benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
+				INFOPLIST_FILE = Sidestreet/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sidestreet;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Sidestreet benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -425,7 +426,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) WALKTRACKER_APP";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) SIDESTREET_APP";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -435,7 +436,7 @@
 			};
 			name = Debug;
 		};
-		7F42884C306FAB4D00658834 /* Release configuration for PBXNativeTarget "WalkTracker" */ = {
+		7F42884C306FAB4D00658834 /* Release configuration for PBXNativeTarget "Sidestreet" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -445,8 +446,9 @@
 				DEVELOPMENT_TEAM = GM94QPRC5W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WalkTracker/Info.plist;
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "WalkTracker benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
+				INFOPLIST_FILE = Sidestreet/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sidestreet;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Sidestreet benötigt deinen Standort, um deine Spaziergänge auf der Karte aufzuzeichnen.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -462,7 +464,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = OleWendt.WalkTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = WALKTRACKER_APP;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SIDESTREET_APP;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -539,19 +541,19 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7F42883A306FAB4B00658834 /* Build configuration list for PBXProject "WalkTracker" */ = {
+		7F42883A306FAB4B00658834 /* Build configuration list for PBXProject "Sidestreet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7F428848306FAB4D00658834 /* Debug configuration for PBXProject "WalkTracker" */,
-				7F428849306FAB4D00658834 /* Release configuration for PBXProject "WalkTracker" */,
+				7F428848306FAB4D00658834 /* Debug configuration for PBXProject "Sidestreet" */,
+				7F428849306FAB4D00658834 /* Release configuration for PBXProject "Sidestreet" */,
 			);
 			defaultConfigurationName = Release;
 		};
-		7F42884A306FAB4D00658834 /* Build configuration list for PBXNativeTarget "WalkTracker" */ = {
+		7F42884A306FAB4D00658834 /* Build configuration list for PBXNativeTarget "Sidestreet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7F42884B306FAB4D00658834 /* Debug configuration for PBXNativeTarget "WalkTracker" */,
-				7F42884C306FAB4D00658834 /* Release configuration for PBXNativeTarget "WalkTracker" */,
+				7F42884B306FAB4D00658834 /* Debug configuration for PBXNativeTarget "Sidestreet" */,
+				7F42884C306FAB4D00658834 /* Release configuration for PBXNativeTarget "Sidestreet" */,
 			);
 			defaultConfigurationName = Release;
 		};

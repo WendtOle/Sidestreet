@@ -7,7 +7,7 @@ struct SessionActivityExtensionLiveActivity: Widget {
         ActivityConfiguration(for: SessionActivityExtensionAttributes.self) { context in
             VStack(spacing: 0) {
                 VStack(spacing: 18) {
-                    ActivityHeader(appName: "WalkTracker")
+                    ActivityHeader(appName: "Sidestreet")
 
                     WalkProgress(
                         createdAt: context.attributes.createdAt,

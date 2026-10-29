@@ -18,7 +18,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7F8CC1CB30836BB100A2EAFC"
                BuildableName = "SessionActivityExtensionExtension.appex"
-               ReferencedContainer = "container:WalkTracker.xcodeproj">
+               ReferencedContainer = "container:Sidestreet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7F42883E306FAB4B00658834"
-               BuildableName = "WalkTracker.app"
-               ReferencedContainer = "container:WalkTracker.xcodeproj">
+               BuildableName = "Sidestreet.app"
+               ReferencedContainer = "container:Sidestreet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -63,15 +63,15 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7F8CC1CB30836BB100A2EAFC"
             BuildableName = "SessionActivityExtensionExtension.appex"
-            ReferencedContainer = "container:WalkTracker.xcodeproj">
+            ReferencedContainer = "container:Sidestreet.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7F42883E306FAB4B00658834"
-            BuildableName = "WalkTracker.app"
-            ReferencedContainer = "container:WalkTracker.xcodeproj">
+            BuildableName = "Sidestreet.app"
+            ReferencedContainer = "container:Sidestreet.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -105,8 +105,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7F42883E306FAB4B00658834"
-            BuildableName = "WalkTracker.app"
-            ReferencedContainer = "container:WalkTracker.xcodeproj">
+            BuildableName = "Sidestreet.app"
+            ReferencedContainer = "container:Sidestreet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7F42883E306FAB4B00658834"
-               BuildableName = "WalkTracker.app"
-               ReferencedContainer = "container:WalkTracker.xcodeproj">
+               BuildableName = "Sidestreet.app"
+               ReferencedContainer = "container:Sidestreet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7F42883E306FAB4B00658834"
-            BuildableName = "WalkTracker.app"
-            ReferencedContainer = "container:WalkTracker.xcodeproj">
+            BuildableName = "Sidestreet.app"
+            ReferencedContainer = "container:Sidestreet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,8 +61,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7F42883E306FAB4B00658834"
-            BuildableName = "WalkTracker.app"
-            ReferencedContainer = "container:WalkTracker.xcodeproj">
+            BuildableName = "Sidestreet.app"
+            ReferencedContainer = "container:Sidestreet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
