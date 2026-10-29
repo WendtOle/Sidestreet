@@ -10,8 +10,6 @@ import SwiftUI
 struct WalkProgress<Value: View>: View {
     let createdAt: Date
     let distanceKm: Double
-    let accent: Color
-    let softAccent: Color
     @ViewBuilder var value: () -> Value
 
     var distanceText: String {

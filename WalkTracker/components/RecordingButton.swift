@@ -24,7 +24,7 @@ struct RecordingButton: View {
             } label: {
                 if let walk = activeWalk {
                     HStack {
-                        WalkProgress(createdAt: walk.createdAt, distanceKm: walk.totalDistance / 1_000, accent: .green, softAccent: .blue) {}
+                        WalkProgress(createdAt: walk.createdAt, distanceKm: walk.totalDistance / 1_000) {}
                             .padding(8)
                         Spacer()
                         Image(systemName: "stop.fill")

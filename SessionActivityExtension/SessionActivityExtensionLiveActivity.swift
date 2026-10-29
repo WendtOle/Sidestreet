@@ -9,23 +9,16 @@ import AppIntents
 import WidgetKit
 import SwiftUI
 
-private enum ActivityStyle {
-    static let accent = Color.green
-    static let softAccent = Color.green.opacity(0.15)
-}
-
 struct SessionActivityExtensionLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SessionActivityExtensionAttributes.self) { context in
             VStack(spacing: 0) {
                 VStack(spacing: 18) {
-                    ActivityHeader(appName: "WalkTracker", color: ActivityStyle.accent)
+                    ActivityHeader(appName: "WalkTracker")
 
                     WalkProgress(
                         createdAt: context.attributes.createdAt,
-                        distanceKm: context.state.distanceMeter / 1_000,
-                        accent: ActivityStyle.accent,
-                        softAccent: ActivityStyle.softAccent) {
+                        distanceKm: context.state.distanceMeter / 1_000) {
                             if context.state.isTrackingQuestActive {
                                 Button(intent: ToggleTrackingSoundIntent()) {
                                     VStack(spacing: 5) {
@@ -36,10 +29,10 @@ struct SessionActivityExtensionLiveActivity: Widget {
                                         )
                                         .font(.system(size: 17, weight: .medium))
                                     }
-                                    .foregroundStyle(ActivityStyle.accent)
+                                    .foregroundStyle(Color("AccentColor"))
                                     .frame(width: 58, height: 58)
                                     .background(
-                                        ActivityStyle.softAccent,
+                                        Color("AccentColor").opacity(0.15),
                                         in: RoundedRectangle(cornerRadius: 18)
                                     )
                                 }
@@ -58,10 +51,10 @@ struct SessionActivityExtensionLiveActivity: Widget {
                     }
                     .frame(maxWidth: .infinity)
                     .font(.caption)
-                    .foregroundStyle(ActivityStyle.accent)
+                    .foregroundStyle(Color("AccentColor"))
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .background(ActivityStyle.softAccent)
+                    .background(Color("AccentColor").opacity(0.15))
                 }
             }
             .activityBackgroundTint(.clear)

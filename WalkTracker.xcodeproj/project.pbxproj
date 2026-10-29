@@ -15,6 +15,8 @@
 		7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */; };
 		7F8CC1E83083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */; };
 		7F8CC1E93083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */; };
+		7FFE1CDF3093508200EEC16F /* GlobalAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE1CDE3093508200EEC16F /* GlobalAssets.xcassets */; };
+		7FFE1CE0309350C900EEC16F /* GlobalAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE1CDE3093508200EEC16F /* GlobalAssets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,7 @@
 		7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityExtensionAttributes.swift; sourceTree = "<group>"; };
 		7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTrackingSoundIntent.swift; sourceTree = "<group>"; };
+		7FFE1CDE3093508200EEC16F /* GlobalAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = GlobalAssets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -124,6 +127,7 @@
 				7F8CC1D230836BB100A2EAFC /* SessionActivityExtension */,
 				7F8CC1CD30836BB100A2EAFC /* Frameworks */,
 				7F428840306FAB4B00658834 /* Products */,
+				7FFE1CDE3093508200EEC16F /* GlobalAssets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -238,11 +242,13 @@
 		7F42883D306FAB4B00658834 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				7FFE1CE0309350C900EEC16F /* GlobalAssets.xcassets in Resources */,
 			);
 		};
 		7F8CC1CA30836BB100A2EAFC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				7FFE1CDF3093508200EEC16F /* GlobalAssets.xcassets in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */

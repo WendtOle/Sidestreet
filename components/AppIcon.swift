@@ -11,21 +11,12 @@ enum AppIconSize {
     case small
     case large
     
-    var fontSize: CGFloat {
-        switch self {
-        case .small:
-            return 13
-        case .large:
-            return 20
-        }
-    }
-    
     var frameSize: CGFloat {
         switch self {
         case .small:
             return 24
         case .large:
-            return 36
+            return 32
         }
     }
 }
@@ -38,13 +29,11 @@ struct AppIcon: View {
     }
     
     var body: some View {
-        Image(systemName: "point.topleft.down.to.point.bottomright.curvepath")
-            .font(.system(size: size.fontSize, weight: .medium))
-            .foregroundStyle(.black)
+        Image("AppLogo")
+            .renderingMode(.template)
+            .resizable()
+            .scaledToFit()
             .frame(width: size.frameSize, height: size.frameSize)
-            .background(
-                .green,
-                in: RoundedRectangle(cornerRadius: 7)
-            )
+            .foregroundStyle(Color("AccentColor"))
     }
 }

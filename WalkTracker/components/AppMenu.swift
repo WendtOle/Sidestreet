@@ -23,6 +23,11 @@ struct AppMenu: View {
                 }
             } label: {
                 AppIcon(size: .large)
+                    .padding(8)
+                    .glassEffect(
+                            .regular,
+                            in: RoundedRectangle(cornerRadius: 16)
+                        )
                     .padding(.horizontal, 18)
             }
             .alert("WalkTracker", isPresented: $isAboutPresent) {

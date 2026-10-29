@@ -141,9 +141,7 @@ struct ContentView: View {
                     VStack {
                         WalkProgress(
                             createdAt: walk.createdAt,
-                            distanceKm: walk.totalDistance / 1_000,
-                            accent: .green,
-                            softAccent: .blue
+                            distanceKm: walk.totalDistance / 1_000
                         ) {}
                             .padding(.horizontal, 24)
                             .padding(.top, 12)

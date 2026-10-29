@@ -10,7 +10,6 @@ import SwiftUI
 
 struct ActivityHeader: View {
     let appName: String
-    let color: Color
 
     var body: some View {
         HStack {
