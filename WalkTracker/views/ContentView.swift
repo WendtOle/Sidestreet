@@ -147,11 +147,14 @@ struct ContentView: View {
                             .padding(.top, 12)
                             .padding(.bottom, 6)
                         if let quest = selectedQuest {
+                            Divider()
                             HStack {
-                                Image(systemName: quest.type.symbol)
-                                    .frame(width: 35)
-                                Text(quest.type.name)
-                                QuestTypeExplanation(type: quest.type)
+                                HStack(spacing: 2) {
+                                    Image(systemName: quest.type.symbol)
+                                        .frame(width: 35)
+                                    Text(quest.type.name)
+                                    QuestTypeExplanation(type: quest.type)
+                                }
                                 Spacer()
                                 QuestFactory.progressIndicatorElement(questData: quest)
                                 if recording != nil, selectedQuest?.type == .track {
@@ -166,18 +169,18 @@ struct ContentView: View {
                                     .buttonStyle(.plain)
                                 }
                             }
-                            .padding(12)
+                            .padding(.horizontal, 12)
+                            .padding(.bottom, 12)
                             .frame(maxWidth: .infinity)
-                            .background(.blue.opacity(0.25))
                         } else if enableQuestCreation {
+                            Divider()
                             HStack {
                                 Button("Take on a Challenge?") {
                                     isQuestCreationPresented = true
                                 }
                             }
-                            .padding(.vertical, 12)
+                            .padding(.bottom, 12)
                             .frame(maxWidth: .infinity)
-                            .background(.blue.opacity(0.25))
                         }
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 16))
