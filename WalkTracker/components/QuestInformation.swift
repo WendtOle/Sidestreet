@@ -1,10 +1,3 @@
-//
-//  QuestInformation.swift
-//  WalkTracker
-//
-//  Created by Ole on 09.10.26.
-//
-
 import SwiftUI
 
 struct QuestInformation: View {

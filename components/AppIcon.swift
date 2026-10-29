@@ -1,10 +1,3 @@
-//
-//  AppIcon.swift
-//  WalkTracker
-//
-//  Created by Ole on 21.10.26.
-//
-
 import SwiftUI
 
 enum AppIconSize {

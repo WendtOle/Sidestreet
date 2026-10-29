@@ -1,10 +1,3 @@
-//
-//  format.swift
-//  WalkTracker
-//
-//  Created by Ole on 04.10.26.
-//
-
 import Foundation
 func formatDuration(_ seconds: Double) -> String {
     let totalSeconds = Int(seconds)

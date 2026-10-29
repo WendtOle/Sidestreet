@@ -1,10 +1,3 @@
-//
-//  WalkTrackerApp.swift
-//  WalkTracker
-//
-//  Created by Ole on 02.10.26.
-//
-
 import SwiftUI
 import SwiftData
 import ActivityKit

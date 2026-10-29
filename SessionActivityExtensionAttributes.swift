@@ -1,9 +1,3 @@
-//
-//  SessionActivityExtensionAttributes.swift
-//  WalkTracker
-//
-//  Created by Ole on 17.10.26.
-//
 import ActivityKit
 import Foundation
 

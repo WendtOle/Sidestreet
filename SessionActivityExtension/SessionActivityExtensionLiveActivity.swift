@@ -1,10 +1,3 @@
-//
-//  SessionActivityExtensionLiveActivity.swift
-//  SessionActivityExtension
-//
-//  Created by Ole on 17.10.26.
-//
-
 import AppIntents
 import WidgetKit
 import SwiftUI

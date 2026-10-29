@@ -1,10 +1,3 @@
-//
-//  LocationEnabledAlert.swift
-//  WalkTracker
-//
-//  Created by Ole on 19.10.26.
-//
-
 import SwiftUI
 
 struct LocationEnabledAlert: View {

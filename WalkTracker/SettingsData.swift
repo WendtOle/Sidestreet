@@ -1,10 +1,3 @@
-//
-//  SettingsData.swift
-//  WalkTracker
-//
-//  Created by Ole on 21.10.26.
-//
-
 import SwiftData
 import Foundation
 

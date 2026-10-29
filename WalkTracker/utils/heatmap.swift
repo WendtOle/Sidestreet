@@ -1,10 +1,3 @@
-//
-//  heatmap.swift
-//  WalkTracker
-//
-//  Created by Ole on 11.10.26.
-//
-
 import Foundation
 
 func getBinnedCoordinates(_ point: GeoPoint) -> [Double] {

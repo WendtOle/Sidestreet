@@ -1,10 +1,3 @@
-//
-//  Quest.swift
-//  WalkTracker
-//
-//  Created by Ole on 04.10.26.
-//
-
 import CoreLocation
 import SwiftData
 import MapKit

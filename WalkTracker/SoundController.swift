@@ -1,10 +1,3 @@
-//
-//  SoundController.swift
-//  WalkTracker
-//
-//  Created by Ole on 08.10.26.
-//
-
 import AVFAudio
 import Combine
 import CoreLocation

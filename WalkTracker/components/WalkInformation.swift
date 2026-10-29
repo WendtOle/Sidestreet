@@ -1,10 +1,3 @@
-//
-//  WalkInformation.swift
-//  WalkTracker
-//
-//  Created by Ole on 09.10.26.
-//
-
 import SwiftUI
 import MapKit
 

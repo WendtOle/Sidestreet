@@ -1,10 +1,3 @@
-//
-//  ActivityHeader.swift
-//  WalkTracker
-//
-//  Created by Ole on 18.10.26.
-//
-
 import SwiftUI
 
 

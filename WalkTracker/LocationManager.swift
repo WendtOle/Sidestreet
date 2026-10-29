@@ -1,10 +1,3 @@
-//
-//  LocationManager.swift
-//  WalkTracker
-//
-//  Created by Ole on 02.10.26.
-//
-
 import CoreLocation
 import Observation
 import Combine
