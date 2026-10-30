@@ -213,7 +213,7 @@ struct ContentView: View {
             }
         }
         .mapScope(mapScope)
-        .adaptiveSheet(isPresent: $isQuestCreationPresented, title: "Find your challenge", exitTitle: "Cancel"){
+        .adaptiveRawSheet(isPresent: $isQuestCreationPresented){
             QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
         }
         .onChange(of: selectedWalk?.id) {

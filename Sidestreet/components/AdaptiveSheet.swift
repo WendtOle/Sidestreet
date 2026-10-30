@@ -9,38 +9,46 @@ struct SheetWrapper<Content: View>: View {
     let nullableTitle: String?
     let exitTitle: String
     let content: Content
+    let nullableOnPrevious: (() -> Void)?
 
     init(
         isPresented: Binding<Bool>,
         title: String? = nil,
         exitTitle: String? = nil,
+        onPrevious: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
         _isPresented = isPresented
         self.nullableTitle = title
         self.content = content()
         self.exitTitle = exitTitle ?? "Done"
+        self.nullableOnPrevious = onPrevious
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                    
-                    Button(exitTitle) {
-                        isPresented = false
-                    }
-                }
-                if let title = nullableTitle {
-                    Text(title)
-                        .font(.title)
-                        .padding(.bottom, 16)
-                }
+        VStack(spacing: 16) {
+            if let title = nullableTitle {
+                Text(title)
+                    .font(.title2)
             }
             content
         }
-        .padding(20)
+        .padding(.top, 20)
+        .padding(.horizontal, 20)
+        .overlay(alignment: .topLeading) {
+            if let onPrevious = nullableOnPrevious {
+                Button("Back") {
+                    onPrevious()
+                }
+                .padding(20)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            Button(exitTitle) {
+                isPresented = false
+            }
+            .padding(20)
+        }
     }
 }
 
@@ -60,6 +68,17 @@ extension View {
                 ) {
                         sheetContent()
                     }
+            }
+        )
+    }
+    
+    func adaptiveRawSheet<SheetContent: View>(
+        isPresent: Binding<Bool>,
+        @ViewBuilder sheetContent: () -> SheetContent
+    ) -> some View {
+        modifier(
+            AdaptiveSheetModifier(isPresented: isPresent) {
+                sheetContent()
             }
         )
     }
