@@ -6,6 +6,7 @@ struct AppMenu: View {
     @State var isSettingsPresent: Bool = false
     
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
 
     @Query(filter: #Predicate<SettingsData> { $0.key == "app" })
     private var settingsRecords: [SettingsData]
@@ -31,7 +32,15 @@ struct AppMenu: View {
                     .padding(.horizontal, 18)
             }
             .alert("Sidestreet", isPresented: $isAboutPresent) {
-                Button("OK", role: .cancel) { }
+                Button("Privacy Policy") {
+                        guard let url = URL(
+                            string: "https://sidestreet.ole-wendt.com"
+                        ) else { return }
+
+                        openURL(url)
+                    }
+
+                    Button("OK", role: .cancel) { }
             } message: {
                 Text("""
             Sidestreet was created by Ole Wendt.
