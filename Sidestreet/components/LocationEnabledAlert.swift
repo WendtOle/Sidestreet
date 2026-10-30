@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct LocationEnabledAlert: View {
-    let isLocationServiceEnabled: Bool
+    let showAlert: Bool
     let isRecording: Bool
     @State var isAlertPresent: Bool = false
     
     var body: some View {
         
-        if !isLocationServiceEnabled {
+        if showAlert {
             Button {
                 isAlertPresent = true
             } label: {
-                Text("Location Services is Off").font(.subheadline.weight(.semibold))
+                Text("Location services is off").font(.subheadline.weight(.semibold))
                 Image(systemName: "chevron.right")
             }.buttonStyle(.glass)
                 .alert("Turn on Location Services for your iPhone", isPresented: $isAlertPresent) {

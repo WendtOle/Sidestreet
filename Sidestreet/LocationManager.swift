@@ -2,10 +2,18 @@ import CoreLocation
 import Observation
 import Combine
 
+enum LocationAccessStatus {
+    case enabled
+    case reducedAccuracy
+    case globallyOff
+    case appPermissionDenied
+}
+
 @Observable
 @MainActor
 final class LocationManager: NSObject, CLLocationManagerDelegate {
-    private(set) var servicesEnabled: Bool?
+    private(set) var locationAccessStatus: LocationAccessStatus = .enabled
+    private(set) var preciseLocationAllowed = false
     private let manager = CLLocationManager()
     var lastLocation: CLLocation?
     var nullableLastRecordedLocation: CLLocation?
@@ -34,8 +42,30 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             CLLocationManager.locationServicesEnabled()
         }.value
 
-        guard !Task.isCancelled else { return }
-        servicesEnabled = enabled
+        guard !Task.isCancelled else {
+            return
+        }
+        
+        if !enabled {
+            locationAccessStatus = .globallyOff
+            return
+        }
+        
+        let status = manager.authorizationStatus
+        if status == .notDetermined {
+            requestPermission()
+            locationAccessStatus = .appPermissionDenied
+            return
+        }
+        if status != .authorizedWhenInUse && status != .authorizedAlways {
+            locationAccessStatus = .appPermissionDenied
+            return
+        }
+        if manager.accuracyAuthorization != .fullAccuracy {
+            locationAccessStatus = .reducedAccuracy
+            return
+        }
+        locationAccessStatus = .enabled
     }
     
     nonisolated func locationManagerDidChangeAuthorization(

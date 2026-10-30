@@ -5,6 +5,7 @@ import CoreLocation
 
 
 struct CustomMap: View {
+    var locationAccessEnabled: Bool
     var recording: Walk?
     var heatMap: [(point: GeoPoint, count: Double)]
     @Binding var cameraPosition: MapCameraPosition
@@ -14,13 +15,14 @@ struct CustomMap: View {
     var unselectWalk: () -> Void
     var visualizeHeatMap: Bool
     var selectedQuest: QuestData?
-    var isLocationServiceEnabled: Bool
     let mapScope: Namespace.ID
     var mapStyle: Style
 
     var body: some View {
         Map(position: $cameraPosition, scope: mapScope){
-            UserAnnotation()
+            if locationAccessEnabled {
+                UserAnnotation()
+            }
             if let selectedQuest {
                 QuestFactory.mapElements(questData: selectedQuest, walkFinished: recording == nil)
             }

@@ -40,6 +40,8 @@ struct SidestreetApp: App {
     
     @State var activity: Activity<SessionActivityExtensionAttributes>?
     
+    @Environment(\.scenePhase) private var scenePhase
+    
     init() {
         do {
             let modelContainer = try ModelContainer(for: QuestData.self, Walk.self, SettingsData.self)
@@ -171,7 +173,7 @@ struct SidestreetApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(
-                isLocationServiceEnabled: locationManager.servicesEnabled ?? true,
+                locationAccessStatus: locationManager.locationAccessStatus,
                 soundController: soundController,
                 selectedQuest: questController.activeQuest,
                 createQuest: createQuest,
@@ -194,6 +196,10 @@ struct SidestreetApp: App {
                 appDelegate.onTerminate = {
                     saveWalk()
                 }
+            }
+            .task(id: scenePhase) {
+                guard scenePhase == .active else { return }
+                await locationManager.updateServiceEnabledStatus()
             }
         }
         .modelContainer(container)

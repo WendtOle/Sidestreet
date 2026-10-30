@@ -6,7 +6,7 @@ import GEOSwift
 import AVFAudio
 
 struct ContentView: View {
-    var isLocationServiceEnabled: Bool
+    var locationAccessStatus: LocationAccessStatus
     @ObservedObject var soundController: SoundController
     var selectedQuest: QuestData?
     let createQuest: (QuestType, Bool) -> Void
@@ -53,6 +53,7 @@ struct ContentView: View {
     var body: some View {
         ZStack{
             CustomMap(
+                locationAccessEnabled: locationAccessStatus == .enabled,
                 recording: recording,
                 heatMap: heatMap,
                 cameraPosition: $cameraPosition,
@@ -60,24 +61,34 @@ struct ContentView: View {
                 unselectWalk: { selectedWalk = nil },
                 visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
-                isLocationServiceEnabled: isLocationServiceEnabled,
                 mapScope: mapScope,
                 mapStyle: mapStyle
             )
+            
             VStack{
-                LocationEnabledAlert(
-                    isLocationServiceEnabled: isLocationServiceEnabled,
-                    isRecording: recording != nil
-                )
-                LocationUpdatePendingAlert(
-                    isLocationUpdatePending: isLocationUpdatePending
-                )
-                HStack {
-                    Spacer()
-                    MapScaleView(scope: mapScope)
-                    Spacer()
+                VStack {
+                    LocationEnabledAlert(
+                        showAlert: locationAccessStatus == .globallyOff,
+                        isRecording: recording != nil
+                    )
+                    ApplicationAuthorizedAlert(
+                        showAlert: locationAccessStatus == .appPermissionDenied,
+                    )
+                    ReducedAccuracyAlert(
+                        showAlert: locationAccessStatus == .reducedAccuracy,
+                    )
+                    LocationUpdatePendingAlert(
+                        isLocationUpdatePending: isLocationUpdatePending
+                    )
+                    HStack {
+                        Spacer()
+                        MapScaleView(scope: mapScope)
+                        Spacer()
+                    }
+                    .frame(height: 30)
                 }
-                .frame(height: 30)
+                .frame(width: .infinity)
+                .padding(.leading, 12)
                 Spacer()
                 HStack(alignment: .bottom){
                     WalkHistoryView(walks: walks, onSelect: { walk in
@@ -101,7 +112,7 @@ struct ContentView: View {
                     )
                     Spacer()
                     VStack {
-                        if isLocationServiceEnabled {
+                        if locationAccessStatus == .enabled {
                             MapCompass(scope: mapScope)
                                 .mapControlVisibility(.visible)
                         }
@@ -122,7 +133,7 @@ struct ContentView: View {
                                     .font(.system(size: 20))
                                     .tint(.primary)
                                 }
-                                .disabled(!isLocationServiceEnabled)
+                                .disabled(locationAccessStatus != .enabled)
                             }
                             .padding(.vertical, 4)
                         }
@@ -194,7 +205,7 @@ struct ContentView: View {
                     
                 }
                 .buttonStyle(.glassProminent)
-                .disabled(recording == nil && !isLocationServiceEnabled)
+                .disabled(recording == nil && locationAccessStatus != .enabled)
             }
             .padding(.horizontal)
             .overlay(alignment: .topLeading) {
