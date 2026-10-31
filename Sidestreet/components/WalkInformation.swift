@@ -16,7 +16,10 @@ struct WalkInformation: View {
                         Text(walk.createdAt.formatted())
                     }
                     if let quest = walk.quests.first {
-                        Text(quest.questReached ? "Challenge completed" : "Challenge failed")
+                        HStack {
+                            Image(systemName: quest.type.symbol)
+                            Text("\(quest.type.name) \(quest.questReached ? "completed" : "failed")")
+                        }
                     }
                 }
                 
@@ -28,8 +31,10 @@ struct WalkInformation: View {
                 }
             }
         }
-        .adaptiveSheet(isPresent: $isPresent) {
-            WalkSummary(walk: walk)
+        .adaptiveRawSheet(isPresent: $isPresent) {
+            SheetWrapper(isPresented: $isPresent, title: "\(walk.createdAt.formatted())") {
+                WalkSummary(walk: walk)
+            }
         }
     }
 }
@@ -44,6 +49,7 @@ struct WalkImage: View {
 
 struct WalkSummary: View {
     let walk: Walk
+    @State var interactionEnabled: Bool = false
     
     var body: some View {
         let distanceKm = walk.totalDistance / 1_000
@@ -63,15 +69,17 @@ struct WalkSummary: View {
         
         VStack(spacing: 12) {
             if let quest = walk.quests.first {
-                HStack(spacing: 8) {
-                    Image(systemName: quest.type.symbol)
-                    Text("\(quest.type.longName) \(quest.questReached ? "completed" : "failed")").font(.headline.weight(.semibold))
-                }
-                HStack(spacing: 8) {
-                    QuestFactory.progressIndicatorElement(questData: quest)
+                VStack {
+                    HStack(spacing: 8) {
+                        Image(systemName: quest.type.symbol)
+                        Text("\(quest.type.longName) \(quest.questReached ? "completed" : "failed")")
+                    }
+                    HStack(spacing: 8) {
+                        QuestFactory.progressIndicatorElement(questData: quest)
+                    }
                 }
             }
-            Map(interactionModes: []) {
+            Map(interactionModes: interactionEnabled ? [.all] : []) {
                 MapPolyline(coordinates: walk.coordinates).stroke(.orange, lineWidth: 5)
                 ForEach(walk.quests, id: \.id) { quest in
                     QuestFactory.mapElements(questData: quest, walkFinished: true)
@@ -99,10 +107,10 @@ struct WalkSummary: View {
                 }
                 .padding(12)
             }
-            .overlay(alignment: .topLeading) {
-                TextBubble(text: "\(walk.createdAt.formatted())")
-                    .padding(12)
-            }
+            Toggle("Enable map interaction", isOn: $interactionEnabled)
+                .toggleStyle(.switch)
+                .tint(.blue)
+                .padding(.horizontal)
         }
     }
 }

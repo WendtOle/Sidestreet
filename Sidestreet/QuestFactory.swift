@@ -140,8 +140,12 @@ enum QuestFactory {
                     Text("\(Int(score)) / \(toReachScore) pts")
                 }
             }
-        default:
-            Text("")
+        case .navigate, .track:
+            if questData.targets.count > 1, let nearestReachedPoint = questData.targets.last {
+                HStack {
+                    Text("\(Int(nearestReachedPoint.value)) m away")
+                }
+            }
         }
     }
 }
