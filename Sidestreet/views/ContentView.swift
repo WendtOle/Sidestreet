@@ -91,7 +91,8 @@ struct ContentView: View {
                 .padding(.leading, 12)
                 Spacer()
                 HStack(alignment: .bottom){
-                    WalkHistoryView(walks: walks, onSelect: { walk in
+                    if walks.count > 0 {
+                        WalkHistoryView(walks: walks, onSelect: { walk in
                             selectedWalk = walk
                             if let position = frameRoute(for: walk.coordinates) {
                                 withAnimation(
@@ -109,7 +110,8 @@ struct ContentView: View {
                             try? modelContext.save()
                             onDeleteWalk()
                         }
-                    )
+                        )
+                    }
                     Spacer()
                     VStack {
                         if locationAccessStatus == .enabled {
