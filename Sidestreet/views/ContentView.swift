@@ -87,7 +87,7 @@ struct ContentView: View {
                     }
                     .frame(height: 30)
                 }
-                .frame(width: .infinity)
+                .frame(maxWidth: .infinity)
                 .padding(.leading, 12)
                 Spacer()
                 HStack(alignment: .bottom){

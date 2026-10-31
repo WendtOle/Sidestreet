@@ -70,14 +70,19 @@ struct QuestCreationSheet: View {
             }
         }: nil) {
             VStack(spacing: 8) {
-                HStack {
-                    Text("\(step.number) of 3 - \(step.name)").font(.callout.weight(.light))
-                    Spacer()
-                }.frame(width: .infinity)
+                Text("\(step.number) of 3 - \(step.name)").font(.callout.weight(.light))
                 Divider()
                 switch step {
-                case .type, .duration:
+                case .type:
                     TypeView(type: $choosenType).padding()
+                    Spacer()
+                    if let nextStep = step.next {
+                        CustomButton(onClick: {
+                            step = nextStep
+                        }, text: "Continue")
+                    }
+                case .duration:
+                    DurationView(duration: $duration).padding()
                     Spacer()
                     if let nextStep = step.next {
                         CustomButton(onClick: {
