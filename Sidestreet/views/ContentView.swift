@@ -47,6 +47,10 @@ struct ContentView: View {
         
     
     func stopRecording() {
+        if let walk = recording , walk.coordinates.count < 2 {
+            discardWalk()
+            return
+        }
         showSaveConfirmation = true
     }
     
