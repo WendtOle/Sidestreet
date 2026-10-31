@@ -158,30 +158,7 @@ struct ContentView: View {
                             .padding(.bottom, 6)
                         if let quest = selectedQuest {
                             Divider()
-                            HStack {
-                                HStack(spacing: 2) {
-                                    Image(systemName: quest.type.symbol)
-                                        .frame(width: 35)
-                                    Text(quest.type.name)
-                                    QuestTypeExplanation(type: quest.type)
-                                }
-                                Spacer()
-                                QuestFactory.progressIndicatorElement(questData: quest)
-                                if recording != nil, selectedQuest?.type == .track {
-                                    Button {
-                                        toggleTrackingSound()
-                                    } label: {
-                                        
-                                        Image(systemName: soundController.isRunning ? "speaker.wave.2" : "speaker.slash")
-                                            .font(.system(size: 24, weight: .semibold))
-                                            .frame(width: 35, height: 35)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 12)
-                            .frame(maxWidth: .infinity)
+                            RunningChallenge(quest: quest, toggleTrackingSound: toggleTrackingSound, abandonChallenge: unselectQuest, soundController: soundController)
                         } else if enableQuestCreation {
                             Divider()
                             HStack {
@@ -228,9 +205,11 @@ struct ContentView: View {
             }
             cameraPosition = frameRoute(for: selectedWalk.coordinates) ?? cameraPosition
         }
-        .adaptiveSheet(isPresent: $showRecentlySavedWalk) {
+        .adaptiveRawSheet(isPresent: $showRecentlySavedWalk) {
             if let walk = walks.first {
-                WalkSummary(walk: walk)
+                SheetWrapper(isPresented: $showRecentlySavedWalk, title: "\(walk.createdAt.formatted())") {
+                    WalkSummary(walk: walk)
+                }
             }
         }
         .confirmationDialog("Finish recording?", isPresented: $showSaveConfirmation, titleVisibility: .visible) {
