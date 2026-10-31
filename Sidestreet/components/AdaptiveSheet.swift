@@ -40,6 +40,7 @@ struct SheetWrapper<Content: View>: View {
                 Button("Back") {
                     onPrevious()
                 }
+                .buttonStyle(.plain)
                 .padding(20)
             }
         }
@@ -47,6 +48,7 @@ struct SheetWrapper<Content: View>: View {
             Button(exitTitle) {
                 isPresented = false
             }
+            .buttonStyle(.plain)
             .padding(20)
         }
     }

@@ -50,10 +50,10 @@ struct AppMenu: View {
             }
             .adaptiveSheet(isPresent: $isSettingsPresent, title: "Settings") {
                 VStack (spacing: 24) {
-                    Toggle("Enable discarding walks", isOn: $settings.enableDiscardingWalks)
+                    Toggle("Intro dismissed", isOn: $settings.introDismissed)
                         .toggleStyle(.switch)
                         .tint(.blue)
-                    Toggle("Intro dismissed", isOn: $settings.introDismissed)
+                    Toggle("Enable discarding walks", isOn: $settings.enableDiscardingWalks)
                         .toggleStyle(.switch)
                         .tint(.blue)
                 }

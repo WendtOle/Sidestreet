@@ -20,13 +20,13 @@ struct SessionActivityExtensionLiveActivity: Widget {
                                             ? "speaker.wave.3"
                                             : "speaker.slash"
                                         )
-                                        .font(.system(size: 17, weight: .medium))
+                                        .font(.system(size: 24, weight: .semibold))
                                     }
                                     .foregroundStyle(Color("AccentColor"))
-                                    .frame(width: 58, height: 58)
+                                    .frame(width: 50, height: 50)
                                     .background(
                                         Color("AccentColor").opacity(0.15),
-                                        in: RoundedRectangle(cornerRadius: 18)
+                                        in: RoundedRectangle(cornerRadius: 12)
                                     )
                                 }
                                 .buttonStyle(.plain)

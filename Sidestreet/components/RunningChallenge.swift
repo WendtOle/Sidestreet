@@ -39,7 +39,11 @@ struct RunningChallenge: View {
                         .font(.system(size: 24, weight: .semibold))
                         .frame(width: 35, height: 35)
                 }
-                .buttonStyle(.plain)
+                .padding(6)
+                .background(
+                    Color("AccentColor").opacity(0.15),
+                    in: RoundedRectangle(cornerRadius: 12)
+                )
             }
             Menu {
                 Button("Abandon") {
