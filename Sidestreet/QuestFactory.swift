@@ -29,7 +29,6 @@ enum QuestFactory {
             let sum = targets.reduce(0) {acc, curr in
                 return acc + curr.value
             }
-            print("\(sum) - \(targets.count) - \(sum / Double(targets.count))")
             return QuestData(targets: targets, type: questType, targetScore: smallVariant ? 50 : 80)
         default:
             let distance = Double.random(in: minDistance...maxDistance)

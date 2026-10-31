@@ -179,9 +179,9 @@ struct NotiveView: View {
             Text("""
             Challenge targets are generated randomly. Sidestreet does not verify whether they are accessible, open to the public, or safe to reach.
              
-             Use your judgment and follow local signs and rules. Stay on safe, publicly accessible paths. Never enter private property, restricted areas, water, or dangerous terrain to reach a target.
+            Use your judgment and follow local signs and rules. Stay on safe, publicly accessible paths. Never enter private property, restricted areas, water, or dangerous terrain to reach a target.
             
-             You decide whether to continue. Stop the challenge if a target cannot be reached safely. No challenge is worth risking your safety or anyone else’s.
+            You decide whether to continue. Stop the challenge if a target cannot be reached safely. No challenge is worth risking your safety or anyone else’s.
             """).font(.body)
             HStack {
                 Toggle("I understand", isOn: $accepted)
