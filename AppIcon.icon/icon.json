@@ -1,0 +1,181 @@
+{
+  "fill" : "automatic",
+  "groups" : [
+    {
+      "layers" : [
+
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-srgb:0.20392,0.78039,0.34902,0.90000"
+          },
+          "glass" : false,
+          "hidden" : false,
+          "image-name" : "Rectangle 3.svg",
+          "name" : "Rectangle 3",
+          "position" : {
+            "scale" : 3.5,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "extended-srgb:0.20392,0.78039,0.34902,0.50000"
+          },
+          "glass" : false,
+          "hidden" : true,
+          "image-name" : "Rectangle 1.svg",
+          "name" : "Rectangle 1",
+          "position" : {
+            "scale" : 3.5,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "position" : {
+        "scale" : 1.59,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "srgb:0.00000,0.98107,0.57369,1.00000"
+          },
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "Circle.svg",
+          "name" : "Circle",
+          "position" : {
+            "scale" : 4.5,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "srgb:0.00000,0.56284,0.31882,0.70709"
+          },
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "Exclude.svg",
+          "name" : "Exclude",
+          "position" : {
+            "scale" : 5.67,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    },
+    {
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.44053,0.82207,0.44527,1.00000",
+              "extended-srgb:0.20392,0.78039,0.34902,1.00000"
+            ]
+          },
+          "glass" : true,
+          "hidden" : true,
+          "image-name" : "Exclude (1).svg",
+          "name" : "Exclude (1)",
+          "position" : {
+            "scale" : 5.3,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "solid" : "display-p3:0.72889,0.55556,0.76000,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "Exclude (1).svg",
+          "name" : "Exclude flida",
+          "position" : {
+            "scale" : 5.3,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "Group",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.3
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
