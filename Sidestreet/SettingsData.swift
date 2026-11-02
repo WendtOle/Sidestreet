@@ -8,6 +8,7 @@ final class SettingsData {
     
     var introDismissed: Bool = false
     var enableDiscardingWalks: Bool = false
+    var developerMode: Bool = false
     
     private init() {}
     

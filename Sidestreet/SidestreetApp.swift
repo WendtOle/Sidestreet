@@ -190,6 +190,17 @@ struct SidestreetApp: App {
                 enableQuestCreation: questController.activeWalk?.coordinates.isEmpty == false && questController.activeQuest == nil,
                 toggleTrackingSound: toggleTrackingSound,
                 isLocationUpdatePending: questController.activeWalk?.coordinates.isEmpty == true,
+                devFullfillChallenge: {
+                    guard let quest = questController.activeQuest else { return }
+                    quest.questReached = true
+                },
+                devCreateTutorialChallenge: {
+                    if questController.activeQuest != nil {
+                        return
+                    }
+                    let quest = QuestData(targets: [Target(point: GeoPoint(latitude: 52.52179095308138, longitude: 13.39848955434778), value: 30.0)], type: .navigate)
+                    questController.setQuest(quest: quest)
+                }
             )
             .onAppear {
                 locationManager.requestPermission()

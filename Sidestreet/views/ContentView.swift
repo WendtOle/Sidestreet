@@ -22,6 +22,9 @@ struct ContentView: View {
     let toggleTrackingSound: () -> Void
     let isLocationUpdatePending: Bool
     
+    let devFullfillChallenge: () -> Void
+    let devCreateTutorialChallenge: () -> Void
+    
     @Namespace private var mapScope
     
     @State private var cameraPosition: MapCameraPosition =
@@ -193,6 +196,11 @@ struct ContentView: View {
             .padding(.horizontal)
             .overlay(alignment: .topLeading) {
                 AppMenu()
+            }
+            .overlay(alignment: .topTrailing) {
+                if let settings = settingsRecords.first, settings.developerMode {
+                    DeveloperSettingsMenu(fullfillChallenge: devFullfillChallenge, createTutorialChallenge: devCreateTutorialChallenge)
+                }
             }
         }
         .mapScope(mapScope)

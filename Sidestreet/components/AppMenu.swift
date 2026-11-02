@@ -53,7 +53,7 @@ struct AppMenu: View {
                     Toggle("Intro dismissed", isOn: $settings.introDismissed)
                         .toggleStyle(.switch)
                         .tint(.blue)
-                    Toggle("Enable discarding walks", isOn: $settings.enableDiscardingWalks)
+                    Toggle("Activate developer settings", isOn: $settings.developerMode)
                         .toggleStyle(.switch)
                         .tint(.blue)
                 }
