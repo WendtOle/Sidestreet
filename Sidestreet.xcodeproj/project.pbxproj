@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F0DB0A83098C5A4002C1504 /* tutorial_walk_start.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0A73098C5A0002C1504 /* tutorial_walk_start.gpx */; };
+		7F0DB0A93098C5A4002C1504 /* tutorial_walk_start.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0A73098C5A0002C1504 /* tutorial_walk_start.gpx */; };
+		7F0DB0AB3098C6DF002C1504 /* tutorial_walk.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */; };
+		7F0DB0AC3098C6DF002C1504 /* tutorial_walk.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */; };
 		7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7F6359D73073B93C00B37931 /* GEOSwift */; };
 		7F8CC1CF30836BB100A2EAFC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */; };
 		7F8CC1D130836BB100A2EAFC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */; };
@@ -42,6 +46,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7F0DB0A73098C5A0002C1504 /* tutorial_walk_start.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tutorial_walk_start.gpx; sourceTree = "<group>"; };
+		7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tutorial_walk.gpx; sourceTree = "<group>"; };
 		7F42883F306FAB4B00658834 /* Sidestreet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sidestreet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SessionActivityExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -120,6 +126,8 @@
 		7F428836306FAB4B00658834 = {
 			isa = PBXGroup;
 			children = (
+				7F0DB0A73098C5A0002C1504 /* tutorial_walk_start.gpx */,
+				7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */,
 				7FD87A81308498D0000DAAB4 /* components */,
 				7F8CC1E73083908600A2EAFC /* ToggleTrackingSoundIntent.swift */,
 				7F8CC1E43083810300A2EAFC /* SessionActivityExtensionAttributes.swift */,
@@ -258,6 +266,8 @@
 			isa = PBXSourcesBuildPhase;
 			files = (
 				7F8CC1E63083815A00A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
+				7F0DB0A83098C5A4002C1504 /* tutorial_walk_start.gpx in Sources */,
+				7F0DB0AB3098C6DF002C1504 /* tutorial_walk.gpx in Sources */,
 				7F8CC1E93083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */,
 			);
 		};
@@ -265,6 +275,8 @@
 			isa = PBXSourcesBuildPhase;
 			files = (
 				7F8CC1E53083812200A2EAFC /* SessionActivityExtensionAttributes.swift in Sources */,
+				7F0DB0AC3098C6DF002C1504 /* tutorial_walk.gpx in Sources */,
+				7F0DB0A93098C5A4002C1504 /* tutorial_walk_start.gpx in Sources */,
 				7F8CC1E83083908900A2EAFC /* ToggleTrackingSoundIntent.swift in Sources */,
 			);
 		};
