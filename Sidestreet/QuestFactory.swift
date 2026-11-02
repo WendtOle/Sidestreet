@@ -1,6 +1,20 @@
 import MapKit
 import SwiftUI
 
+import SwiftUI
+
+extension Color {
+    init(hex: UInt32) {
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xFF) / 255,
+            green: Double((hex >> 8) & 0xFF) / 255,
+            blue: Double(hex & 0xFF) / 255,
+            opacity: 1
+        )
+    }
+}
+
 enum QuestFactory {
     static func make(referencePoint: CLLocation, questType: QuestType, heatMap: [(point: GeoPoint, count: Double)], smallVariant: Bool) -> QuestData {
         let minDistance = smallVariant ? 100.0 : 300.0
@@ -83,7 +97,8 @@ enum QuestFactory {
     }
     
     static func mapElements (questData: QuestData, walkFinished: Bool) -> AnyMapContent  {
-        let color = questData.questReached ? Color.orange : walkFinished ? .red : .green
+        let color = Color("SecondaryColor")
+        let systemImage = questData.questReached ? "checkmark" : walkFinished ? "xmark" : "target"
         guard let firstTarget = questData.targets.first else {
             return AnyMapContent(EmptyMapContent())
         }
@@ -99,7 +114,7 @@ enum QuestFactory {
             }
             return AnyMapContent(
                 Group {
-                    Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
+                    Marker("", systemImage: systemImage, coordinate: firstTargetPoint)
                         .tint(color)
                     drawClosestPoint(questData: questData, color: walkFinished ? .orange : .blue)
                 }
@@ -107,7 +122,7 @@ enum QuestFactory {
         case .navigate:
             return AnyMapContent(
                 Group {
-                    Marker("", systemImage: questData.type.symbol, coordinate: firstTargetPoint)
+                    Marker("", systemImage: systemImage, coordinate: firstTargetPoint)
                         .tint(color)
                     drawClosestPoint(questData: questData, color: walkFinished ? .orange : .blue)
                 }
@@ -198,7 +213,7 @@ func drawPoint(target: Target) -> some MapContent {
         VStack(spacing: 4) {
             Image(systemName: "mappin")
                 .font(.system(size: 24))
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color("SecondaryColor"))
         }
     }
     .annotationTitles(.hidden)

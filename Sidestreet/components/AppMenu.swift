@@ -4,6 +4,7 @@ import SwiftData
 struct AppMenu: View {
     @State var isAboutPresent: Bool = false
     @State var isSettingsPresent: Bool = false
+    let showTutorial: () -> Void
     
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
@@ -15,6 +16,9 @@ struct AppMenu: View {
         if let settings = settingsRecords.first {
             @Bindable var settings = settings
             Menu {
+                Button("Show tutorial") {
+                    showTutorial()
+                }
                 Button("Settings") {
                     isSettingsPresent = true
                 }
@@ -50,7 +54,7 @@ struct AppMenu: View {
             }
             .adaptiveSheet(isPresent: $isSettingsPresent, title: "Settings") {
                 VStack (spacing: 24) {
-                    Toggle("Intro dismissed", isOn: $settings.introDismissed)
+                    Toggle("Enable discarding walks", isOn: $settings.enableDiscardingWalks)
                         .toggleStyle(.switch)
                         .tint(.blue)
                     Toggle("Activate developer settings", isOn: $settings.developerMode)

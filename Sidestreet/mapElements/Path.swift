@@ -3,5 +3,5 @@ import SwiftUI
 import CoreLocation
 
 func getPath(_ coordinates: [CLLocationCoordinate2D]) -> some MapContent {
-    return MapPolyline(coordinates: coordinates).stroke(.blue, lineWidth: 7)
+    return MapPolyline(coordinates: coordinates).stroke(Color("SecondaryColor").opacity(0.8), lineWidth: 7)
 }
