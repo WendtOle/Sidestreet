@@ -35,6 +35,8 @@ struct ContentView: View {
     @State private var visualizeHeatMap = false
     @State private var showSaveConfirmation = false
     @State private var showRecentlySavedWalk = false
+    @State private var showTutorial = false
+    @State private var checkedTutorialOnLaunch = false
     @State var mapStyle: Style = .standard
     
     @Environment(\.modelContext) private var modelContext
@@ -69,7 +71,7 @@ struct ContentView: View {
                 visualizeHeatMap: visualizeHeatMap,
                 selectedQuest: selectedQuest,
                 mapScope: mapScope,
-                mapStyle: mapStyle
+                mapStyle: mapStyle,
             )
             
             VStack{
@@ -195,7 +197,7 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             .overlay(alignment: .topLeading) {
-                AppMenu()
+                AppMenu(showTutorial: { showTutorial = true })
             }
             .overlay(alignment: .topTrailing) {
                 if let settings = settingsRecords.first, settings.developerMode {
@@ -203,7 +205,19 @@ struct ContentView: View {
                 }
             }
         }
+        .onAppear() {
+            if let settings = settingsRecords.first {
+                if !settings.introDismissed {
+                    showTutorial = true
+                }
+            }
+        }
         .mapScope(mapScope)
+        .fullScreenCover(isPresented: $showTutorial) {
+            if let settings = settingsRecords.first {
+                TutorialView(settings: settings, isPresented: $showTutorial)
+            }
+        }
         .adaptiveRawSheet(isPresent: $isQuestCreationPresented){
             QuestCreationSheet(createQuest: createQuest, isQuestCreationPresented: $isQuestCreationPresented)
         }
