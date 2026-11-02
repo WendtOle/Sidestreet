@@ -85,6 +85,7 @@ struct WalkSummary: View {
                     QuestFactory.mapElements(questData: quest, walkFinished: true)
                 }
             }
+            .mapStyle(.standard(pointsOfInterest: .excludingAll, showsTraffic: false))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .padding(6)
             .overlay {

@@ -19,6 +19,8 @@ struct RunningChallenge: View {
                 Image(systemName: quest.type.symbol)
                     .frame(width: 35)
                 Text(quest.type.name)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                 Button{
                     showChallengeExplanation = true
                 } label: {
@@ -30,7 +32,9 @@ struct RunningChallenge: View {
             }
             Spacer()
             
-            QuestFactory.progressIndicatorElement(questData: quest)
+            if quest.type != .track {
+                QuestFactory.progressIndicatorElement(questData: quest)
+            }
             if quest.type == .track {
                 Button {
                     toggleTrackingSound()
