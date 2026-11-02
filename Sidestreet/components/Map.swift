@@ -28,7 +28,7 @@ struct CustomMap: View {
             }
             
             if let recording {
-                MapPolyline(coordinates: recording.coordinates).stroke(.blue, lineWidth: 5)
+                getPath(recording.coordinates)
             }
             
             if visualizeHeatMap {

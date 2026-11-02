@@ -80,7 +80,7 @@ struct WalkSummary: View {
                 }
             }
             Map(interactionModes: interactionEnabled ? [.all] : []) {
-                MapPolyline(coordinates: walk.coordinates).stroke(.orange, lineWidth: 5)
+                getPath(walk.coordinates)
                 ForEach(walk.quests, id: \.id) { quest in
                     QuestFactory.mapElements(questData: quest, walkFinished: true)
                 }
