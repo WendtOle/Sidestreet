@@ -2,7 +2,6 @@ import SwiftUI
 import MapKit
 import CoreLocation
 import SwiftData
-import GEOSwift
 import AVFAudio
 
 struct ContentView: View {

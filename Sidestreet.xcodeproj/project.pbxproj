@@ -11,7 +11,6 @@
 		7F0DB0A93098C5A4002C1504 /* tutorial_walk_start.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0A73098C5A0002C1504 /* tutorial_walk_start.gpx */; };
 		7F0DB0AB3098C6DF002C1504 /* tutorial_walk.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */; };
 		7F0DB0AC3098C6DF002C1504 /* tutorial_walk.gpx in Sources */ = {isa = PBXBuildFile; fileRef = 7F0DB0AA3098C6DF002C1504 /* tutorial_walk.gpx */; };
-		7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7F6359D73073B93C00B37931 /* GEOSwift */; };
 		7F8CC1CF30836BB100A2EAFC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1CE30836BB100A2EAFC /* WidgetKit.framework */; };
 		7F8CC1D130836BB100A2EAFC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F8CC1D030836BB100A2EAFC /* SwiftUI.framework */; };
 		7F8CC1DE30836BB300A2EAFC /* SessionActivityExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7F8CC1CC30836BB100A2EAFC /* SessionActivityExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -110,7 +109,6 @@
 		7F42883C306FAB4B00658834 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
-				7F6359D83073B93C00B37931 /* GEOSwift in Frameworks */,
 			);
 		};
 		7F8CC1C930836BB100A2EAFC /* Frameworks */ = {
@@ -179,9 +177,6 @@
 				7FD87A81308498D0000DAAB4 /* components */,
 			);
 			name = Sidestreet;
-			packageProductDependencies = (
-				7F6359D73073B93C00B37931 /* GEOSwift */,
-			);
 			productName = Sidestreet;
 			productReference = 7F42883F306FAB4B00658834 /* Sidestreet.app */;
 			productType = "com.apple.product-type.application";
@@ -233,7 +228,6 @@
 			mainGroup = 7F428836306FAB4B00658834;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7F428840306FAB4B00658834 /* Products */;
@@ -578,25 +572,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/GEOSwift/GEOSwift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		7F6359D73073B93C00B37931 /* GEOSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7F6359D63073B93C00B37931 /* XCRemoteSwiftPackageReference "GEOSwift" */;
-			productName = GEOSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7F428837306FAB4B00658834 /* Project object */;
 	validationLevel = 1;
